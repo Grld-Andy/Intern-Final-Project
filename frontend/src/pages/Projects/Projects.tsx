@@ -8,7 +8,7 @@ import ArrowOutwardOutlinedIcon from '@mui/icons-material/ArrowOutwardOutlined'
 
 const Projects: React.FC = () => {
   return (
-    <div className="text-[#344054]">
+    <div className="text-[#344054] bg-[#F9FAFB]">
         <div className="bg-[linear-gradient(#17020266,#17020266),url('/Projects_page/project_hero.jpg')] bg-cover bg-[10%_25%] flex flex-col justify-center items-center relative w-full h-[482px] mb-20">
             <h1 className="text-white text-[38px] font-bold">Projects</h1>
             <div className="absolute flex bg-white top-[432px] border border-[#d0d5dd] p-6 gap-2 shadow-md">
