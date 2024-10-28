@@ -1,9 +1,10 @@
 import './App.css'
-import ProjectPreview from './pages/ProjectPreview/ProjectPreview'
 
 function App() {
   return (
-    <ProjectPreview/>
+    <h1 className="text-3xl font-bold underline">
+      Hello world!
+    </h1>
   )
 }
 
