@@ -1,9 +1,10 @@
 import './App.css'
-import Projects from './pages/Projects/Projects'
 
 function App() {
   return (
-    <Projects/>
+    <h1 className="text-3xl font-bold underline">
+      Hello world!
+    </h1>
   )
 }
 
