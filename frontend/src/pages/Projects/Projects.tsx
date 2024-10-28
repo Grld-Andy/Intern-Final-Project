@@ -1,4 +1,9 @@
 import React from "react"
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import ArrowOutwardOutlinedIcon from '@mui/icons-material/ArrowOutwardOutlined'
 import "./styles.css"
 
 const Projects: React.FC = () => {
@@ -6,8 +11,11 @@ const Projects: React.FC = () => {
     <div className="projects_page">
         <div className="hero">
             <h1>Projects</h1>
-            <div>
-                <input type="text" placeholder="Search projects by name"/>
+            <div className="search">
+                <div className="search-div">
+                    <SearchOutlinedIcon/>
+                    <input type="text" placeholder="Search projects by name"/>
+                </div>
                 <button>Search</button>
             </div>
         </div>
@@ -15,8 +23,9 @@ const Projects: React.FC = () => {
             <div className="left">
                 <div className="filter_title">
                     <h1>Filter</h1>
-                    <p>Icon</p>
+                    <FilterListIcon/>
                 </div>
+                <hr/>
                 <div className="all_filters">
                     <h1>Stack</h1>
                     <div className="stack">
@@ -54,21 +63,22 @@ const Projects: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <hr/>
                 <div className="dates">
                     <h1>Date</h1>
                     <div className="dateRadios">
                         <div>
-                            <input type="radio" name="recent" id="recent" />
+                            <input type="radio" name="sort" id="recent" />
                             <label htmlFor="recent">Sort by most recent</label>
                         </div>
                         <div>
-                            <input type="radio" name="oldest" id="oldest" />
+                            <input type="radio" name="sort" id="oldest" />
                             <label htmlFor="oldest">Sort by oldest first</label>
                         </div>
                     </div>
                 </div>
                 <div className="clear_filters">
-                    <h1>Clear filter(s)</h1>
+                    <h1><HighlightOffIcon/> Clear filter(s)</h1>
                 </div>
             </div>
             <div className="projects">
@@ -78,10 +88,13 @@ const Projects: React.FC = () => {
                 </div>
                 <div className="project_grid">
                     {
-                        Array.from({length: 9}).map((_, index) => (
+                        Array.from({length: 6}).map((_, index) => (
                             <div className="project_cell" key={index}>
                                 <div className="project_image">
-                                    <button>New</button>
+                                    <button>
+                                        <AutoAwesomeOutlinedIcon/>
+                                        <p>New</p>
+                                    </button>
                                     <img src="/Landing_page/programmer_workspace.jpg"/>
                                 </div>
                                 <div className="project_detail">
@@ -89,7 +102,10 @@ const Projects: React.FC = () => {
                                     <p>
                                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem unde odio, adipisci deleniti quas numquam iste cupiditate animi quibusdam eius, quod dolorem amet asperiores reprehenderit? Soluta praesentium molestias cum, ea, possimus qui beatae quia sint quod nemo aliquam quisquam officiis? Ex non ratione quaerat quia culpa voluptates sed iste nostrum.
                                     </p>
-                                    <h2>Read more</h2>
+                                    <h2>
+                                        Read more
+                                    <   ArrowOutwardOutlinedIcon/>
+                                    </h2>
                                 </div>
                             </div>
                         ))
