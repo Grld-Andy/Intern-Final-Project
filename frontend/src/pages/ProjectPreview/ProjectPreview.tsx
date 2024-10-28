@@ -1,6 +1,12 @@
 import React from "react"
 import "./styles.css"
-import ArrowOutwardOutlinedIcon from '@mui/icons-material/ArrowOutwardOutlined'
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import PlayCircleFilledOutlinedIcon from "@mui/icons-material/PlayCircleFilledOutlined"
+import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined"
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
+import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
 
 const ProjectPreview: React.FC = () => {
   return (
@@ -12,7 +18,7 @@ const ProjectPreview: React.FC = () => {
           <div>
             <div className="time-list">
               <div className="time">
-                <p>Created 17 Sep, 2024</p>
+                <p><CalendarTodayOutlinedIcon/>Created 17 Sep, 2024</p>
                 <p>Last modified 17 hours ago</p>
               </div>
               <button>Edit project</button>
@@ -44,7 +50,7 @@ const ProjectPreview: React.FC = () => {
                   {
                     Array.from({length: 6}).map((_, index) => (
                       <div className="feature" key={index}>
-                        <p>Icon here</p>
+                        <CheckCircleIcon/>
                         <p>Feature Name</p>
                       </div>
                     ))
@@ -57,7 +63,7 @@ const ProjectPreview: React.FC = () => {
                   {
                     Array.from({length: 6}).map((_, index) => (
                       <div className="feature" key={index}>
-                        <p>Icon here</p>
+                        <CheckCircleIcon/>
                         <p>Improvement here</p>
                       </div>
                     ))
@@ -68,24 +74,25 @@ const ProjectPreview: React.FC = () => {
                 <h1>Technical details and Decisions</h1>
                 <div className="video">
                   <video src="" controls></video>
+                  <PlayCircleFilledOutlinedIcon/>
                 </div>
               </div>
             </div>
 
             <div className="right">
               <div className="right-top">
-                <h1>Linked Docs</h1>
+                <h1><LinkOutlinedIcon/>Linked Docs</h1>
                 <div className="input-div">
                   <input type="text" placeholder="Eventplanner_documentation_here.pdf"/>
                   <ArrowOutwardOutlinedIcon/>
                 </div>
                 <div className="input-div">
-                  <input type="text" placeholder="Eventplanner_documentation_here.pdf"/>
+                  <input type="text" placeholder="Design_documentation.pdf"/>
                   <ArrowOutwardOutlinedIcon/>
                 </div>
               </div>
               <div className="right-bottom">
-                <h1>Development team/Contributors</h1>
+                <h1><GroupOutlinedIcon/>Development team/Contributors</h1>
                 <div className="team-list">
                   {
                     Array.from({length: 4}).map((_, index) => (
@@ -97,7 +104,7 @@ const ProjectPreview: React.FC = () => {
                           <h1>Member Name</h1>
                           <p>Member Role</p>
                         </div>
-                        <button>Remove</button>
+                        <button><DeleteOutlineIcon/></button>
                       </div>
                     ))
                   }
