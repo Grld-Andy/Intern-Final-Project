@@ -1,7 +1,14 @@
+import { v2 as cloudinary } from 'cloudinary';
 import pg from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
 
 const db = new pg.Client({
     user: process.env.PG_USER,
@@ -11,7 +18,7 @@ const db = new pg.Client({
     port: process.env.PG_PORT
 });
 db.connect();
-// Test the connection
+// Testing the db connection
 db.query('SELECT NOW()', (err, res) => {
     if (err) {
         console.error('Error connecting to database', err);
@@ -23,32 +30,107 @@ db.query('SELECT NOW()', (err, res) => {
 
 // Create a new project with all related data
 const createProject = async (req, res) => {
-    console.log(req.body);
-    const { title, description, coverPhotoUrl, technicalDetailsVideo, projectFeatures, improvementAreas, developmentStack, contributors, linkedDocs } = req.body;
+    const { title, description, projectFeatures, improvementAreas, developmentStack, contributors, linkedDocs } = req.body;
+    const coverPhoto = req.files?.coverPhoto?.[0];
+    const technicalDetailsVideo = req.files?.technicalDetailsVideo?.[0];
+
     try {
+        if (!coverPhoto || !technicalDetailsVideo) {
+            console.error('Missing files:', { coverPhoto, technicalDetailsVideo });
+            return res.status(400).json({ error: 'Invalid image file' });
+        }
+
+        let parsedProjectFeatures = projectFeatures;
+        if (typeof projectFeatures === 'string') {
+            parsedProjectFeatures = JSON.parse(projectFeatures);
+        }
+
+        let parsedImprovementAreas = improvementAreas;
+        if (typeof improvementAreas === 'string') {
+            parsedImprovementAreas = JSON.parse(improvementAreas);
+        }
+
+        let parsedDevelopmentStack = developmentStack;
+        if (typeof developmentStack === 'string') {
+            parsedDevelopmentStack = JSON.parse(developmentStack);
+        }
+
+        let parsedContributors = contributors;
+        if (typeof contributors === 'string') {
+            parsedContributors = JSON.parse(contributors);
+        }
+
+        if (!parsedProjectFeatures || !Array.isArray(parsedProjectFeatures) || parsedProjectFeatures.some(f => !f.featureName)) {
+            console.error('Invalid project features:', parsedProjectFeatures);
+            return res.status(400).json({ error: 'Invalid project features' });
+        }
+
+        if (!parsedImprovementAreas || !Array.isArray(parsedImprovementAreas) || parsedImprovementAreas.some(a => !a.areaName)) {
+            console.error('Invalid improvement areas:', parsedImprovementAreas);
+            return res.status(400).json({ error: 'Invalid improvement areas' });
+        }
+
+        if (!parsedDevelopmentStack || !Array.isArray(parsedDevelopmentStack) || parsedDevelopmentStack.some(s => !s.stackName)) {
+            console.error('Invalid development stack:', parsedDevelopmentStack);
+            return res.status(400).json({ error: 'Invalid development stack' });
+        }
+
+        if (!parsedContributors || !Array.isArray(parsedContributors) || parsedContributors.some(c => !c.userId || !c.role)) {
+            console.error('Invalid contributors:', parsedContributors);
+            return res.status(400).json({ error: 'Invalid contributors' });
+        }
+
         await db.query('BEGIN');
+
+        let coverPhotoUrl = null;
+        if (coverPhoto) {
+            const coverPhotoResult = await cloudinary.uploader.upload(coverPhoto.path, {
+                folder: 'projects/cover_photos'
+            });
+            coverPhotoUrl = coverPhotoResult.secure_url;
+            console.log("Cover Photo Result: ", coverPhotoResult);
+        }
+
+        let technicalDetailsVideoUrl = null;
+        if (technicalDetailsVideo) {
+            const technicalDetailsVideoResult = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_large(technicalDetailsVideo.path, {
+                    resource_type: 'video',
+                    folder: 'projects/technical_videos'
+                }, (error, result) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+            console.log("Technical Details Video Result: ", technicalDetailsVideoResult);
+            technicalDetailsVideoUrl = technicalDetailsVideoResult.secure_url;
+            console.log("Technical Details Video URL: ", technicalDetailsVideoUrl);
+        }
 
         const projectResult = await db.query(
             'INSERT INTO Project (title, description, coverPhotoUrl, technicalDetailsVideo, linkedDocs) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [title, description, coverPhotoUrl, technicalDetailsVideo, linkedDocs]
+            [title, description, coverPhotoUrl, technicalDetailsVideoUrl, linkedDocs]
         );
         const projectId = projectResult.rows[0].id;
 
-        for (const feature of projectFeatures) {
+        for (const feature of parsedProjectFeatures) {
             await db.query(
                 'INSERT INTO ProjectFeature (projectId, featureName, description) VALUES ($1, $2, $3)',
                 [projectId, feature.featureName, feature.description]
             );
         }
 
-        for (const area of improvementAreas) {
+        for (const area of parsedImprovementAreas) {
             await db.query(
                 'INSERT INTO ImprovementArea (projectId, areaName, description) VALUES ($1, $2, $3)',
                 [projectId, area.areaName, area.description]
             );
         }
 
-        for (const stack of developmentStack) {
+        for (const stack of parsedDevelopmentStack) {
             const stackResult = await db.query(
                 'INSERT INTO DevelopmentStack (stackName, description) VALUES ($1, $2) RETURNING *',
                 [stack.stackName, stack.description]
@@ -60,7 +142,7 @@ const createProject = async (req, res) => {
             );
         }
 
-        for (const contributor of contributors) {
+        for (const contributor of parsedContributors) {
             await db.query(
                 'INSERT INTO ProjectContributor (projectId, userId, role) VALUES ($1, $2, $3)',
                 [projectId, contributor.userId, contributor.role]
@@ -71,6 +153,7 @@ const createProject = async (req, res) => {
         res.status(201).json(projectResult.rows[0]);
     } catch (err) {
         await db.query('ROLLBACK');
+        console.error('Error creating project:', err);
         res.status(500).json({ error: err.message });
     }
 }
