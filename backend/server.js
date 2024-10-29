@@ -5,10 +5,12 @@ import bodyParser from "body-parser"
 import exampleRouter from "./routes/exampleRoute.js"
 import projectManagementRouter from './routes/projectManagementRoute.js';
 import limiter from './middleware/rateLimiter.js'
+import morgan from "morgan"
 
 const app = express()
 const port = 3000
 
+app.use(morgan("dev"));
 app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
