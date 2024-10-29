@@ -25,7 +25,7 @@ const ProjectPreview: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-[auto,1px,354px] gap-[47px] mt-[32px]">
+        <div className="grid md:grid-cols-[auto,1px,354px] gap-[47px] mt-[32px]">
           <div className="flex gap-[45px] flex-col">
             <div className="flex gap-[8px] flex-col">
               <h3 className="text-[#475467] font-medium text-[12px] leading-[18px]">Development Stack</h3>
@@ -79,7 +79,9 @@ const ProjectPreview: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="w-[1px] h-full bg-[#d0d5dd]"></div>
+
+          <div className="md:w-[1px] md:h-full w-full h-[1px] bg-[#d0d5dd]"></div>
+
           <div className="flex gap-[24px] flex-col w-[354px]">
             <div className="flex gap-[12px] p-[24px] flex-col">
               <div className="gap-[8px] flex">

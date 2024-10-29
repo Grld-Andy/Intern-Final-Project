@@ -62,7 +62,7 @@ const Projects: React.FC = () => {
                     <button className="bg-[#1570ef] text-white font-semibold rounded-lg px-4 py-2 text-base leading-6">Add Project</button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-8 mb-8">
+                <div className="grid md:grid-cols-3 gap-8 mb-8">
                     {Array.from({ length: 6 }).map((_, index) => (
                         <div key={index} className="relative overflow-hidden">
                             <div className="relative overflow-hidden h-[193px]">
