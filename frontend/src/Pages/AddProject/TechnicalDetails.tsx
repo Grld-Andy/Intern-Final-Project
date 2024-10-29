@@ -4,11 +4,14 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
 import CancelIcon from '@mui/icons-material/Cancel'
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined'
 import AddProjectHeader from '../../components/AddProject/AddProjectHeader'
-import { useNavigate } from 'react-router-dom'
 
 const TechnicalDetails: React.FC = () => {
     const [video, setVideo] = useState<string>("")
-    const navigate = useNavigate()
+    const [developmentStack, setDevelopmentStack] = useState<string>("")
+    const [contributor, setContributor] = useState<string>("")
+    // const [contributorsList, setContributorsList] = useState<Array<string>>([])
+    const [linkedDocs, setLinkedDocs] = useState<string>("")
+    // const [linkedDocsList, setLinkedDocsList] = useState<Array<string>>([])
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(!e.target.files)
@@ -21,7 +24,8 @@ const TechnicalDetails: React.FC = () => {
     }
 
     const stepBack = () => {
-        navigate('/project-overview')
+        console.log("here")
+        window.location.href = '/project-overview'
     }
     const handleSubmit = (e:FormEvent) => {
         e.preventDefault()
@@ -38,7 +42,7 @@ const TechnicalDetails: React.FC = () => {
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Development stack</h1>
                     <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg shadow'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
-                            <input type="text" placeholder="Enter development stack, eg MERN" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
+                            <input type="text" placeholder="Enter development stack, eg MERN" value={developmentStack} onChange={(e) => setDevelopmentStack(e.target.value)} className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button type='button' className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
                         </div>
                         <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
@@ -78,7 +82,7 @@ const TechnicalDetails: React.FC = () => {
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Development team/Contributors</h1>
                     <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg shadow'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
-                            <input type="text" placeholder="Add contributors to this project" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
+                            <input value={contributor} onChange={(e) => setContributor(e.target.value)} type="text" placeholder="Add contributors to this project" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button type='button' className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
                         </div>
                         <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
@@ -107,11 +111,11 @@ const TechnicalDetails: React.FC = () => {
                                 <KeyboardArrowDownOutlinedIcon style={{width:"20px", height:"20px",color:"#667085"}}/>
                             </button>
                         </div>
-                        <textarea className='h-[94px] w-full outline-none font-normal text-[16px] leading-[24px] text-[#667085]' placeholder='Paste documentation links to the project (e.g., Confluence, GitHub repo, Figma files).'></textarea>
+                        <textarea value={linkedDocs} onChange={(e) => setLinkedDocs(e.target.value)} className='h-[94px] w-full outline-none font-normal text-[16px] leading-[24px] text-[#667085]' placeholder='Paste documentation links to the project (e.g., Confluence, GitHub repo, Figma files).'></textarea>
                     </div>
                 </div>
                 <div className='flex gap-[12px] justify-end'>
-                    <button type='button' onSubmit={stepBack} className='rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd] text-[#344054] text-[16px] leading-[24px] font-semibold'>
+                    <button type='button' onClick={stepBack} className='rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd] text-[#344054] text-[16px] leading-[24px] font-semibold'>
                         Discard
                     </button>
                     <button type='submit' className='rounded-lg px-[14px] py-[10px] bg-[#1570ef] border border-[#1570ef] text-white text-[16px] leading-[24px] font-semibold'>

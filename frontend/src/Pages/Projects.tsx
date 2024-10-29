@@ -1,13 +1,20 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { UserContext } from "../contexts/UserContext"
 import ProjectCell from "../components/ProjectCell"
+import axios from "axios"
 
 const Projects: React.FC = () => {
     const {user} = useContext(UserContext)
+
+    useEffect(() => {
+        axios.get("")
+        .then(() => {})
+        .catch(() => {})
+    }, [])
 
   return (
     <div className="text-[#344054] bg-[#F9FAFB]">

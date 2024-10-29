@@ -39,7 +39,7 @@ const ProjectOverview: React.FC = () => {
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Project title</h1>
                     <div className='w-full border bg-white border-[#d0d5dd] rounded-lg py-[10px] px-[14px]'>
-                        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter project title' type='text' className='outline-none text-[16px] font-normal leading-[24px] text-[#667085]' name='title'/>
+                        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter project title' type='text' className='w-full outline-none text-[16px] font-normal leading-[24px] text-[#667085]' name='title'/>
                     </div>
                 </div>
                 <div className='flex gap-[6px] flex-col'>
