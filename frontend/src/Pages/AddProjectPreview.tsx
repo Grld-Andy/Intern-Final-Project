@@ -1,15 +1,15 @@
-import React, { useContext, useState } from "react"
+import React, { useState } from "react"
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
-import RequestDemoModal from "../components/RequestDemoModal"
-import {UserContext} from "../contexts/UserContext"
+import PublishProjectModal from "../components/PublishProjectModal"
 
-const ProjectPreview: React.FC = () => {
-  const {user} = useContext(UserContext)
+const AddProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const handleShowModal = (show: boolean) => {
@@ -19,9 +19,40 @@ const ProjectPreview: React.FC = () => {
   return (
     <>
       {
-        showModal && <RequestDemoModal handleShowModal={handleShowModal}/>
+        showModal && 
+        <PublishProjectModal handleShowModal={handleShowModal}/>
       }
-      <div className="project-preview bg-[#F9FAFB]">
+      <div className={`project-preview bg-[#F9FAFB] ${showModal && "h-screen overflow-hidden"}`}>
+        {/* project progress */}
+        <div className="w-full h-[150px] py-[16px] px-[80px] border border-[#d0d5dd] bg-gradient-to-r from-[#bed6f840] to-[#dbe6f040] flex flex-col gap-[16px]">
+          <div className="flex justify-between">
+            <div className="flex gap-[8px] flex-col">
+              <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">Add project</h1>
+              <div className="flex gap-[8px] items-center">
+                <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Projects</h2>
+                <ChevronRightIcon style={{width: "16px", height: "16px", color: "#667085", position: "relative", top: "1px"}}/>
+                <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Add Project</h2>
+              </div>
+            </div>
+            <button onClick={() => {handleShowModal(true)}} className="bg-[#1570ef] h-[40px] w-[128px] rounded-lg text-white flex justify-center items-center font-semibold text-[14px] leading-[20px]">Publish Project</button>
+          </div>
+          <div className="flex gap-[24px] md:justify-normal justify-between">
+            <div className="flex md:gap-[24px] md:flex-row gap-[4px] flex-col">
+              <div className="flex gap-[8px] items-center">
+                <CheckCircleIcon style={{width: "16px", height: "16px", color: "#667085"}}/>
+                <h3 className="text-[14px] leading-[20px] font-medium text-[#667085]">Basic information</h3>
+              </div>
+              <div className="flex gap-[8px] items-center">
+                <CheckCircleIcon style={{width: "16px", height: "16px", color: "#667085"}}/>
+                <h3 className="text-[14px] leading-[20px] font-medium text-[#667085]">Technical details and development</h3>
+              </div>
+            </div>
+            <button className="rounded-lg border border-[#1570ef] bg-[#eff8ff] flex justify-center items-center gap-[8px] text-[#1570ef] px-[14px] py-[8px]">
+              <RemoveRedEyeOutlinedIcon/>
+              <h2 className="text-[14px] leading-[20px] font-medium">Preview</h2>
+            </button>
+          </div>
+        </div>
         {/* hero image */}
         <div className="w-full h-[333px] bg-cover bg-center bg-no-repeat bg-[linear-gradient(#17020266,#17020266),url('/Projects_preview_page/preview_hero.jpg')]"></div>
 
@@ -37,16 +68,6 @@ const ProjectPreview: React.FC = () => {
                 </div>
                 <p className="text-[14px] leading-5 font-normal">Last modified 17 hours ago</p>
               </div>
-              {
-                user ?
-                <button className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]">
-                  Edit project
-                </button>:
-                <button
-                  className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]" onClick={() => handleShowModal(true)}>
-                  Request demo
-                </button>
-              }
             </div>
           </div>
 
@@ -158,4 +179,4 @@ const ProjectPreview: React.FC = () => {
   )
 }
 
-export default ProjectPreview
+export default AddProjectPreview
