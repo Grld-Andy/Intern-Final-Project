@@ -5,9 +5,12 @@ import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
+import RequestDemoModal from "../components/RequestDemoModal"
 
 const ProjectPreview: React.FC = () => {
   return (
+    <>
+      <RequestDemoModal/>
     <div className="project-preview bg-[#F9FAFB]">
       <div className="w-full h-[333px] bg-cover bg-center bg-no-repeat bg-[linear-gradient(#17020266,#17020266),url('/Projects_preview_page/preview_hero.jpg')]"></div>
       <div className="page-container px-8 py-6">
@@ -129,6 +132,7 @@ const ProjectPreview: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
