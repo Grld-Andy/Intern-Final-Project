@@ -41,7 +41,7 @@ const projectList:projectList[]=[
 ]
 export default function ProjectList(){
     return (
-        <div className='grid grid-cols-3 gap-[32px]'>
+        <div className='grid xl:grid-cols-3 sm:grid-cols-2 gap-[32px]'>
 
             
 

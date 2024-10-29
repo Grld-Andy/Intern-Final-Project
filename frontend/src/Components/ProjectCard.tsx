@@ -34,12 +34,12 @@ const Data:propData[]=[
 ]
 export default function ProjectCard(){
     return (
-        <div className="grid grid-cols-3 gap-[32px] lg:min-w-[1280px] lg:mx-center lg:h-[668px]">
+        <div className="grid  xl:grid-cols-3 sm:grid-cols-2  gap-[28px] 2xl:min-w-[1280px] lg:mx-center xl:h-[668px]">
 {Data.map((content,index)=>{
         return (
-            <div key={index} className="rounded-[16px] bg-[#125E7E]  p-[24px] flex flex-col gap-[16px] lg:min-w-[400px] lg:h-[318px]">
-            <h1 className="font-[700] text-[128px] bg-gradient-to-b w-fit  bg-clip-text text-transparent from-white to-[#125E7E] leading-[90px]">{content.number}</h1>
-            <h2 className="font-[600] text-[18px] text-white leading-[28px] ">{content.title}</h2>
+            <div key={index} className="rounded-[16px] bg-[#125E7E]   p-[24px] flex flex-col sm:gap-[14px] gap-[5px] 2xl:min-w-[400px] lg:h-[318px]">
+            <h1 className="font-[700] text-[50px] md:text-[128px] bg-gradient-to-b w-fit  bg-clip-text text-transparent from-white to-[#125E7E] leading-[90px]">{content.number}</h1>
+            <h2 className="font-[600] text-[18px] text-white 2xl:leading-[28px] ">{content.title}</h2>
             <h3 className="font-[400] text-[16px] text-white leading-[24px]">{content.content}</h3>
                     </div>
         )
