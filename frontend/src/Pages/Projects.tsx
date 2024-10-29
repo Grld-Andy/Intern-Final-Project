@@ -1,20 +1,27 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
-
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { UserContext } from "../contexts/UserContext"
 import ProjectCell from "../components/ProjectCell"
 import axios from "axios"
+import Project from "../models/Project"
 
 const Projects: React.FC = () => {
+    const [projects, setProjects] = useState<Array<Project>>([])
     const {user} = useContext(UserContext)
 
-    useEffect(() => {
-        axios.get("")
-        .then(() => {})
-        .catch(() => {})
-    }, [])
+    // useEffect(() => {
+    //     axios.get("http:localhost:3000/api/v1/projects")
+    //     .then((res) => {
+    //         console.log("done")
+    //         setProjects(res.data)
+    //     })
+    //     .catch((err) => {
+    //         setProjects([])
+    //         console.error(err)
+    //     })
+    // }, [])
 
   return (
     <div className="text-[#344054] bg-[#F9FAFB]">
@@ -81,8 +88,8 @@ const Projects: React.FC = () => {
 
                 {/* projects grid */}
                 <div className="grid md:grid-cols-3 gap-8 mb-8">
-                    {Array.from({ length: 6 }).map((_, index) => (
-                        <ProjectCell key={index}/>
+                    {projects.map((project, index) => (
+                        <ProjectCell project={project} key={index}/>
                     ))}
                 </div>
                 <hr />

@@ -3,8 +3,13 @@ import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined'
 import ArrowOutwardOutlinedIcon from '@mui/icons-material/ArrowOutwardOutlined'
 import { Link } from "react-router-dom"
+import Project from '../models/Project'
 
-const ProjectCell: React.FC = () => {
+interface Props{
+    project: Project
+}
+
+const ProjectCell: React.FC<Props> = ({project}) => {
   return (
         <div className="relative overflow-hidden">
             <div className="relative overflow-hidden h-[193px]">
@@ -12,15 +17,15 @@ const ProjectCell: React.FC = () => {
                     <AutoAwesomeOutlinedIcon />
                     <p className="text-sm font-medium leading-5">New</p>
                 </button>
-                <img src="/Landing_page/programmer_workspace.jpg" alt="project" className="w-full h-full object-cover" />
+                <img src={project.coverPhotoUrl} alt="project" className="w-full h-full object-cover" />
             </div>
             <div className="p-4 flex flex-col border border-[#d0d5dd] gap-2">
                 <div className="flex justify-between items-center">
-                    <h1 className="font-semibold text-lg leading-7">Event seating planner</h1>
+                    <h1 className="font-semibold text-lg leading-7">{project.title}</h1>
                     <MoreVertOutlinedIcon className="cursor-pointer"/>
                 </div>
                 <p className="text-sm font-normal leading-5 text-ellipsis overflow-hidden line-clamp-3">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem unde odio, adipisci deleniti quas numquam iste cupiditate animi quibusdam eius, quod dolorem amet asperiores reprehenderit? Soluta praesentium molestias cum, ea, possimus qui beatae quia sint quod nemo aliquam quisquam officiis? Ex non ratione quaerat quia culpa voluptates sed iste nostrum.
+                    {project.description}
                 </p>
                 <Link to={'/project-preview'}>
                     <h2 className="text-[#1570ef] cursor-pointer font-medium text-base leading-6 flex items-center">
