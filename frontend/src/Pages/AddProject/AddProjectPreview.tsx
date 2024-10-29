@@ -7,7 +7,7 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
-import PublishProjectModal from "../components/PublishProjectModal"
+import PublishProjectModal from "../../components/PublishProjectModal"
 
 const AddProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)

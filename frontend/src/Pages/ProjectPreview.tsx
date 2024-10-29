@@ -26,7 +26,7 @@ const ProjectPreview: React.FC = () => {
         <div className="w-full h-[333px] bg-cover bg-center bg-no-repeat bg-[linear-gradient(#17020266,#17020266),url('/Projects_preview_page/preview_hero.jpg')]"></div>
 
         {/* page container */}
-        <div className="page-container px-8 py-6">
+        <div className={`page-container px-8 py-6 ${showModal && "h-screen overflow-hidden"}`}>
           <div className="header flex flex-col justify-between py-4 gap-6 border-b border-[#d0d5dd]">
             <h1 className="text-[48px] leading-[60px] font-bold text-[#1d2939]">Event seating planner</h1>
             <div className="flex justify-between items-center">
