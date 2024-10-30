@@ -129,12 +129,13 @@ const createProject = async (req, res) => {
     }
 };
 
-// Get all projects with filtering, sorting, and pagination
+// Get all projects with filtering, sorting, pagination, and search by title
 const getProjects = async (req, res) => {
-    const { stackNames, page = 1, limit = 6, sort = 'mostRecent' } = req.query;
+    const { stackNames, page = 1, limit = 6, sort = 'mostRecent', title } = req.query;
     const offset = (page - 1) * limit;
     const sortOrder = sort === 'oldestFirst' ? 'ASC' : 'DESC';
     let stackFilterQuery = '';
+    let titleFilterQuery = '';
     let queryParams = [limit, offset];
 
     if (stackNames) {
@@ -147,6 +148,11 @@ const getProjects = async (req, res) => {
             )
         `;
         queryParams.push(stackNamesArray);
+    }
+
+    if (title) {
+        titleFilterQuery = `AND p.title ILIKE $${queryParams.length + 1}`;
+        queryParams.push(`%${title}%`);
     }
 
     try {
@@ -162,6 +168,7 @@ const getProjects = async (req, res) => {
             LEFT JOIN DevelopmentStack ds ON p.id = ds.projectId
             WHERE 1=1
             ${stackFilterQuery}
+            ${titleFilterQuery}
             GROUP BY p.id
             ORDER BY p.createdAt ${sortOrder}
             LIMIT $1 OFFSET $2
@@ -170,7 +177,6 @@ const getProjects = async (req, res) => {
         const result = await pool.query(query, queryParams);
         const allProjectsResult = await pool.query('SELECT * FROM Project');
         const totalProjects = allProjectsResult.rows.length;
-        console.log("Length of allProjectsResult: ", totalProjects);
 
         res.status(200).json({
             projects: keysToCamelCase(result.rows),

@@ -60,6 +60,11 @@
  *         schema:
  *           type: string
  *         description: Sort order (mostRecent or oldestFirst)
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Project title to search for
  *     responses:
  *       200:
  *         description: A list of projects

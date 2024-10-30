@@ -3,9 +3,9 @@ import swaggerUi from "swagger-ui-express"
 
 const options = {
     definition: {
-        openai: "3.0.0",
+        openapi: "3.0.0",
         info: {
-            title: "Intern Final Project",
+            title: "Intern Project Showcase API",
             version: "1.0.0",
             definition: "An express API for a project management system",
         }
