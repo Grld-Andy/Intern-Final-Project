@@ -24,7 +24,7 @@ export default function Home(){
     </div>
 
 <div id="about" className="bg-black ">
-<span className="absolute flex flex-col 2xl:w-[1030px]  items-center md:items-start text-center md:text-start  w-full lg:h-[336px] gap-4 top-1/2  md:top-1/2 lg:left-[80px] w-[90%] sm:w-2/3 md:w-auto pl-10 lg:pl-0 transform -translate-y-1/2 z-10">
+<span className="absolute flex flex-col 2xl:w-[1030px]  items-center md:items-start text-center md:text-start  w-full lg:h-[336px] gap-4 top-1/2  md:top-1/2 lg:left-[80px] w-[90%] sm:w-2/3 md:w-auto  lg:pl-0 transform -translate-y-1/2 z-10">
 <h1 className="font-semibold md:text-[48px] sm:text-[25px] text-white md:leading-[60px] font-[700]">
     Explore Amalitech's Groundbreaking Works & Projects Pioneering Innovation and Impactful Change.
 </h1>
