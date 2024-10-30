@@ -113,12 +113,14 @@ const createProject = async (req, res) => {
         }
 
         await client.query('COMMIT');
-        res.status(201).json(keysToCamelCase({
-            ...projectResult.rows[0],
-            projectFeatures: projectFeaturesResult,
-            improvementAreas: improvementAreasResult,
-            developmentStack: developmentStackResult
-        }));
+        res.status(201).json({
+            project: keysToCamelCase({
+                ...projectResult.rows[0],
+                projectFeatures: projectFeaturesResult,
+                improvementAreas: improvementAreasResult,
+                developmentStack: developmentStackResult
+            })
+        });
     } catch (err) {
         await client.query('ROLLBACK');
         res.status(500).json({ error: err.message });
@@ -166,7 +168,14 @@ const getProjects = async (req, res) => {
         `;
 
         const result = await pool.query(query, queryParams);
-        res.status(200).json({ projects: keysToCamelCase(result.rows), length: result.rows.length });
+        const allProjectsResult = await pool.query('SELECT * FROM Project');
+        const totalProjects = allProjectsResult.rows.length;
+        console.log("Length of allProjectsResult: ", totalProjects);
+
+        res.status(200).json({
+            projects: keysToCamelCase(result.rows),
+            totalProjects
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -192,7 +201,7 @@ const getProject = async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Project not found' });
         }
-        res.status(200).json(keysToCamelCase(result.rows[0]));
+        res.status(200).json({ project: keysToCamelCase(result.rows[0]) });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -236,7 +245,7 @@ const updateProject = async (req, res) => {
         }
 
         await client.query('COMMIT');
-        res.status(200).json(projectResult.rows[0]);
+        res.status(200).json({ project: projectResult.rows[0] });
     } catch (err) {
         await client.query('ROLLBACK');
         res.status(500).json({ error: err.message });
@@ -278,7 +287,7 @@ const createDemoRequest = async (req, res) => {
             'INSERT INTO DemoRequest (projectId, fullName, emailAddress, requestDate, requestTime, comments) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [projectId, fullName, emailAddress, requestDate, requestTime, comments]
         );
-        res.status(201).json(result.rows[0]);
+        res.status(201).json({ demoRequest: result.rows[0] });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -287,8 +296,8 @@ const createDemoRequest = async (req, res) => {
 // Get all demo requests
 const getDemoRequests = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM DemoRequest  ORDER BY createdAt DESC');
-        res.status(200).json(result.rows);
+        const result = await pool.query('SELECT * FROM DemoRequest ORDER BY createdAt DESC');
+        res.status(200).json({ demoRequests: result.rows });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -306,7 +315,7 @@ const updateDemoRequestStatus = async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Demo request not found' });
         }
-        res.status(200).json(result.rows[0]);
+        res.status(200).json({ demoRequest: result.rows[0] });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
