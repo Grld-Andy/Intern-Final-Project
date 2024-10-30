@@ -25,11 +25,11 @@ const TechnicalDetails: React.FC = () => {
 
     const stepBack = () => {
         console.log("here")
-        window.location.href = '/project-overview'
+        window.location.href = '/add-project/project-overview'
     }
     const handleSubmit = (e:FormEvent) => {
         e.preventDefault()
-        window.location.href = '/add-project-preview'
+        window.location.href = '/add-project/preview'
     }
 
   return (

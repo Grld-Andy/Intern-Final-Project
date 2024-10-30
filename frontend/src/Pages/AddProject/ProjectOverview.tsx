@@ -27,7 +27,7 @@ const ProjectOverview: React.FC = () => {
     const clearFields = () => {}
     const handleSubmit = (e:FormEvent) => {
         e.preventDefault()
-        window.location.href = '/technical-details'
+        window.location.href = '/add-project/technical-details'
     }
 
   return (

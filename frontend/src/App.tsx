@@ -11,9 +11,9 @@ function App() {
     <Routes>
       <Route path="/projects" element={<Projects />} />
       <Route path="/projects/:id" element={<ProjectPreview />} />
-      <Route path="/project-overview" element={<ProjectOverview />} />
-      <Route path="/technical-details" element={<TechnicalDetails />} />
-      <Route path="/add-project-preview" element={<AddProjectPreview />} />
+      <Route path="/add-project/project-overview" element={<ProjectOverview />} />
+      <Route path="/add-project/technical-details" element={<TechnicalDetails />} />
+      <Route path="/add-project/preview" element={<AddProjectPreview />} />
     </Routes>
   )
 }
