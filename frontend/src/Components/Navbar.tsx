@@ -12,7 +12,7 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="fixed h-[96px] pt-[30px] justify-between z-20 md:px-[80px] px-[10px] pb-[10px] top-0 bg-white w-full flex flex-row border-[1px] border-[#D0D5DD]">
+            <nav className="fixed h-[96px] pt-[10px] justify-between items-center z-20 md:px-[80px] px-[10px] pb-[10px] top-0 bg-white w-full flex flex-row border-[1px] border-[#D0D5DD]">
                 <span id="amalitech-logo">
                     <img src={amalitechLogo} alt="amalitech logo" className="md:h-[35px]" />
                 </span>
