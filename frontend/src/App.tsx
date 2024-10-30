@@ -10,8 +10,7 @@ function App() {
   return (
     <Routes>
       <Route path="/projects" element={<Projects />} />
-      {/* <Route path="/projects/:id" element={<ProjectPreview />} /> */}
-      <Route path="/project-preview" element={<ProjectPreview />} />
+      <Route path="/projects/:id" element={<ProjectPreview />} />
       <Route path="/project-overview" element={<ProjectOverview />} />
       <Route path="/technical-details" element={<TechnicalDetails />} />
       <Route path="/add-project-preview" element={<AddProjectPreview />} />

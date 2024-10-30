@@ -17,7 +17,7 @@ const ProjectCell: React.FC<Props> = ({project}) => {
                     <AutoAwesomeOutlinedIcon />
                     <p className="text-sm font-medium leading-5">New</p>
                 </button>
-                <img src={project.coverPhotoUrl} alt="project" className="w-full h-full object-cover" />
+                <img src={project.coverphotourl} alt="project" className="w-full h-full object-cover" />
             </div>
             <div className="p-4 flex flex-col border border-[#d0d5dd] gap-2">
                 <div className="flex justify-between items-center">
@@ -27,7 +27,7 @@ const ProjectCell: React.FC<Props> = ({project}) => {
                 <p className="text-sm font-normal leading-5 text-ellipsis overflow-hidden line-clamp-3">
                     {project.description}
                 </p>
-                <Link to={'/project-preview'}>
+                <Link to={`/projects/${project.id}`}>
                     <h2 className="text-[#1570ef] cursor-pointer font-medium text-base leading-6 flex items-center">
                         Read more <ArrowOutwardOutlinedIcon />
                     </h2>

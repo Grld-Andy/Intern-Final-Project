@@ -9,19 +9,65 @@ import Project from "../models/Project"
 
 const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Array<Project>>([])
+    const [totalProjects, setTotalProjects] = useState<number>(0)
+    const [filters, setFilters] = useState<Array<string>>([])
+    const [sort, setSort] = useState<string>("Sort by most recent")
+    const [page, setPage] = useState<number>(1)
     const {user} = useContext(UserContext)
+    const limit = 6
 
-    // useEffect(() => {
-    //     axios.get("http:localhost:3000/api/v1/projects")
-    //     .then((res) => {
-    //         console.log("done")
-    //         setProjects(res.data)
-    //     })
-    //     .catch((err) => {
-    //         setProjects([])
-    //         console.error(err)
-    //     })
-    // }, [])
+    useEffect(() => {
+        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}`)
+        .then((res) => {
+            if(res.data){
+                console.log(res.data)
+                setProjects(res.data.projects)
+                setTotalProjects(res.data.totalProjects)
+            }
+        })
+        .catch((err) => {
+            setProjects([])
+            console.error(err)
+        })
+    }, [])
+
+    useEffect(() => {
+        const filterBy = filters.join(",")
+        console.log(`filters: ${filterBy}`)
+        const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
+        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}`)
+        .then((res) => {
+            if(res.data){
+                setProjects(res.data.projects)
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
+    }, [sort, filters, page])
+
+    const clearFilters = () => {
+        setFilters([])
+    }
+
+    const updateFilters = (value:string) => {
+        console.log(`update filters: ${filters} with ${value}`)
+        if(filters.includes(value)) {
+            setFilters(filters.filter((filter) => filter !== value))
+        } else {
+            setFilters([...filters, value])
+        }
+    }
+
+
+    const nextPage = () => {
+        if(6 * page >= totalProjects) return
+        setPage(page + 1)
+    }
+
+    const prevPage = () => {
+        if(page <= 1) return
+        setPage(page - 1)
+    }
 
   return (
     <div className="text-[#344054] bg-[#F9FAFB]">
@@ -50,8 +96,8 @@ const Projects: React.FC = () => {
                     <div className="flex flex-col gap-4 p-1">
                         {["MEANstack", "MERNstack", "JAMstack", ".Net Stack", "Spring Boot Stack", "Flutter/Firebase Stack", "Django Stack", "Serverless Stack"].map((stack, index) => (
                             <div key={index} className="flex gap-2 items-center">
-                                <input type="checkbox" className="w-4 h-4 cursor-pointer" />
-                                <label className="text-sm font-normal text-[#667085] cursor-pointer leading-5">{stack}</label>
+                                <input onClick={() => updateFilters(stack)} type="checkbox" value={stack} checked={filters.includes(stack)} id={stack} className="w-4 h-4 cursor-pointer" />
+                                <label htmlFor={stack} className="text-sm font-normal text-[#667085] cursor-pointer leading-5">{stack}</label>
                             </div>
                         ))}
                     </div>
@@ -62,24 +108,26 @@ const Projects: React.FC = () => {
                 <div className="flex flex-col gap-2">
                     <h1 className="font-medium text-base leading-6 text-[#1d2939]">Date</h1>
                     <div className="flex flex-col gap-4 p-1">
-                        {["Sort by most recent", "Sort by oldest first"].map((sort, index) => (
+                        {["Sort by most recent", "Sort by oldest first"].map((sortBy, index) => (
                             <div key={index} className="flex gap-2 items-center">
-                                <input type="radio" name="sort" className="w-4 h-4 cursor-pointer" />
-                                <label className="text-sm font-normal text-[#667085] cursor-pointer leading-5">{sort}</label>
+                                <input type="radio" id={sortBy} value={sortBy} onClick={() => setSort(sortBy)} name="sort" className="w-4 h-4 cursor-pointer" />
+                                <label htmlFor={sortBy} className="text-sm font-normal text-[#667085] cursor-pointer leading-5">{sortBy}</label>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* clear filters */}
-                <div className="text-right text-red-700 cursor-pointer font-semibold text-sm leading-5">
-                    <HighlightOffIcon /> Clear filter(s)
+                <div className="w-full flex justify-end text-red-700 font-semibold text-sm leading-5">
+                    <div onClick={clearFilters} className="cursor-pointer">
+                        <HighlightOffIcon /> Clear filter(s)
+                    </div>
                 </div>
             </div>
 
             <div className="w-full">
                 <div className="flex justify-between items-center h-11 mb-8">
-                    <h1 className="font-semibold text-[24px] leading-8">Projects (20)</h1>
+                    <h1 className="font-semibold text-[24px] leading-8">Projects ({totalProjects})</h1>
                     {
                         user &&
                         <button className="bg-[#1570ef] text-white font-semibold rounded-lg px-4 py-2 text-base leading-6">Add Project</button>
@@ -96,10 +144,10 @@ const Projects: React.FC = () => {
 
                 {/* pagination */}
                 <div className="flex items-center justify-between gap-4 p-3 text-sm leading-5 text-[#344054]">
-                    <h1>Page 1 of 10</h1>
+                    <h1>Page {page} of {`${Math.ceil(totalProjects/6)}`}</h1>
                     <div className="flex gap-3">
-                        <button className="bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm">Previous</button>
-                        <button className="bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm">Next</button>
+                        <button type="button" onClick={prevPage} className="bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm">Previous</button>
+                        <button type="button" onClick={nextPage} className="bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm">Next</button>
                     </div>
                 </div>
             </div>
