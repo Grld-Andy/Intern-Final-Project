@@ -49,7 +49,7 @@ const tablebody:tabletype[]=[
 export default function BrowsersCard(){
     return (
         <div className='bg-white mt-10 border-[1px] border-[#D0D5DD]'>
-            <span className="flex flex-row md:p-[14px] justify-between">
+            <span className="flex flex-row p-2 md:p-[14px] justify-between">
                 <h1 className='text-[#344054 font-[500] text-[16px] leading-[24px]'>Browser Used by Users</h1>
 
                 <h2 className='text-[#667085] text-[12px] leading-[18px] font-[400]'>Mar 01 - Mar,20 2024</h2>
