@@ -6,15 +6,18 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
 import RequestDemoModal from "../components/RequestDemoModal"
-import {UserContext} from "../contexts/UserContext"
+import { UserContext } from "../contexts/UserContext"
 import { useParams } from "react-router-dom"
 import axios from "axios"
 import Project from "../models/Project"
 import Footer from "../components/Footer"
+import getProjectCreationString from "../utils/getProjectCreationString"
+import getFormattedLastModifiedDate from "../utils/getFormattedLastModifiedDate"
 
 const ProjectPreview: React.FC = () => {
   const {user} = useContext(UserContext)
   const {id} = useParams()
+  const [fullDescription, setFullDescription] = useState<boolean>(false)
   const [project, setProject] = useState<Project | null>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
 
@@ -39,7 +42,11 @@ const ProjectPreview: React.FC = () => {
       }
       <div className="project-preview bg-[#F9FAFB]">
         {/* hero image */}
-        <div className={`w-full h-[333px] bg-cover bg-center bg-no-repeat bg-[linear-gradient(#17020266,#17020266),url(${project?.coverphotourl})]`}></div>
+        <div
+          style={{
+            backgroundImage: `linear-gradient(transparent, rgba(23, 2, 2, 0.4)), url(${project?.coverphotourl})`,
+          }}
+          className={`w-full h-[333px] bg-cover bg-center bg-no-repeat`}></div>
 
         {/* page container */}
         <div className={`page-container px-8 py-6 ${showModal && "h-screen overflow-hidden"}`}>
@@ -49,9 +56,9 @@ const ProjectPreview: React.FC = () => {
               <div className="time-list flex gap-2 items-center bg-[#f4eae9] p-[8px] pr-3 rounded-[100px] text-[#a4120e]">
                 <div className="rounded-[16px] bg-white px-[8px] py-[2px] flex gap-2 justify-between items-center">
                   <CalendarTodayOutlinedIcon className="w-[24px] h-[24px]"/>
-                  <span className="text-[14px] leading-5 font-normal">{project?.createdat?.toLocaleString().slice(0, 10)}</span>
+                  <span className="text-[14px] leading-5 font-normal">{getProjectCreationString(project?.createdat)}</span>
                 </div>
-                <p className="text-[14px] leading-5 font-normal">{project?.updatedat?.toLocaleString().slice(0, 10)}</p>
+                <p className="text-[14px] leading-5 font-normal">{getFormattedLastModifiedDate(project?.updatedat)}</p>
               </div>
               {
                 user ?
@@ -84,8 +91,20 @@ const ProjectPreview: React.FC = () => {
               <div className="flex flex-col gap-4">
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Project description</h1>
                 <p className="text-[#344054] leading-[28px] text-[18px] font-normal">
-                  {project?.description}
-                  <span className="font-semibold cursor-pointer text-[#1570ef]">See more...</span>
+                  {
+                    project?.description &&
+                    project?.description?.length < 350 ? project?.description :
+                    <>
+                      {
+                        fullDescription ? project?.description : project?.description?.substring(0, 350) + "..."
+                      }
+                      {
+                        fullDescription ?
+                        <span onClick={() => setFullDescription(false)} className="font-semibold cursor-pointer text-[#1570ef]">See less</span>:
+                        <span onClick={() => setFullDescription(true)} className="font-semibold cursor-pointer text-[#1570ef]">See more...</span>
+                      }
+                    </>
+                  }
                 </p>
               </div>
               <div className="flex flex-col gap-[16px]">
@@ -132,18 +151,27 @@ const ProjectPreview: React.FC = () => {
                   <LinkOutlinedIcon style={{ width: 24, height: 24 }}/>
                   <h1 className="font-semibold text-[#344054] text-[16px] leading-[24px]">Linked Docs</h1>
                 </div>
-                <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] rounded-lg flex items-center bg-white gap-2">
-                  <input type="text" 
-                  className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]"
-                  placeholder="Eventplanner_documentation_here.pdf"/>
-                  <ArrowOutwardOutlinedIcon style={{ width: 10, height: 10 }} />
-                </div>
-                <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] rounded-lg flex items-center bg-white gap-2">
-                  <input type="text" 
-                  className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]"
-                  placeholder="Design_documentation.pdf"/>
-                  <ArrowOutwardOutlinedIcon style={{ width: 10, height: 10 }} />
-                </div>
+                {/* {
+                  project?.linkeddocs &&
+                  project.linkeddocs.map((doc, index) => (
+                    <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                      <div className="flex items-center w-full">
+                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">Eventplanner_documentation_here.pdf</h1>
+                        <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                      </div>
+                    </div>
+                  ))
+                } */}
+                {
+                  Array.from({length: 2}).map((_, index) => (
+                    <div key={index} className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                      <div className="flex items-center w-full">
+                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">Eventplanner_documentation_here.pdf</h1>
+                        <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                      </div>
+                    </div>
+                  ))
+                }
               </div>
               <div className="flex gap-3 p-[24px] flex-col">
                 <div className="flex gap-2">

@@ -21,10 +21,10 @@ const ProjectCell: React.FC<Props> = ({project}) => {
             </div>
             <div className="p-4 flex flex-col border border-[#d0d5dd] gap-2">
                 <div className="flex justify-between items-center">
-                    <h1 className="font-semibold text-lg leading-7">{project.title}</h1>
+                    <h1 className="font-semibold text-lg leading-7 text-ellipsis overflow-hidden line-clamp-1">{project.title}</h1>
                     <MoreVertOutlinedIcon className="cursor-pointer"/>
                 </div>
-                <p className="text-sm font-normal leading-5 text-ellipsis overflow-hidden line-clamp-3">
+                <p className="h-[60px] text-sm font-normal leading-5 text-ellipsis overflow-hidden line-clamp-3">
                     {project.description}
                 </p>
                 <Link to={`/projects/${project.id}`}>

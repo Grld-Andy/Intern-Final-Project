@@ -136,7 +136,7 @@ const Projects: React.FC = () => {
                 </div>
 
                 {/* projects grid */}
-                <div className="grid md:grid-cols-3 gap-8 mb-8">
+                <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8">
                     {projects.map((project, index) => (
                         <ProjectCell project={project} key={index}/>
                     ))}
