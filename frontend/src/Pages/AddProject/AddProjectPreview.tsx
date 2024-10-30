@@ -8,6 +8,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
 import PublishProjectModal from "../../components/PublishProjectModal"
+import Footer from "../../components/Footer"
 
 const AddProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -173,6 +174,9 @@ const AddProjectPreview: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-[35px]">
+            <Footer/>
         </div>
       </div>
     </>

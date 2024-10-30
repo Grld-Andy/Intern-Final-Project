@@ -1,5 +1,5 @@
-import BrowsersCard from "../Components/AnalyticsCards/BrowsersCard";
-import Cards from "../Components/AnalyticsCards/Cards";
+import BrowsersCard from "../components/AnalyticsCards/BrowsersCard";
+import Cards from "../components/AnalyticsCards/Cards";
 
 export default function Analytics(){
     return (

@@ -6,6 +6,7 @@ import { UserContext } from "../contexts/UserContext"
 import ProjectCell from "../components/ProjectCell"
 import axios from "axios"
 import Project from "../models/Project"
+import Footer from "../components/Footer"
 
 const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Array<Project>>([])
@@ -151,6 +152,9 @@ const Projects: React.FC = () => {
                     </div>
                 </div>
             </div>
+        </div>
+        <div className="mt-[35px]">
+            <Footer/>
         </div>
     </div>
   )

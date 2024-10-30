@@ -1,17 +1,17 @@
-import AboutCard from "../Components/AboutCard"
-import Card from "../Components/Card"
-import Navbar from "../Components/Navbar"
+import AboutCard from "../components/AboutCard"
+import Card from "../components/Card"
+import Navbar from "../components/Navbar"
 import bgImage from '../assets/bgimage.jpg.jfif'
 import industrial from '../assets/Industrial.png'
 import Leader from '../assets/Leader.png'
 import social from '../assets/Social media.png'
 import nextImage from '../assets/Alex (1) 1.png'
-import ProjectCard from "../Components/ProjectCard"
-import ProjectList from "../Components/ProjectList"
+import ProjectCard from "../components/ProjectCard"
+import ProjectList from "../components/ProjectList"
 import next from "../assets/sideimge.jpg"
 import sideImage from '../assets/next.png'
 import footerImage from '../assets/Content (1).png'
-import Footer from "../Components/Footer"
+import Footer from "../components/Footer"
 export default function Home(){
     return (
        
@@ -24,12 +24,12 @@ export default function Home(){
     </div>
 
 <div id="about" className="bg-black ">
-<span className="absolute flex flex-col 2xl:w-[1030px]  items-center md:items-start text-center md:text-start  w-full lg:h-[336px] gap-4 top-1/2  md:top-1/2 lg:left-[80px] w-[90%] sm:w-2/3 md:w-auto  lg:pl-0 transform -translate-y-1/2 z-10 px-2">
-<h1 className="font-semibold md:text-[48px] sm:text-[25px] text-white md:leading-[60px] font-[700]">
+<span className="absolute flex flex-col 2xl:w-[1030px] items-center md:items-start text-center md:text-start lg:h-[336px] gap-4 top-1/2  md:top-1/2 lg:left-[80px] w-[90%] sm:w-2/3 md:w-auto  lg:pl-0 transform -translate-y-1/2 z-10 px-2">
+<h1 className="md:text-[48px] sm:text-[25px] text-white md:leading-[60px] font-[700]">
     Explore Amalitech's Groundbreaking Works & Projects Pioneering Innovation and Impactful Change.
 </h1>
 
-<h2 className="text-[18px] sm:leading-[28px] text-white font-normal font-[400]">
+<h2 className="text-[18px] sm:leading-[28px] text-white font-[400]">
     Show casing our visionary in tech projects that inspire you.
 </h2>
 

@@ -10,6 +10,7 @@ import {UserContext} from "../contexts/UserContext"
 import { useParams } from "react-router-dom"
 import axios from "axios"
 import Project from "../models/Project"
+import Footer from "../components/Footer"
 
 const ProjectPreview: React.FC = () => {
   const {user} = useContext(UserContext)
@@ -170,6 +171,9 @@ const ProjectPreview: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-[35px]">
+            <Footer/>
         </div>
       </div>
     </>
