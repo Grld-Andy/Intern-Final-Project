@@ -43,7 +43,7 @@ export default function Home(){
             </section>
 
 
-            <section className="2xl:absolute md:top-[670px]  w-fit xl:shadow-lg xl:min-w-[1280px] xl:min-h-[528px]  bg-white xl:left-[80px] xl:right-[80px]  border-[1px]  ">
+            <section className="2xl:absolute md:top-[670px] lg:absolute   w-fit xl:shadow-lg  xl:min-h-[528px]  bg-white xl:left-[80px] xl:right-[80px]  border-[1px]  ">
 <div className="flex  flex-col gap-10 md:p-[48px] p-4">
 <AboutCard/>
 <div className="flex flex-col lg:flex-row gap-4 md:gap-[113px]">
@@ -71,7 +71,7 @@ title="Expert Teams" content="Our highly skilled professionals are dedicated to 
             
             <section>
 
-            <img src={nextImage} alt="business women meeting" className="2xl:min-h-[449px] h-[200px] md:h-[400px] mt-[6%]   2xl:mt-[58vh]   w-full object-cover aspect-square object-top "/>
+            <img src={nextImage} alt="business women meeting" className="2xl:min-h-[449px]  h-[200px] md:h-[400px] lg:mt-[450px] mt-[6%] xl:mt-[60vh]  2xl:mt-[58vh]   w-full object-cover aspect-square object-top "/>
 
             <div className="bg-[#0C4767]  md:w-full py-[76px] xl:px-[80px] px-[20px]">
               
@@ -115,7 +115,7 @@ title="Expert Teams" content="Our highly skilled professionals are dedicated to 
 
 
             <section className="md:px-[80px] px-[20px] pt-[64px] ">
-                <div className="bg-white flex shadow-xl flex-col-reverse p-4 px-6  lg:flex-row md:gap-[131px] gap-10 justify-center xl:min-w-[1248px] xl:min-h-[652px] border items-center border-[#D0D5DD]">
+                <div className="bg-white flex shadow-xl flex-col-reverse p-4 px-6  lg:flex-row md:gap-[131px] gap-10 justify-center lg:min-[100px] 2xl:min-w-[1248px] xl:min-h-[652px] border items-center border-[#D0D5DD]">
                 
 <span className="space-y-[24px] w-full flex flex-col items-center  lg:items-start">
     <h1 className="md:text-[48px] text-[25px] md:leading-[60px] text-center md:text-start xl:w-[576px] font-[600] ">
@@ -131,16 +131,19 @@ title="Expert Teams" content="Our highly skilled professionals are dedicated to 
  
  
 
- <div className="relative">
- <div className="pt-[64px] md:px-[80px] px-[20px] mb-20 ">
-    <img src={footerImage} alt="close up colleagues talking" className="xl:min-w-[1216px] object-cover xl:h-[386px]"/>
-    <div className="absolute bg-opacity-40 xl:min-w-[1216px] xl:h-[386px] bottom-0 h-full bg-black">
+            <div className="relative  px-[20px] lg:px-[80px] lg:w-[70vw]  mt-[8%] mb-[8%]">
+    <div className="relative max-w-full ">
+        <img src={footerImage} className="aspect-square object-cover h-[400px] lg:h-[500px] object-top w-full" />
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div> 
+    </div>
 
+    {/* 
+    <h1 className="absolute text-white font-[700] lg:text-[48px] text-[18px] sm:text-[25px] lg:leading-[60px] lg:w-[966px] text-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+        We showcase projects that build lasting partnerships by meeting our clients' evolving needs.
+    </h1> 
+    */}
 </div>
- </div>
 
- 
- </div>
 
  <Footer/>
             </section>      
