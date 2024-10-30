@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined"
 import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
@@ -9,9 +9,23 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
 import PublishProjectModal from "../../components/PublishProjectModal"
 import Footer from "../../components/Footer"
+import {ProjectFormContext} from "../../contexts/ProjectFormContext"
+import getProjectCreationString from "../../utils/getProjectCreationString"
+import getFormattedLastModifiedDate from "../../utils/getFormattedLastModifiedDate"
+import { useNavigate } from "react-router-dom"
 
 const AddProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
+  const {projectForm} = useContext(ProjectFormContext)
+  const [fullDescription, setFullDescription] = useState<boolean>(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    scrollTo(0, 0)
+    if(!projectForm?.title){
+      navigate('/add-project/project-overview')
+    }
+  }, [navigate, projectForm])
 
   const handleShowModal = (show: boolean) => {
     setShowModal(show)
@@ -48,27 +62,41 @@ const AddProjectPreview: React.FC = () => {
                 <h3 className="text-[14px] leading-[20px] font-medium text-[#667085]">Technical details and development</h3>
               </div>
             </div>
-            <button className="rounded-lg border border-[#1570ef] bg-[#eff8ff] flex justify-center items-center gap-[8px] text-[#1570ef] px-[14px] py-[8px]">
+            <div className="rounded-lg border border-[#1570ef] bg-[#eff8ff] flex justify-center items-center gap-[8px] text-[#1570ef] px-[14px] py-[8px]">
               <RemoveRedEyeOutlinedIcon/>
-              <h2 className="text-[14px] leading-[20px] font-medium">Preview</h2>
-            </button>
+              <h2 className="cursor-default text-[14px] leading-[20px] font-medium">Preview</h2>
+            </div>
           </div>
         </div>
         {/* hero image */}
-        <div className="w-full h-[333px] bg-cover bg-center bg-no-repeat bg-[linear-gradient(#17020266,#17020266),url('/Projects_preview_page/preview_hero.jpg')]"></div>
+        <div
+          style={{
+            backgroundImage: `linear-gradient(transparent, rgba(23, 2, 2, 0.4)), url(${projectForm?.coverphotourl})`,
+          }}
+          className={`w-full h-[333px] bg-cover bg-center bg-no-repeat`}></div>
 
         {/* page container */}
-        <div className="page-container px-8 py-6">
+        <div className={`page-container px-8 py-6 ${showModal && "h-screen overflow-hidden"}`}>
           <div className="header flex flex-col justify-between py-4 gap-6 border-b border-[#d0d5dd]">
-            <h1 className="text-[48px] leading-[60px] font-bold text-[#1d2939]">Event seating planner</h1>
+            <h1 className="text-[48px] leading-[60px] font-bold text-[#1d2939]">{projectForm?.title}</h1>
             <div className="flex justify-between items-center">
               <div className="time-list flex gap-2 items-center bg-[#f4eae9] p-[8px] pr-3 rounded-[100px] text-[#a4120e]">
                 <div className="rounded-[16px] bg-white px-[8px] py-[2px] flex gap-2 justify-between items-center">
                   <CalendarTodayOutlinedIcon className="w-[24px] h-[24px]"/>
-                  <span className="text-[14px] leading-5 font-normal">Created 17 Sep, 2024</span>
+                  <span className="text-[14px] leading-5 font-normal">{getProjectCreationString(new Date)}</span>
                 </div>
-                <p className="text-[14px] leading-5 font-normal">Last modified 17 hours ago</p>
+                <p className="text-[14px] leading-5 font-normal">{getFormattedLastModifiedDate(new Date)}</p>
               </div>
+              {/* {
+                user ?
+                <button className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]">
+                  Edit project
+                </button>:
+                <button
+                  className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]" onClick={() => handleShowModal(true)}>
+                  Request demo
+                </button>
+              } */}
             </div>
           </div>
 
@@ -78,9 +106,10 @@ const AddProjectPreview: React.FC = () => {
                 <h3 className="text-[#475467] font-medium text-[12px] leading-[18px]">Development Stack</h3>
                 <div className="flex gap-[8px]">
                 {
-                  Array.from({length: 4}).map((_, index) => (
+                  projectForm?.developmentstack &&
+                  projectForm?.developmentstack.map((stack, index) => (
                     <div className="rounded-[16px] bg-[#f2f4f7] px-[8px] py-[2px]" key={index}>
-                      <p className="text-[12px] leading-[18px] font-medium text-center">Stack Name</p>
+                      <p className="text-[12px] leading-[18px] font-medium text-center">{stack.stackName}</p>
                     </div>
                   ))
                 }
@@ -89,18 +118,31 @@ const AddProjectPreview: React.FC = () => {
               <div className="flex flex-col gap-4">
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Project description</h1>
                 <p className="text-[#344054] leading-[28px] text-[18px] font-normal">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet laborum nam cum, blanditiis quas sed, aspernatur eligendi harum inventore labore dolorum, possimus nulla esse sit repellat omnis dolorem dignissimos libero atque iste autem repellendus? Modi iusto at placeat unde est corrupti, quod quia perferendis ab obcaecati earum, voluptas temporibus tenetur? Tempora culpa neque repellat placeat unde, molestiae possimus consectetur magni?
-                  <span className="font-semibold cursor-pointer text-[#1570ef]">See more...</span>
+                  {
+                    projectForm?.description &&
+                    projectForm?.description?.length < 350 ? projectForm?.description :
+                    <>
+                      {
+                        fullDescription ? projectForm?.description : projectForm?.description?.substring(0, 350) + "..."
+                      }
+                      {
+                        fullDescription ?
+                        <span onClick={() => setFullDescription(false)} className="font-semibold cursor-pointer text-[#1570ef]"> See less</span>:
+                        <span onClick={() => setFullDescription(true)} className="font-semibold cursor-pointer text-[#1570ef]">See more...</span>
+                      }
+                    </>
+                  }
                 </p>
               </div>
               <div className="flex flex-col gap-[16px]">
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Project features</h1>
                 <div className="grid grid-cols-2 gap-[16px]">
                   {
-                    Array.from({length: 6}).map((_, index) => (
+                    projectForm?.projectfeatures &&
+                    projectForm?.projectfeatures.map((feature, index) => (
                       <div className="flex gap-2" key={index}>
                         <CheckCircleIcon className="text-[#1570ef]"/>
-                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">Feature Name</p>
+                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">{feature.featureName}</p>
                       </div>
                     ))
                   }
@@ -110,10 +152,11 @@ const AddProjectPreview: React.FC = () => {
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Areas of Improvement/Future updates</h1>
                 <div className="grid grid-cols-2 gap-[16px]">
                   {
-                    Array.from({length: 6}).map((_, index) => (
+                    projectForm?.improvementareas &&
+                    projectForm?.improvementareas.map((area, index) => (
                       <div className="flex gap-2" key={index}>
                         <CheckCircleIcon className="text-[#1570ef]"/>
-                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">Feature Name</p>
+                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">{area.areaName}</p>
                       </div>
                     ))
                   }
@@ -122,7 +165,7 @@ const AddProjectPreview: React.FC = () => {
               <div className="flex flex-col gap-[16px]">
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Technical details and Decisions</h1>
                 <div className="w-full">
-                  <video className="w-full" src="" controls></video>
+                  <video className="w-full" src={projectForm?.technicaldetailsvideo} controls></video>
                 </div>
               </div>
             </div>
@@ -135,18 +178,27 @@ const AddProjectPreview: React.FC = () => {
                   <LinkOutlinedIcon style={{ width: 24, height: 24 }}/>
                   <h1 className="font-semibold text-[#344054] text-[16px] leading-[24px]">Linked Docs</h1>
                 </div>
-                <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] rounded-lg flex items-center bg-white gap-2">
-                  <input type="text" 
-                  className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]"
-                  placeholder="Eventplanner_documentation_here.pdf"/>
-                  <ArrowOutwardOutlinedIcon style={{ width: 10, height: 10 }} />
-                </div>
-                <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] rounded-lg flex items-center bg-white gap-2">
-                  <input type="text" 
-                  className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]"
-                  placeholder="Design_documentation.pdf"/>
-                  <ArrowOutwardOutlinedIcon style={{ width: 10, height: 10 }} />
-                </div>
+                {/* {
+                  project?.linkeddocs &&
+                  project.linkeddocs.map((doc, index) => (
+                    <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                      <div className="flex items-center w-full">
+                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">Eventplanner_documentation_here.pdf</h1>
+                        <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                      </div>
+                    </div>
+                  ))
+                } */}
+                {
+                  Array.from({length: 2}).map((_, index) => (
+                    <div key={index} className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                      <div className="flex items-center w-full">
+                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">Eventplanner_documentation_here.pdf</h1>
+                        <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                      </div>
+                    </div>
+                  ))
+                }
               </div>
               <div className="flex gap-3 p-[24px] flex-col">
                 <div className="flex gap-2">

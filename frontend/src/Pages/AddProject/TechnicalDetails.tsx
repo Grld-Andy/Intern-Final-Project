@@ -1,17 +1,38 @@
-import React, { FormEvent, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
 import CancelIcon from '@mui/icons-material/Cancel'
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined'
 import AddProjectHeader from '../../components/AddProject/AddProjectHeader'
+import { ProjectFormContext } from '../../contexts/ProjectFormContext'
+import { useNavigate } from 'react-router-dom'
+import Project from '../../models/Project'
 
 const TechnicalDetails: React.FC = () => {
     const [video, setVideo] = useState<string>("")
     const [developmentStack, setDevelopmentStack] = useState<string>("")
+    const [developmentStackList, setDevelopmentStackList] = useState<Array<string>>([])
     const [contributor, setContributor] = useState<string>("")
     // const [contributorsList, setContributorsList] = useState<Array<string>>([])
     const [linkedDocs, setLinkedDocs] = useState<string>("")
-    // const [linkedDocsList, setLinkedDocsList] = useState<Array<string>>([])
+    const {projectForm, projectFormDispatch} = useContext(ProjectFormContext)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        scrollTo(0, 0)
+        if(!projectForm?.title){
+          navigate('/add-project/project-overview')
+        }
+      }, [navigate, projectForm])
+
+    const removeDevelopmentStack = (index: number) => {
+        setDevelopmentStackList(developmentStackList.filter((_, i) => i !== index))
+    }
+
+    const addDevelopmentStack = () => {
+        setDevelopmentStackList(prev => [...prev, developmentStack])
+        setDevelopmentStack("")
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(!e.target.files)
@@ -24,12 +45,20 @@ const TechnicalDetails: React.FC = () => {
     }
 
     const stepBack = () => {
-        console.log("here")
-        window.location.href = '/add-project/project-overview'
+        navigate('/add-project/project-overview')
     }
-    const handleSubmit = (e:FormEvent) => {
-        e.preventDefault()
-        window.location.href = '/add-project/preview'
+    const handleSubmit = () => {
+        const developmentstacks = developmentStackList.map((stack) => {
+            return {stackName: stack}
+        })
+        const data: Project = {
+            technicaldetailsvideo: video,
+            developmentstack: developmentstacks,
+            linkeddocs: linkedDocs
+        }
+        projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
+        scrollTo(0, 0)
+        navigate('/add-project/preview')
     }
 
   return (
@@ -37,26 +66,31 @@ const TechnicalDetails: React.FC = () => {
         <AddProjectHeader page="technical-details"/>
         {/* technical development */}
         <div className='w-full flex justify-center items-center py-[80px]'>
-            <form onSubmit={handleSubmit} className='w-[544px] flex gap-[24px] flex-col'>
+            <div className='w-[544px] flex gap-[24px] flex-col'>
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Development stack</h1>
                     <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg shadow'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
-                            <input type="text" placeholder="Enter development stack, eg MERN" value={developmentStack} onChange={(e) => setDevelopmentStack(e.target.value)} className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
-                            <button type='button' className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
+                            <input onKeyUp={(e) => e.key === "Enter" && addDevelopmentStack()} type="text" placeholder="Enter development stack, eg MERN" value={developmentStack} onChange={(e) => setDevelopmentStack(e.target.value)} className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
+                            <button onClick={addDevelopmentStack} type='button' className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
                         </div>
-                        <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
-                            {
-                                Array.from({length:7}).map((_, index) => (
-                                    <div key={index} className='bg-[#f2f4f7] text-[#374151] py-[4px] pr-[10px] pl-[12px] rounded-[5px] flex gap-[4px] items-center'>
-                                        <h2 className='text-[12px] leading-[18px] font-normal'>MERNstack</h2>
-                                        <button type='button' className='relative bottom-[1px]'>
-                                            <CancelIcon style={{width:"16px", height:"16px"}}/>
-                                        </button>
-                                    </div>
-                                ))
-                            }
-                        </div>
+                        {
+                            developmentStackList.length > 0 &&
+                            <>
+                                <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
+                                    {
+                                        developmentStackList.map((stack, index) => (
+                                            <div key={index} className='bg-[#f2f4f7] text-[#374151] py-[4px] pr-[10px] pl-[12px] rounded-[5px] flex gap-[4px] items-center'>
+                                                <h2 className='text-[12px] leading-[18px] font-normal'>{stack}</h2>
+                                                <button onClick={() => removeDevelopmentStack(index)} type='button' className='relative bottom-[1px]'>
+                                                    <CancelIcon style={{width:"16px", height:"16px"}}/>
+                                                </button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </>
+                        }
                     </div>
                 </div>
                 <div className='flex gap-[6px] flex-col'>
@@ -118,11 +152,11 @@ const TechnicalDetails: React.FC = () => {
                     <button type='button' onClick={stepBack} className='rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd] text-[#344054] text-[16px] leading-[24px] font-semibold'>
                         Discard
                     </button>
-                    <button type='submit' className='rounded-lg px-[14px] py-[10px] bg-[#1570ef] border border-[#1570ef] text-white text-[16px] leading-[24px] font-semibold'>
+                    <button onClick={handleSubmit} className='rounded-lg px-[14px] py-[10px] bg-[#1570ef] border border-[#1570ef] text-white text-[16px] leading-[24px] font-semibold'>
                         Save & continue
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
   )

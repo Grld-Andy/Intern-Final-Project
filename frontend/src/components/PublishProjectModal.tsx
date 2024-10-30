@@ -1,11 +1,52 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
+import {ProjectFormContext} from '../contexts/ProjectFormContext'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import validateProjectForm from '../utils/validateProjectForm'
+import convertUrlToFile from '../services/convertUrlToFile'
 
 interface Props {
     handleShowModal: (show: boolean) => void
 }
 
 const PublishProjectModal: React.FC<Props> = ({handleShowModal}) => {
+    const {projectForm} = useContext(ProjectFormContext)
+    const {projectFormDispatch} = useContext(ProjectFormContext)
+    const navigate = useNavigate()
+
+    const publishProject = async () => {
+        console.log("loading")
+        if (!projectForm) return
+        if (!projectForm.coverphotourl) return
+        if (!projectForm.technicaldetailsvideo) return
+    
+        try {
+            console.log("in form")
+            let formData = new FormData()
+            const coverPhotoFile = await convertUrlToFile(projectForm.coverphotourl, 'cover_photo', 'png')
+            formData.append('coverPhoto', coverPhotoFile)
+            console.log("converted image")
+            const videoFile = await convertUrlToFile(projectForm.technicaldetailsvideo, 'technical_details_video', 'mp4')
+            formData.append('technicalDetailsVideo', videoFile)
+            console.log("converted video")
+            formData = validateProjectForm(projectForm, formData)
+            console.log(formData)
+            await axios.post('https://intern-final-project.onrender.com/api/v1/projects', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            console.log("Project published")
+            navigate('/projects')
+            projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
+        } catch (err) {
+            console.error(err)
+        } finally {
+            handleShowModal(false)
+        }
+    }
+    
     return (
         <>
             {/* overlay */}
@@ -20,12 +61,12 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal}) => {
                             <CloseIcon style={{width:"24px", height: "24px"}}/>
                         </button>
                     </div>
-                    <form className='flex gap-[16px] flex-col'>
+                    <div className='flex gap-[16px] flex-col'>
                         <div className='flex gap-[16px]'>
-                            <button type='button' onClick={() => {handleShowModal(false)}} className='rounded-lg w-full border border-[#d0d5dd] bg-white py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] text-[#344054] shadow'>Cancel</button>
-                            <button className='rounded-lg bg-[#1570ef] text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] w-full shadow'>Yes publish</button>
+                            <button onClick={() => {handleShowModal(false)}} className='rounded-lg w-full border border-[#d0d5dd] bg-white py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] text-[#344054] shadow'>Cancel</button>
+                            <button onClick={publishProject} className='rounded-lg bg-[#1570ef] text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] w-full shadow'>Yes publish</button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </>
