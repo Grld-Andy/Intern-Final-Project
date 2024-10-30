@@ -86,7 +86,7 @@ const ProjectOverview: React.FC = () => {
                 </div>
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Project description</h1>
-                    <textarea value={description} onChange={(e) => setDescription(e.target.value)} name='description' placeholder='Enter project title' className='h-[128px] w-full border bg-white border-[#d0d5dd] rounded-lg py-[10px] px-[14px] outline-none text-[16px] font-normal leading-[24px] text-[#667085]'>
+                    <textarea value={description} onChange={(e) => setDescription(e.target.value)} name='description' placeholder='Enter project description...' className='h-[128px] w-full border bg-white border-[#d0d5dd] rounded-lg py-[10px] px-[14px] outline-none text-[16px] font-normal leading-[24px] text-[#667085]'>
                     </textarea>
                 </div>
                 <div className='flex gap-[6px] flex-col'>

@@ -22,16 +22,12 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal}) => {
         if (!projectForm.technicaldetailsvideo) return
     
         try {
-            console.log("in form")
             let formData = new FormData()
             const coverPhotoFile = await convertUrlToFile(projectForm.coverphotourl, 'cover_photo', 'png')
             formData.append('coverPhoto', coverPhotoFile)
-            console.log("converted image")
             const videoFile = await convertUrlToFile(projectForm.technicaldetailsvideo, 'technical_details_video', 'mp4')
             formData.append('technicalDetailsVideo', videoFile)
-            console.log("converted video")
             formData = validateProjectForm(projectForm, formData)
-            console.log(formData)
             await axios.post('https://intern-final-project.onrender.com/api/v1/projects', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

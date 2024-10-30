@@ -4,6 +4,7 @@ import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined'
 import ArrowOutwardOutlinedIcon from '@mui/icons-material/ArrowOutwardOutlined'
 import { Link } from "react-router-dom"
 import Project from '../models/Project'
+import isNewProject from '../utils/isNewProject'
 
 interface Props{
     project: Project
@@ -13,10 +14,13 @@ const ProjectCell: React.FC<Props> = ({project}) => {
   return (
         <div className="relative overflow-hidden">
             <div className="relative overflow-hidden h-[193px]">
-                <button className="absolute top-2 left-2 bg-white text-[#1570ef] border border-[#d0d5dd] rounded-full px-2 py-0.5 flex items-center gap-2">
-                    <AutoAwesomeOutlinedIcon />
-                    <p className="text-sm font-medium leading-5">New</p>
-                </button>
+                {
+                    isNewProject(project.createdat) &&
+                    <button className="absolute top-2 left-2 bg-white text-[#1570ef] border border-[#d0d5dd] rounded-full px-2 py-0.5 flex items-center gap-2">
+                        <AutoAwesomeOutlinedIcon />
+                        <p className="text-sm font-medium leading-5">New</p>
+                    </button>
+                }
                 <img src={project.coverphotourl} alt="project" className="w-full h-full object-cover" />
             </div>
             <div className="p-4 flex flex-col border border-[#d0d5dd] gap-2">
