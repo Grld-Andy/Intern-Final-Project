@@ -1,31 +1,16 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useState } from "react"
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import LinkOutlinedIcon from "@mui/icons-material/LinkOutlined"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined"
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined"
-import RequestDemoModal from "../components/RequestDemoModal"
-import {UserContext} from "../contexts/UserContext"
-import { useParams } from "react-router-dom"
-import axios from "axios"
-import Project from "../models/Project"
+import PublishProjectModal from "../../components/PublishProjectModal"
 
-const ProjectPreview: React.FC = () => {
-  const {user} = useContext(UserContext)
-  const {id} = useParams()
-  const [project, setProject] = useState<Project | null>(null)
+const AddProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  useEffect(() => {
-    axios.get(`https://intern-final-project.onrender.com/api/v1/projects/${id}`)
-    .then((res) => {
-      console.log(res.data)
-      setProject(res.data.project)
-    }).catch((err) => {
-      console.error(err)
-    })
-  }, [id])
 
   const handleShowModal = (show: boolean) => {
     setShowModal(show)
@@ -34,34 +19,55 @@ const ProjectPreview: React.FC = () => {
   return (
     <>
       {
-        showModal && <RequestDemoModal handleShowModal={handleShowModal}/>
+        showModal && 
+        <PublishProjectModal handleShowModal={handleShowModal}/>
       }
-      <div className="project-preview bg-[#F9FAFB]">
+      <div className={`project-preview bg-[#F9FAFB] ${showModal && "h-screen overflow-hidden"}`}>
+        {/* project progress */}
+        <div className="w-full h-[150px] py-[16px] px-[80px] border border-[#d0d5dd] bg-gradient-to-r from-[#bed6f840] to-[#dbe6f040] flex flex-col gap-[16px]">
+          <div className="flex justify-between">
+            <div className="flex gap-[8px] flex-col">
+              <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">Add project</h1>
+              <div className="flex gap-[8px] items-center">
+                <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Projects</h2>
+                <ChevronRightIcon style={{width: "16px", height: "16px", color: "#667085", position: "relative", top: "1px"}}/>
+                <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Add Project</h2>
+              </div>
+            </div>
+            <button onClick={() => {handleShowModal(true)}} className="bg-[#1570ef] h-[40px] w-[128px] rounded-lg text-white flex justify-center items-center font-semibold text-[14px] leading-[20px]">Publish Project</button>
+          </div>
+          <div className="flex gap-[24px] md:justify-normal justify-between">
+            <div className="flex md:gap-[24px] md:flex-row gap-[4px] flex-col">
+              <div className="flex gap-[8px] items-center">
+                <CheckCircleIcon style={{width: "16px", height: "16px", color: "#667085"}}/>
+                <h3 className="text-[14px] leading-[20px] font-medium text-[#667085]">Basic information</h3>
+              </div>
+              <div className="flex gap-[8px] items-center">
+                <CheckCircleIcon style={{width: "16px", height: "16px", color: "#667085"}}/>
+                <h3 className="text-[14px] leading-[20px] font-medium text-[#667085]">Technical details and development</h3>
+              </div>
+            </div>
+            <button className="rounded-lg border border-[#1570ef] bg-[#eff8ff] flex justify-center items-center gap-[8px] text-[#1570ef] px-[14px] py-[8px]">
+              <RemoveRedEyeOutlinedIcon/>
+              <h2 className="text-[14px] leading-[20px] font-medium">Preview</h2>
+            </button>
+          </div>
+        </div>
         {/* hero image */}
-        <div className={`w-full h-[333px] bg-cover bg-center bg-no-repeat bg-[linear-gradient(#17020266,#17020266),url(${project?.coverphotourl})]`}></div>
+        <div className="w-full h-[333px] bg-cover bg-center bg-no-repeat bg-[linear-gradient(#17020266,#17020266),url('/Projects_preview_page/preview_hero.jpg')]"></div>
 
         {/* page container */}
-        <div className={`page-container px-8 py-6 ${showModal && "h-screen overflow-hidden"}`}>
+        <div className="page-container px-8 py-6">
           <div className="header flex flex-col justify-between py-4 gap-6 border-b border-[#d0d5dd]">
-            <h1 className="text-[48px] leading-[60px] font-bold text-[#1d2939]">{project?.title}</h1>
+            <h1 className="text-[48px] leading-[60px] font-bold text-[#1d2939]">Event seating planner</h1>
             <div className="flex justify-between items-center">
               <div className="time-list flex gap-2 items-center bg-[#f4eae9] p-[8px] pr-3 rounded-[100px] text-[#a4120e]">
                 <div className="rounded-[16px] bg-white px-[8px] py-[2px] flex gap-2 justify-between items-center">
                   <CalendarTodayOutlinedIcon className="w-[24px] h-[24px]"/>
-                  <span className="text-[14px] leading-5 font-normal">{project?.createdat?.toLocaleString().slice(0, 10)}</span>
+                  <span className="text-[14px] leading-5 font-normal">Created 17 Sep, 2024</span>
                 </div>
-                <p className="text-[14px] leading-5 font-normal">{project?.updatedat?.toLocaleString().slice(0, 10)}</p>
+                <p className="text-[14px] leading-5 font-normal">Last modified 17 hours ago</p>
               </div>
-              {
-                user ?
-                <button className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]">
-                  Edit project
-                </button>:
-                <button
-                  className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]" onClick={() => handleShowModal(true)}>
-                  Request demo
-                </button>
-              }
             </div>
           </div>
 
@@ -71,10 +77,9 @@ const ProjectPreview: React.FC = () => {
                 <h3 className="text-[#475467] font-medium text-[12px] leading-[18px]">Development Stack</h3>
                 <div className="flex gap-[8px]">
                 {
-                  project?.developmentstack &&
-                  project?.developmentstack.map((stack, index) => (
+                  Array.from({length: 4}).map((_, index) => (
                     <div className="rounded-[16px] bg-[#f2f4f7] px-[8px] py-[2px]" key={index}>
-                      <p className="text-[12px] leading-[18px] font-medium text-center">{stack.stackName}</p>
+                      <p className="text-[12px] leading-[18px] font-medium text-center">Stack Name</p>
                     </div>
                   ))
                 }
@@ -83,7 +88,7 @@ const ProjectPreview: React.FC = () => {
               <div className="flex flex-col gap-4">
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Project description</h1>
                 <p className="text-[#344054] leading-[28px] text-[18px] font-normal">
-                  {project?.description}
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet laborum nam cum, blanditiis quas sed, aspernatur eligendi harum inventore labore dolorum, possimus nulla esse sit repellat omnis dolorem dignissimos libero atque iste autem repellendus? Modi iusto at placeat unde est corrupti, quod quia perferendis ab obcaecati earum, voluptas temporibus tenetur? Tempora culpa neque repellat placeat unde, molestiae possimus consectetur magni?
                   <span className="font-semibold cursor-pointer text-[#1570ef]">See more...</span>
                 </p>
               </div>
@@ -91,11 +96,10 @@ const ProjectPreview: React.FC = () => {
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Project features</h1>
                 <div className="grid grid-cols-2 gap-[16px]">
                   {
-                    project?.projectfeatures &&
-                    project?.projectfeatures.map((feature, index) => (
+                    Array.from({length: 6}).map((_, index) => (
                       <div className="flex gap-2" key={index}>
                         <CheckCircleIcon className="text-[#1570ef]"/>
-                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">{feature.featureName}</p>
+                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">Feature Name</p>
                       </div>
                     ))
                   }
@@ -105,11 +109,10 @@ const ProjectPreview: React.FC = () => {
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Areas of Improvement/Future updates</h1>
                 <div className="grid grid-cols-2 gap-[16px]">
                   {
-                    project?.improvementareas &&
-                    project?.improvementareas.map((area, index) => (
+                    Array.from({length: 6}).map((_, index) => (
                       <div className="flex gap-2" key={index}>
                         <CheckCircleIcon className="text-[#1570ef]"/>
-                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">{area.areaName}</p>
+                        <p className="text-[18px] leading-[28px] text-[#344054] font-normal">Feature Name</p>
                       </div>
                     ))
                   }
@@ -118,7 +121,7 @@ const ProjectPreview: React.FC = () => {
               <div className="flex flex-col gap-[16px]">
                 <h1 className="text-[#1d2939] font-semibold text-[20px] leading-[30px]">Technical details and Decisions</h1>
                 <div className="w-full">
-                  <video className="w-full" src={project?.technicaldetailsvideo} controls></video>
+                  <video className="w-full" src="" controls></video>
                 </div>
               </div>
             </div>
@@ -176,4 +179,4 @@ const ProjectPreview: React.FC = () => {
   )
 }
 
-export default ProjectPreview
+export default AddProjectPreview

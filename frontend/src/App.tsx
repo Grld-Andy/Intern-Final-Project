@@ -1,14 +1,20 @@
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import Analytics from './Pages/AnaltyticsPage'
-import Navbar from './Components/Navbar'
-// import Home from './Pages/Home'
+import ProjectPreview from './Pages/ProjectPreview'
+import Projects from './Pages/Projects'
+import AddProjectPreview from './Pages/AddProject/AddProjectPreview'
+import ProjectOverview from './Pages/AddProject/ProjectOverview'
+import TechnicalDetails from './Pages/AddProject/TechnicalDetails'
+
 function App() {
   return (
-   <>
-   <Navbar/>
-<Analytics/>  
-  {/* <Home/> */}
-   </>
+    <Routes>
+      <Route path="/projects" element={<Projects />} />
+      <Route path="/projects/:id" element={<ProjectPreview />} />
+      <Route path="/add-project/project-overview" element={<ProjectOverview />} />
+      <Route path="/add-project/technical-details" element={<TechnicalDetails />} />
+      <Route path="/add-project/preview" element={<AddProjectPreview />} />
+    </Routes>
   )
 }
 
