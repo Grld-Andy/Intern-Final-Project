@@ -17,7 +17,7 @@ export default function Home(){
        
         <section className="bg-[#F9FAFB]">
             <Navbar/>
-<div className="relative  mt-[96px]  ">
+<div className="relative">
             <section className="relative ">
 <div>
     <img src={bgImage} alt="instructor explaining corporate showcase" className="md:h-[839px]   w-full aspect-square  object-cover  object-top  "/>
@@ -94,6 +94,11 @@ title="Expert Teams" content="Our highly skilled professionals are dedicated to 
 
            
                 <ProjectList/>
+                <div className="flex justify-center">
+                    <a href="/projects">
+                        <button className="bg-[#1570EF] border-[#1570EF][24px] rounded-lg text-white py-[10px] px-[18px]">View all projects</button>
+                    </a>
+                </div>
             </section>
 
 
