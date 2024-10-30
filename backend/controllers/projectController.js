@@ -39,46 +39,15 @@ const keysToCamelCase = (obj) => {
 
 // Create a new project with related data
 const createProject = async (req, res) => {
-    const { title, description, projectFeatures, improvementAreas, developmentStack, linkedDocs } = req.body;
-    const coverPhoto = req.files?.coverPhoto?.[0];
-    const technicalDetailsVideo = req.files?.technicalDetailsVideo?.[0];
+    const { title, description, projectFeatures, improvementAreas, developmentStack, linkedDocs, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideoUrl, technicalDetailsVideoPublicId } = req.body;
 
     const client = await pool.connect();
     try {
-        if (!coverPhoto || !technicalDetailsVideo) {
-            return res.status(400).json({ error: 'Missing required files' });
-        }
-
         await client.query('BEGIN');
 
-        let coverPhotoUrl = null;
-        if (coverPhoto) {
-            const coverPhotoResult = await cloudinary.uploader.upload(coverPhoto.path, {
-                folder: 'projects/cover_photos'
-            });
-            coverPhotoUrl = coverPhotoResult.secure_url;
-        }
-
-        let technicalDetailsVideoUrl = null;
-        if (technicalDetailsVideo) {
-            const technicalDetailsVideoResult = await new Promise((resolve, reject) => {
-                cloudinary.uploader.upload_large(technicalDetailsVideo.path, {
-                    resource_type: 'video',
-                    folder: 'projects/technical_videos'
-                }, (error, result) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(result);
-                    }
-                });
-            });
-            technicalDetailsVideoUrl = technicalDetailsVideoResult.secure_url;
-        }
-
         const projectResult = await client.query(
-            'INSERT INTO Project (title, description, coverPhotoUrl, technicalDetailsVideo, linkedDocs) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [title, description, coverPhotoUrl, technicalDetailsVideoUrl, linkedDocs]
+            'INSERT INTO Project (title, description, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideo, technicalDetailsVideoPublicId, linkedDocs) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            [title, description, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideoUrl, technicalDetailsVideoPublicId, linkedDocs]
         );
         const projectId = projectResult.rows[0].id;
 
@@ -169,7 +138,7 @@ const getProjects = async (req, res) => {
             WHERE 1=1
             ${stackFilterQuery}
             ${titleFilterQuery}
-            GROUP BY p.id
+            GROUP BY p.id, p.title, p.description, p.coverPhotoUrl, p.technicalDetailsVideo, p.linkedDocs, p.createdAt, p.updatedAt
             ORDER BY p.createdAt ${sortOrder}
             LIMIT $1 OFFSET $2
         `;
@@ -216,49 +185,116 @@ const getProject = async (req, res) => {
 // Update a project by ID with related data
 const updateProject = async (req, res) => {
     const { id } = req.params;
-    const { title, description, coverPhotoUrl, technicalDetailsVideo, projectFeatures, improvementAreas, developmentStack, linkedDocs } = req.body;
+    const { title, description, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideoUrl, technicalDetailsVideoPublicId, projectFeatures, improvementAreas, developmentStack, linkedDocs } = req.body;
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
-        const projectResult = await client.query(
-            'UPDATE Project SET title = $1, description = $2, coverPhotoUrl = $3, technicalDetailsVideo = $4, linkedDocs = $5, updatedAt = CURRENT_TIMESTAMP WHERE id = $6 RETURNING *',
-            [title, description, coverPhotoUrl, technicalDetailsVideo, linkedDocs, id]
-        );
+        // Fetch the current project data
+        const currentProjectResult = await client.query('SELECT * FROM Project WHERE id = $1', [id]);
+        if (currentProjectResult.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Project not found' });
+        }
+        const currentProject = currentProjectResult.rows[0];
 
-        await client.query('DELETE FROM ProjectFeature WHERE projectId = $1', [id]);
-        for (const feature of projectFeatures) {
-            await client.query(
-                'INSERT INTO ProjectFeature (projectId, featureName) VALUES ($1, $2)',
-                [id, feature.featureName]
-            );
+        // Delete old cover photo if a new one is provided
+        if (coverPhotoUrl && currentProject.coverPhotoPublicId) {
+            await cloudinary.uploader.destroy(currentProject.coverPhotoPublicId);
         }
 
-        await client.query('DELETE FROM ImprovementArea WHERE projectId = $1', [id]);
-        for (const area of improvementAreas) {
-            await client.query(
-                'INSERT INTO ImprovementArea (projectId, areaName) VALUES ($1, $2)',
-                [id, area.areaName]
-            );
+        // Delete old technical details video if a new one is provided
+        if (technicalDetailsVideoUrl && currentProject.technicalDetailsVideoPublicId) {
+            await cloudinary.uploader.destroy(currentProject.technicalDetailsVideoPublicId, { resource_type: 'video' });
         }
 
-        await client.query('DELETE FROM DevelopmentStack WHERE projectId = $1', [id]);
-        for (const stack of developmentStack) {
-            await client.query(
-                'INSERT INTO DevelopmentStack (projectId, stackName) VALUES ($1, $2)',
-                [id, stack.stackName]
-            );
+        // Build the update query dynamically
+        const fields = [];
+        const values = [];
+        let query = 'UPDATE Project SET ';
+
+        if (title) {
+            fields.push('title');
+            values.push(title);
+        }
+        if (description) {
+            fields.push('description');
+            values.push(description);
+        }
+        if (coverPhotoUrl) {
+            fields.push('coverPhotoUrl');
+            values.push(coverPhotoUrl);
+        }
+        if (coverPhotoPublicId) {
+            fields.push('coverPhotoPublicId');
+            values.push(coverPhotoPublicId);
+        }
+        if (technicalDetailsVideoUrl) {
+            fields.push('technicalDetailsVideo');
+            values.push(technicalDetailsVideoUrl);
+        }
+        if (technicalDetailsVideoPublicId) {
+            fields.push('technicalDetailsVideoPublicId');
+            values.push(technicalDetailsVideoPublicId);
+        }
+        if (linkedDocs) {
+            fields.push('linkedDocs');
+            values.push(linkedDocs);
         }
 
-        await client.query('COMMIT');
-        res.status(200).json({ project: projectResult.rows[0] });
+        if (fields.length > 0) {
+            query += fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+            query += ', updatedAt = CURRENT_TIMESTAMP WHERE id = $' + (fields.length + 1) + ' RETURNING *';
+            values.push(id);
+
+            const projectResult = await client.query(query, values);
+
+            // Update project features
+            if (projectFeatures) {
+                await client.query('DELETE FROM ProjectFeature WHERE projectId = $1', [id]);
+                for (const feature of projectFeatures) {
+                    await client.query(
+                        'INSERT INTO ProjectFeature (projectId, featureName) VALUES ($1, $2)',
+                        [id, feature.featureName]
+                    );
+                }
+            }
+
+            // Update improvement areas
+            if (improvementAreas) {
+                await client.query('DELETE FROM ImprovementArea WHERE projectId = $1', [id]);
+                for (const area of improvementAreas) {
+                    await client.query(
+                        'INSERT INTO ImprovementArea (projectId, areaName) VALUES ($1, $2)',
+                        [id, area.areaName]
+                    );
+                }
+            }
+
+            // Update development stack
+            if (developmentStack) {
+                await client.query('DELETE FROM DevelopmentStack WHERE projectId = $1', [id]);
+                for (const stack of developmentStack) {
+                    await client.query(
+                        'INSERT INTO DevelopmentStack (projectId, stackName) VALUES ($1, $2)',
+                        [id, stack.stackName]
+                    );
+                }
+            }
+
+            await client.query('COMMIT');
+            res.status(200).json({ project: projectResult.rows[0] });
+        } else {
+            await client.query('ROLLBACK');
+            res.status(400).json({ error: 'No fields to update' });
+        }
     } catch (err) {
         await client.query('ROLLBACK');
         res.status(500).json({ error: err.message });
     } finally {
         client.release();
     }
-}
+};
 
 // Delete a project by ID with related data
 const deleteProject = async (req, res) => {
