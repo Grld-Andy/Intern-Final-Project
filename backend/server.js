@@ -19,7 +19,7 @@ dotenv.config();
 
 app.use(morgan("dev"));
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://intern-final-project.onrender.com"],
     credentials: true
 }));
 app.use(bodyParser.json());
