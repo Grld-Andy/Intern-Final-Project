@@ -9,8 +9,8 @@ import morgan from "morgan";
 import session from 'express-session';
 import passport from './auth.js';
 import dotenv from 'dotenv';
-import connectRedis from 'connect-redis';
 import { createClient } from 'redis';
+import RedisStore from 'connect-redis';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -28,23 +28,27 @@ app.use(express.json());
 app.set('trust proxy', 1); // Trust the first proxy
 
 if (process.env.NODE_ENV === 'production') {
-    const RedisStore = new (connectRedis(session))({
-        // You might want to pass some configuration options here
-        url: process.env.PROD_REDIS_URL
-    });
-    
     const redisClient = createClient({
         url: process.env.PROD_REDIS_URL
     });
 
-    redisClient.connect().catch(console.error);
+    redisClient.on('error', (err) => console.log('Redis Client Error', err));
+
+    await redisClient.connect();
 
     app.use(session({
-        store: RedisStore,
+        store: new RedisStore({ 
+            client: redisClient,
+            prefix: "myapp:"
+        }),
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: true } // Set to true if using HTTPS
+        cookie: { 
+            secure: true, // Set to true if using HTTPS
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 // 24 hours
+        }
     }));
 } else {
     app.use(session({
@@ -54,6 +58,7 @@ if (process.env.NODE_ENV === 'production') {
         cookie: { secure: false } // Set to true if using HTTPS
     }));
 }
+
 
 
 app.use(passport.initialize());
