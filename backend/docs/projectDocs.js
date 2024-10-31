@@ -1,9 +1,18 @@
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: connect.sid
+ *
  * /api/v1/projects:
  *   post:
  *     summary: Create a new project
  *     tags: [Projects]
+ *     security:
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -63,12 +72,12 @@
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number for pagination
+ *         description: Page number for pagination (default is 1)
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of items per page
+ *         description: Number of items per page (default is 6)
  *       - in: query
  *         name: sort
  *         schema:
@@ -106,6 +115,8 @@
  *   patch:
  *     summary: Update a project by ID
  *     tags: [Projects]
+ *     security:
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -162,6 +173,8 @@
  *   delete:
  *     summary: Delete a project by ID
  *     tags: [Projects]
+ *     security:
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -184,7 +197,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -216,6 +229,19 @@
  *   get:
  *     summary: Get all demo requests
  *     tags: [Demo Requests]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination (default is 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page (default is 9)
  *     responses:
  *       200:
  *         description: A list of demo requests
@@ -226,6 +252,8 @@
  *   patch:
  *     summary: Update the status of a demo request by ID
  *     tags: [Demo Requests]
+ *     security:
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -241,13 +269,47 @@
  *             type: object
  *             properties:
  *               status:
- *                 type: boolean
+ *                 type: string
+ *                 enum: [active, denied, approved]
  *                 description: The new status of the demo request
  *     responses:
  *       200:
  *         description: Demo request status updated successfully
  *       404:
  *         description: Demo request not found
+ *       500:
+ *         description: Internal server error
+ * /api/v1/auth/user:
+ *   get:
+ *     summary: Get the currently authenticated user
+ *     tags: [Authenticated User]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: The currently authenticated user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     email:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *                     profilePicture:
+ *                       type: string
+ *                     position:
+ *                       type: string
+ *       401:
+ *         description: User not authenticated
  *       500:
  *         description: Internal server error
  */

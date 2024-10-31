@@ -337,13 +337,27 @@ const createDemoRequest = async (req, res) => {
 
 // Get all demo requests
 const getDemoRequests = async (req, res) => {
+    const { page = 1, limit = 9 } = req.query;
+    const offset = (page - 1) * limit;
+
     try {
-        const result = await pool.query('SELECT * FROM DemoRequest ORDER BY createdAt DESC');
-        res.status(200).json({ demoRequests: result.rows });
+        const result = await pool.query(
+            'SELECT * FROM DemoRequest ORDER BY createdAt DESC LIMIT $1 OFFSET $2',
+            [limit, offset]
+        );
+        const totalResult = await pool.query('SELECT COUNT(*) FROM DemoRequest');
+        const totalDemoRequests = parseInt(totalResult.rows[0].count, 10);
+
+        res.status(200).json({
+            demoRequests: result.rows,
+            totalDemoRequests,
+            currentPage: parseInt(page, 10),
+            totalPages: Math.ceil(totalDemoRequests / limit)
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-}
+};
 
 // Update the status of a demo request by ID
 const updateDemoRequestStatus = async (req, res) => {
@@ -363,6 +377,15 @@ const updateDemoRequestStatus = async (req, res) => {
     }
 }
 
+
+const getCurrentUser = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.status(200).json({ user: req.user });
+    } else {
+        res.status(401).json({ error: 'User not authenticated' });
+    }
+};
+
 export default {
     createProject,
     getProjects,
@@ -371,5 +394,6 @@ export default {
     deleteProject,
     createDemoRequest,
     getDemoRequests,
-    updateDemoRequestStatus
+    updateDemoRequestStatus,
+    getCurrentUser
 };
