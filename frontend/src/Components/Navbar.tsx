@@ -17,7 +17,6 @@ export default function Navbar() {
                 <span id="amalitech-logo">
                     <img src={amalitechLogo} alt="amalitech logo" className="md:h-[35px]" />
                 </span>
-
         
                 <ul className="hidden md:flex flex-row gap-[8px] text-lg md:gap-10 font-[600] md:flex-1 justify-center md:leading-[20px] md:text-[14px]">
                     <li className="text-[#667085] cursor-pointer">Home</li>

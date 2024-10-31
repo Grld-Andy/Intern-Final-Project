@@ -156,9 +156,13 @@ const Projects: React.FC = () => {
 
                 {/* projects grid */}
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8">
-                    {projects.map((project, index) => (
-                        <ProjectCell project={project} key={index}/>
-                    ))}
+                    {
+                        projects.length === 0 ?
+                        <h1 className="text-[#344054] font-semibold text-xl">No projects found</h1>
+                        :projects.map((project, index) => (
+                            <ProjectCell project={project} key={index}/>
+                        ))
+                    }
                 </div>
                 <hr />
 
