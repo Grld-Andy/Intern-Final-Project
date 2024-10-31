@@ -13,22 +13,26 @@ export default function Analytics() {
 
     useEffect(() => {
         const checkUser = () => {
+            // window.open('https://intern-final-project.onrender.com/auth/google', '_self')
             console.log(user)
             if (!user) {
                 try {
-                    axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
+                    // axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
+                    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
                         console.log(res.data)
                         if (res.data.user) {
                             userDispatch({ type: 'LOGIN', payload: res.data.user.user })
                         }
                     }).catch((error) => {
+                        if(error.status == 401) {
+                            // window.open('https://intern-final-project.onrender.com/auth/google', '_self')
+                        }
                         console.log(error)
                     })
                 } catch (error) {
                     console.error("Error fetching user data:", error)
                 }
-                // window.open('https://intern-final-project.onrender.com/auth/google', '_self')
             }
         }
         checkUser()
