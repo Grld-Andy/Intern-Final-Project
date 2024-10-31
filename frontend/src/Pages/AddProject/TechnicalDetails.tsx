@@ -176,18 +176,6 @@ const TechnicalDetails: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex gap-[6px] flex-col'>
-                    <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Linked Docs</h1>
-                    <div className='bg-white border border-[#d0d5dd] rounded-lg shadow px-[14px] py-[10px] flex gap-[8px] flex-col'>
-                        <div className='flex gap-[12px]'>
-                            <button type='button' className='flex items-center gap-[6px] rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd]'>
-                                <h1 className='text-[#101828] text-[16px] leading-[24px] font-medium'>Normal text</h1>
-                                <KeyboardArrowDownOutlinedIcon style={{width:"20px", height:"20px",color:"#667085"}}/>
-                            </button>
-                        </div>
-                        <textarea value={linkedDocs} onChange={(e) => setLinkedDocs(e.target.value)} className='h-[94px] w-full outline-none font-normal text-[16px] leading-[24px] text-[#667085]' placeholder='Paste documentation links to the project (e.g., Confluence, GitHub repo, Figma files).'></textarea>
-                    </div>
-                </div>
                 <MyEditor content={linkedDocs} setContent={setLinkedDocs} />
                 <div className='flex gap-[12px] justify-end'>
                     <button type='button' onClick={stepBack} className='rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd] text-[#344054] text-[16px] leading-[24px] font-semibold'>
