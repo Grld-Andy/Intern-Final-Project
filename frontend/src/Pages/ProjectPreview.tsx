@@ -38,7 +38,7 @@ const ProjectPreview: React.FC = () => {
   return (
     <>
       {
-        showModal && <RequestDemoModal handleShowModal={handleShowModal}/>
+        showModal && <RequestDemoModal id={id} handleShowModal={handleShowModal}/>
       }
       <div className="project-preview bg-[#F9FAFB]">
         {/* hero image */}
@@ -49,7 +49,7 @@ const ProjectPreview: React.FC = () => {
           className={`w-full h-[333px] bg-cover bg-center bg-no-repeat`}></div>
 
         {/* page container */}
-        <div className={`page-container px-8 py-6 ${showModal && "h-screen overflow-hidden"}`}>
+        <div className={`page-container px-8 py-6 ${showModal && "h-0 overflow-hidden"}`}>
           <div className="header flex flex-col justify-between py-4 gap-6 border-b border-[#d0d5dd]">
             <h1 className="text-[48px] leading-[60px] font-bold text-[#1d2939]">{project?.title}</h1>
             <div className="flex justify-between items-center">
