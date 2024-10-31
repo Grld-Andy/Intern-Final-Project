@@ -8,7 +8,6 @@ import limiter from './middleware/rateLimiter.js';
 import morgan from "morgan";
 import session from 'express-session';
 import passport from './auth.js';
-import session from 'express-session';
 import RedisStore from 'connect-redis';
 import { createClient } from 'redis';
 import dotenv from 'dotenv';
