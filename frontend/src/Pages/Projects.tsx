@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { FormEventHandler, useContext, useEffect, useState } from "react"
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import FilterListIcon from '@mui/icons-material/FilterList'
@@ -14,8 +14,27 @@ const Projects: React.FC = () => {
     const [filters, setFilters] = useState<Array<string>>([])
     const [sort, setSort] = useState<string>("Sort by most recent")
     const [page, setPage] = useState<number>(1)
+    const [search, setSearch] = useState<string>("")
     const {user} = useContext(UserContext)
     const limit = 6
+
+
+    const handleSearch: FormEventHandler<HTMLFormElement> = (e) => {
+        e.preventDefault()
+        const filterBy = filters.join(",")
+        const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
+        axios.get(`https://intern-final-project.onrender.com/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`)
+        .then((res) => {
+            console.log(res.data)
+            if(res.data){
+                setProjects(res.data.projects)
+                setPage(1)
+                setTotalProjects(res.data.totalProjects)
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
+    }
 
     useEffect(() => {
         axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}`)
@@ -35,7 +54,7 @@ const Projects: React.FC = () => {
     useEffect(() => {
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}`, {withCredentials: true})
+        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
         .then((res) => {
             console.log(res.data)
             if(res.data){
@@ -44,7 +63,7 @@ const Projects: React.FC = () => {
         }).catch((err) => {
             console.error(err)
         })
-    }, [sort, filters, page])
+    }, [sort, filters, page, search])
 
     const clearFilters = () => {
         setFilters([])
@@ -76,13 +95,13 @@ const Projects: React.FC = () => {
         {/* hero image and search bar */}
         <div className="bg-[linear-gradient(#17020266,#17020266),url('/Projects_page/project_hero.jpg')] bg-cover bg-[10%_25%] flex flex-col justify-center items-center relative w-full h-[482px] mb-20">
             <h1 className="text-white text-[38px] font-bold">Projects</h1>
-            <div className="absolute flex bg-white top-[432px] border border-[#d0d5dd] p-6 gap-2 shadow-md">
+            <form onSubmit={handleSearch} className="absolute flex bg-white top-[432px] border border-[#d0d5dd] p-6 gap-2 shadow-md">
                 <div className="flex border border-[#d0d5dd] rounded-lg p-2 w-[364px] gap-2 items-center">
                     <SearchOutlinedIcon />
-                    <input type="text" placeholder="Search projects by name" className="w-full text-base font-normal leading-6 border-none outline-none text-[14px]" />
+                    <input value={search} onChange={(e) => {setSearch(e.target.value)}} type="text" placeholder="Search projects by name" className="w-full text-base font-normal leading-6 border-none outline-none text-[14px]" />
                 </div>
                 <button className="bg-[#1570ef] rounded-lg text-white px-4 py-2 font-semibold text-base">Search</button>
-            </div>
+            </form>
         </div>
         
         <div className="flex gap-10 px-8">

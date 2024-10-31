@@ -74,13 +74,13 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
                     <div className='flex flex-col gap-[6px]'>
                         <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Date</h1>
                         <div className='border border-[#d0d5dd] rounded-lg py-[10px] px-[14px]'>
-                            <input onChange={(e) => {setRequestDate(e.target.value)}} required placeholder='Select a date' className='outline-none w-full text-[16px] font-normal leading-[24px] text-[#667085]' type="date" name="date" id="date" />
+                            <input onChange={(e) => {setRequestDate(e.target.value)}} required placeholder='Select a date' className='outline-none w-full text-[16px] font-normal leading-[24px] text-[#667085]' min={new Date().toISOString().split('T')[0]} type="date" name="date" id="date" />
                         </div>
                     </div>
                     <div className='flex flex-col gap-[6px]'>
                         <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Time</h1>
                         <div className='border border-[#d0d5dd] rounded-lg py-[10px] px-[14px]'>
-                            <input onChange={(e) => {setRequestTime(e.target.value)}} required placeholder='Select a time' className='outline-none text-[16px] w-full font-normal leading-[24px] text-[#667085]' type="time" name="time" id="time" />
+                            <input onChange={(e) => {setRequestTime(e.target.value)}} required placeholder='Select a time' className='outline-none text-[16px] w-full font-normal leading-[24px] text-[#667085]' min={"09:00"} max={"18:00"} type="time" name="time" id="time" />
                         </div>
                     </div>
                     <div className='flex flex-col gap-[6px]'>
