@@ -394,9 +394,10 @@ const getCurrentUser = (req, res) => {
     if (req.isAuthenticated()) {
         res.status(200).json({ user: req.user });
     } else {
-        res.status(401).json({ error: 'User not authenticated' });
+        res.status(200).json({ user: null });
     }
 };
+
 
 export default {
     createProject,

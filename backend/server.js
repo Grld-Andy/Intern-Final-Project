@@ -73,16 +73,16 @@ app.get("/", (req, res) => {
     res.status(200).send(`<a href="${req.protocol + '://' + req.get('host')}/api-docs">Swagger docs</a>`);
 });
 
-app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+app.get('/auth/microsoft',
+    passport.authenticate('microsoft'));
 
-app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
+app.get('/auth/microsoft/callback',
+    passport.authenticate('microsoft', { failureRedirect: '/' }),
     (req, res) => {
         res.redirect('http://localhost:5173/admin'); // Redirect to frontend after successful login
     }
 );
+
 
 app.get('/logout', (req, res) => {
     req.logout((err) => {
