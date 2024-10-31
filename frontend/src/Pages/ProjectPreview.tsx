@@ -162,16 +162,12 @@ const ProjectPreview: React.FC = () => {
                     </div>
                   ))
                 } */}
-                {
-                  Array.from({length: 2}).map((_, index) => (
-                    <div key={index} className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
-                      <div className="flex items-center w-full">
-                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">Eventplanner_documentation_here.pdf</h1>
-                        <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
-                      </div>
-                    </div>
-                  ))
-                }
+                <div className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                  <div className="flex items-center w-full">
+                    <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">{project?.linkeddocs}</h1>
+                    <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                  </div>
+                </div>
               </div>
               <div className="flex gap-3 p-[24px] flex-col">
                 <div className="flex gap-2">

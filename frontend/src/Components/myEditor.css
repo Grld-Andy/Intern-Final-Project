@@ -1,0 +1,77 @@
+.quill{
+    height: 149px;
+    border: none;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+.ql-container, .ql-editor{
+    border: none;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+.ql-container, .ql-toolbar.ql-snow, .ql-container.ql-snow{
+    border: none;
+    outline: none;
+}
+.ql-toolbar.ql-snow::after{
+    display: none;
+    border: 1px;
+}
+.ql-toolbar.ql-snow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+}
+.ql-toolbar .ql-formats:first-child{
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 14px;
+    box-sizing: border-box;
+    border: 1px solid #D0D5DD;
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    background-color: white;
+    span{
+        font-weight: 500;
+        line-height: 24px;
+        font-size: 16px;
+        color: black;
+        margin: 0;
+        &:hover{
+            color: black;
+        }
+    }
+}
+.ql-toolbar .ql-formats:last-child{
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #eaecf0;
+    margin-right: 40px;
+    button{
+        svg{
+            color: red;
+        }
+    }
+}
+.ql-container.ql-snow{
+    height: 97px;
+    .ql-editor{
+        padding:0;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        color: #667085;
+    }
+}

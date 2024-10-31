@@ -12,20 +12,23 @@ import Footer from "../../components/Footer"
 import {ProjectFormContext} from "../../contexts/ProjectFormContext"
 import getProjectCreationString from "../../utils/getProjectCreationString"
 import getFormattedLastModifiedDate from "../../utils/getFormattedLastModifiedDate"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 const AddProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const {projectForm} = useContext(ProjectFormContext)
   const [fullDescription, setFullDescription] = useState<boolean>(false)
   const navigate = useNavigate()
+  const {id} = useParams()
 
   useEffect(() => {
     scrollTo(0, 0)
     if(!projectForm?.title){
+      if(id)
+        navigate(`/edit-project/project-overview/${id}`)
       navigate('/add-project/project-overview')
     }
-  }, [navigate, projectForm])
+  }, [navigate, projectForm, id])
 
   const handleShowModal = (show: boolean) => {
     setShowModal(show)
@@ -35,21 +38,33 @@ const AddProjectPreview: React.FC = () => {
     <>
       {
         showModal && 
-        <PublishProjectModal handleShowModal={handleShowModal}/>
+        <PublishProjectModal handleShowModal={handleShowModal} id={id}/>
       }
       <div className={`project-preview bg-[#F9FAFB] ${showModal && "h-screen overflow-hidden"}`}>
         {/* project progress */}
         <div className="w-full h-[150px] py-[16px] px-[80px] border border-[#d0d5dd] bg-gradient-to-r from-[#bed6f840] to-[#dbe6f040] flex flex-col gap-[16px]">
           <div className="flex justify-between">
             <div className="flex gap-[8px] flex-col">
-              <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">Add project</h1>
+              <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">
+                {
+                  id?<>Edit Project</>:<>Add Project</>
+                }
+              </h1>
               <div className="flex gap-[8px] items-center">
                 <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Projects</h2>
                 <ChevronRightIcon style={{width: "16px", height: "16px", color: "#667085", position: "relative", top: "1px"}}/>
-                <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Add Project</h2>
+                <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">
+                  {
+                    id?<>Edit Project</>:<>Add Project</>
+                  }
+                </h2>
               </div>
             </div>
-            <button onClick={() => {handleShowModal(true)}} className="bg-[#1570ef] h-[40px] w-[128px] rounded-lg text-white flex justify-center items-center font-semibold text-[14px] leading-[20px]">Publish Project</button>
+            <button onClick={() => {handleShowModal(true)}} className="bg-[#1570ef] h-[40px] w-[128px] rounded-lg text-white flex justify-center items-center font-semibold text-[14px] leading-[20px]">
+              {
+                id?<>Update Project</>:<>Publish Project</>
+              }
+            </button>
           </div>
           <div className="flex gap-[24px] md:justify-normal justify-between">
             <div className="flex md:gap-[24px] md:flex-row gap-[4px] flex-col">
@@ -189,16 +204,12 @@ const AddProjectPreview: React.FC = () => {
                     </div>
                   ))
                 } */}
-                {
-                  Array.from({length: 2}).map((_, index) => (
-                    <div key={index} className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
-                      <div className="flex items-center w-full">
-                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">Eventplanner_documentation_here.pdf</h1>
-                        <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
-                      </div>
-                    </div>
-                  ))
-                }
+                <div className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                  <div className="flex items-center w-full">
+                    <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">{projectForm?.linkeddocs}</h1>
+                    <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                  </div>
+                </div>
               </div>
               <div className="flex gap-3 p-[24px] flex-col">
                 <div className="flex gap-2">

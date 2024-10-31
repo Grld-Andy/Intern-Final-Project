@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
 import CancelIcon from '@mui/icons-material/Cancel'
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined'
 import AddProjectHeader from '../../components/AddProject/AddProjectHeader'
 import { ProjectFormContext } from '../../contexts/ProjectFormContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Project from '../../models/Project'
+import projectStacks from '../../utils/projectStacks'
+import MyEditor from '../../components/MyEditor'
 
 const TechnicalDetails: React.FC = () => {
     const [video, setVideo] = useState<string>("")
@@ -17,22 +18,52 @@ const TechnicalDetails: React.FC = () => {
     const [linkedDocs, setLinkedDocs] = useState<string>("")
     const {projectForm, projectFormDispatch} = useContext(ProjectFormContext)
     const navigate = useNavigate()
+    const {id} = useParams()
+  
+    useEffect(() => {
+        if(!projectForm || !projectForm.technicaldetailsvideo || !projectForm.developmentstack || projectForm.developmentstack.length <= 0 || !projectForm.linkeddocs)
+            return
+        if(!id) return
+        console.log("called again")
+        setVideo(projectForm.technicaldetailsvideo)
+        const devStacks: Array<string> = projectForm.developmentstack.map((stack: { stackName: string }) => stack.stackName)
+        setDevelopmentStackList(devStacks)
+        setLinkedDocs(projectForm.linkeddocs)
+    }, [id, projectForm])
 
     useEffect(() => {
         scrollTo(0, 0)
         if(!projectForm?.title){
-          navigate('/add-project/project-overview')
+            if(!id)
+                navigate('/add-project/project-overview')
+            navigate(`/edit-project/project-overview/${id}`)
         }
-      }, [navigate, projectForm])
+      }, [id, navigate, projectForm])
 
-    const removeDevelopmentStack = (index: number) => {
-        setDevelopmentStackList(developmentStackList.filter((_, i) => i !== index))
+      const removeDevelopmentStack = (clickedStack: string) => {
+        setDevelopmentStackList(developmentStackList.filter((stack) => stack !== clickedStack))
     }
-
+    
+    const toggleDevelopmentStack = (clickedStack: string) => {
+        if (isSelected(clickedStack)){
+            removeDevelopmentStack(clickedStack)
+        }else{
+            setDevelopmentStackList(prev => [...prev, clickedStack])
+        }
+    }
+    
     const addDevelopmentStack = () => {
-        setDevelopmentStackList(prev => [...prev, developmentStack])
-        setDevelopmentStack("")
+        if(developmentStack){
+            setDevelopmentStackList(prev => [...prev, developmentStack])
+            setDevelopmentStack("")
+        }
     }
+
+    const isSelected = (stack: string) => {
+        console.log(developmentStack)
+        return developmentStack.includes(stack)
+    }
+    
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(!e.target.files)
@@ -45,7 +76,9 @@ const TechnicalDetails: React.FC = () => {
     }
 
     const stepBack = () => {
-        navigate('/add-project/project-overview')
+        if(!id)
+            navigate('/add-project/project-overview')
+        navigate(`/edit-project/project-overview/${id}`)
     }
     const handleSubmit = () => {
         const developmentstacks = developmentStackList.map((stack) => {
@@ -58,12 +91,14 @@ const TechnicalDetails: React.FC = () => {
         }
         projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
         scrollTo(0, 0)
-        navigate('/add-project/preview')
+        if(!id)
+            navigate('/add-project/preview')
+        navigate(`/edit-project/preview/${id}`)
     }
 
   return (
     <div className="bg-[#F9FAFB]">
-        <AddProjectHeader page="technical-details"/>
+        <AddProjectHeader page="technical-details" id={id}/>
         {/* technical development */}
         <div className='w-full flex justify-center items-center py-[80px]'>
             <div className='w-[544px] flex gap-[24px] flex-col'>
@@ -79,10 +114,10 @@ const TechnicalDetails: React.FC = () => {
                             <>
                                 <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
                                     {
-                                        developmentStackList.map((stack, index) => (
-                                            <div key={index} className='bg-[#f2f4f7] text-[#374151] py-[4px] pr-[10px] pl-[12px] rounded-[5px] flex gap-[4px] items-center'>
+                                        projectStacks.map((stack, index) => (
+                                            <div onClick={() => toggleDevelopmentStack(stack)} key={index} className={`${isSelected(stack) ? "bg-blue-400" : "bg-[#f2f4f7]"} text-[#374151] py-[4px] cursor-pointer pr-[10px] pl-[12px] rounded-[5px] flex gap-[4px] items-center`}>
                                                 <h2 className='text-[12px] leading-[18px] font-normal'>{stack}</h2>
-                                                <button onClick={() => removeDevelopmentStack(index)} type='button' className='relative bottom-[1px]'>
+                                                <button onClick={() => removeDevelopmentStack(stack)} type='button' className='relative bottom-[1px]'>
                                                     <CancelIcon style={{width:"16px", height:"16px"}}/>
                                                 </button>
                                             </div>
@@ -96,7 +131,7 @@ const TechnicalDetails: React.FC = () => {
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Upload project video</h1>
                     {/* Keep background color if no video is uploaded */}
-                    <div className='text-[#667085] bg-[#eaecf0] w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg' style={{background: video ? 'none' : '#eaecf0'}}>
+                    <div className='text-[#667085] bg-[#eaecf0] relative w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg'>
                         {
                             video
                             ?<video src={video} controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -105,7 +140,11 @@ const TechnicalDetails: React.FC = () => {
                                 <h1 className='w-[288px]'>Drag and drop a video to upload or</h1>
                             </div>
                         }
-                        <label className='flex gap-[16px] bg-white rounded-lg text-[#344054] py-[8px] px-[14px] cursor-pointer'>
+                        {
+                            video &&
+                            <div className='absolute z-[1] w-full h-full bg-[#0004]'></div>
+                        }
+                        <label className='absolute z-[2] flex gap-[16px] bg-white rounded-lg text-[#344054] py-[8px] px-[14px] cursor-pointer'>
                             <ControlPointOutlinedIcon style={{width:"20px", height:"20px"}}/>
                             <input className='hidden' type="file" name="video" id="video" accept="video/*" onChange={handleFileChange}/>
                             <h1 className='text-[14px] leading-[20px] font-semibold'>Add file</h1>
@@ -136,18 +175,7 @@ const TechnicalDetails: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex gap-[6px] flex-col'>
-                    <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Linked Docs</h1>
-                    <div className='bg-white border border-[#d0d5dd] rounded-lg shadow px-[14px] py-[10px] flex gap-[8px] flex-col'>
-                        <div className='flex gap-[12px]'>
-                            <button type='button' className='flex items-center gap-[6px] rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd]'>
-                                <h1 className='text-[#101828] text-[16px] leading-[24px] font-medium'>Normal text</h1>
-                                <KeyboardArrowDownOutlinedIcon style={{width:"20px", height:"20px",color:"#667085"}}/>
-                            </button>
-                        </div>
-                        <textarea value={linkedDocs} onChange={(e) => setLinkedDocs(e.target.value)} className='h-[94px] w-full outline-none font-normal text-[16px] leading-[24px] text-[#667085]' placeholder='Paste documentation links to the project (e.g., Confluence, GitHub repo, Figma files).'></textarea>
-                    </div>
-                </div>
+                <MyEditor content={linkedDocs} setContent={setLinkedDocs} />
                 <div className='flex gap-[12px] justify-end'>
                     <button type='button' onClick={stepBack} className='rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd] text-[#344054] text-[16px] leading-[24px] font-semibold'>
                         Discard
