@@ -1,18 +1,18 @@
-import Acquisition from "../Components/AnalyticsCards/Acquisition";
-import BrowsersCard from "../Components/AnalyticsCards/BrowsersCard";
-import Cards from "../Components/AnalyticsCards/Cards";
-import BasicBars from "../Components/AnalyticsCards/Chartline";
+import Acquisition from "../components/AnalyticsCards/Acquisition";
+import BrowsersCard from "../components/AnalyticsCards/BrowsersCard";
+import Cards from "../components/AnalyticsCards/Cards";
+import BasicBars from "../components/AnalyticsCards/Chartline";
 
-import SessionCard from "../Components/AnalyticsCards/SessionCard";
+import SessionCard from "../components/AnalyticsCards/SessionCard";
 
-import VisitCharts from "../Components/AnalyticsCards/VisitCharts";
+import VisitCharts from "../components/AnalyticsCards/VisitCharts";
 
 export default function Analytics(){
     return (
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
            
 <div className="mb-2 space-y-[8px] pt-[10px]">
-    <h1 className="font-[600] lg:mb-10  text-[20px] text-[#101828] leading-[30px]">Welcome to Dashboard</h1>
+    <h1 className="font-[600] lg:mb-10  text-[20px] text-[#101828] leading-[30px]">Welcome to Dashboard👋</h1>
     <h2 className="text-[#344054] text-[16px] font-[500]">
         Website Audience Metrics 
     </h2>

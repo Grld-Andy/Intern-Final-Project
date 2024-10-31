@@ -1,17 +1,17 @@
-import AboutCard from "../Components/AboutCard"
-import Card from "../Components/Card"
-import Navbar from "../Components/Navbar"
+import AboutCard from "../components/AboutCard"
+import Card from "../components/Card"
+import Navbar from "../components/Navbar"
 import bgImage from '../assets/bgimage.jpg.jfif'
 import industrial from '../assets/Industrial.png'
 import Leader from '../assets/Leader.png'
 import social from '../assets/Social media.png'
 import nextImage from '../assets/Alex (1) 1.png'
-import ProjectCard from "../Components/ProjectCard"
-import ProjectList from "../Components/ProjectList"
+import ProjectCard from "../components/ProjectCard"
+import ProjectList from "../components/ProjectList"
 import next from "../assets/sideimge.jpg"
 import sideImage from '../assets/next.png'
 import footerImage from '../assets/Content (1).png'
-import Footer from "../Components/Footer"
+import Footer from "../components/Footer"
 export default function Home(){
     return (
        

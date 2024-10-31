@@ -1,7 +1,7 @@
 import './App.css'
-import Analytics from './Pages/AnaltyticsPage'
-import Navbar from './Components/Navbar'
-// import Home from './Pages/Home'
+import Analytics from './pages/AnaltyticsPage'
+import Navbar from './components/Navbar'
+// import Home from './pages/Home'
 function App() {
   return (
    <>
