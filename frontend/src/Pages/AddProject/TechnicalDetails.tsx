@@ -38,32 +38,47 @@ const TechnicalDetails: React.FC = () => {
                 navigate('/add-project/project-overview')
             navigate(`/edit-project/project-overview/${id}`)
         }
-      }, [id, navigate, projectForm])
+    }, [id, navigate, projectForm])
 
-      const removeDevelopmentStack = (clickedStack: string) => {
+    const removeDevelopmentStack = (clickedStack: string) => {
         setDevelopmentStackList(developmentStackList.filter((stack) => stack !== clickedStack))
     }
     
     const toggleDevelopmentStack = (clickedStack: string) => {
+        console.log("here")
+        console.log(clickedStack)
         if (isSelected(clickedStack)){
+            console.log("removing")
             removeDevelopmentStack(clickedStack)
         }else{
-            setDevelopmentStackList(prev => [...prev, clickedStack])
+            console.log("adding")
+            setDevelopmentStackList([...developmentStackList, clickedStack])
         }
     }
     
     const addDevelopmentStack = () => {
         if(developmentStack){
-            setDevelopmentStackList(prev => [...prev, developmentStack])
-            setDevelopmentStack("")
+            setDevelopmentStackList([...developmentStackList, developmentStack])
+            setDevelopmentStack("added")
         }
     }
 
     const isSelected = (stack: string) => {
-        console.log(developmentStack)
-        return developmentStack.includes(stack)
+        return developmentStackList.includes(stack)
     }
-    
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0]
+            const videoURL = URL.createObjectURL(file)
+            setVideo(videoURL)
+        }
+    }
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(!e.target.files)
@@ -110,12 +125,11 @@ const TechnicalDetails: React.FC = () => {
                             <button onClick={addDevelopmentStack} type='button' className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
                         </div>
                         {
-                            developmentStackList.length > 0 &&
                             <>
                                 <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
                                     {
                                         projectStacks.map((stack, index) => (
-                                            <div onClick={() => toggleDevelopmentStack(stack)} key={index} className={`${isSelected(stack) ? "bg-blue-400" : "bg-[#f2f4f7]"} text-[#374151] py-[4px] cursor-pointer pr-[10px] pl-[12px] rounded-[5px] flex gap-[4px] items-center`}>
+                                            <div onClick={() => toggleDevelopmentStack(stack)} key={index} className={`${isSelected(stack) ? "bg-[#1570ef] text-white font-semibold text-[16px] leading-[24px] shadow" : "bg-[#f2f4f7]"} border border-[#d0d5dd] text-[#374151] py-[4px] cursor-pointer pr-[10px] pl-[12px] rounded-[5px] flex gap-[4px] items-center`}>
                                                 <h2 className='text-[12px] leading-[18px] font-normal'>{stack}</h2>
                                                 <button onClick={() => removeDevelopmentStack(stack)} type='button' className='relative bottom-[1px]'>
                                                     <CancelIcon style={{width:"16px", height:"16px"}}/>
@@ -131,7 +145,7 @@ const TechnicalDetails: React.FC = () => {
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Upload project video</h1>
                     {/* Keep background color if no video is uploaded */}
-                    <div className='text-[#667085] bg-[#eaecf0] relative w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg'>
+                    <div onDrop={handleDrop} onDragOver={handleDragOver} className='text-[#667085] bg-[#eaecf0] relative w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg'>
                         {
                             video
                             ?<video src={video} controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

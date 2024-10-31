@@ -102,16 +102,6 @@ const AddProjectPreview: React.FC = () => {
                 </div>
                 <p className="text-[14px] leading-5 font-normal">{getFormattedLastModifiedDate(new Date)}</p>
               </div>
-              {/* {
-                user ?
-                <button className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]">
-                  Edit project
-                </button>:
-                <button
-                  className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]" onClick={() => handleShowModal(true)}>
-                  Request demo
-                </button>
-              } */}
             </div>
           </div>
 
@@ -204,12 +194,24 @@ const AddProjectPreview: React.FC = () => {
                     </div>
                   ))
                 } */}
-                <div className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
-                  <div className="flex items-center w-full">
-                    <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">{projectForm?.linkeddocs}</h1>
-                    <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                {
+                  projectForm?.linkeddocs ?
+                  <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                    <div className="flex items-center w-full">
+                      <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054] text-ellipsis overflow-hidden line-clamp-1">
+                        <div dangerouslySetInnerHTML={{__html: projectForm?.linkeddocs}} />
+                      </h1>
+                      <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
+                    </div>
                   </div>
-                </div>
+                  :<div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                    <div className="flex items-center w-full">
+                      <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054] text-ellipsis overflow-hidden line-clamp-1">
+                        No Documentation
+                      </h1>
+                    </div>
+                  </div>
+                }
               </div>
               <div className="flex gap-3 p-[24px] flex-col">
                 <div className="flex gap-2">
