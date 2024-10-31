@@ -8,20 +8,12 @@ import limiter from './middleware/rateLimiter.js';
 import morgan from "morgan";
 import session from 'express-session';
 import passport from './auth.js';
-import RedisStore from 'connect-redis';
-import { createClient } from 'redis';
 import dotenv from 'dotenv';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 dotenv.config();
-
-const redisClient = createClient({
-    url: process.env.PROD_REDIS_URL
-});
-
-redisClient.connect().catch(console.error);
 
 app.use(morgan("dev"));
 app.use(cors({
@@ -33,13 +25,31 @@ app.use(express.json());
 
 app.set('trust proxy', 1); // Trust the first proxy
 
-app.use(session({
-    store: new RedisStore({ client: redisClient }),
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Set to true if using HTTPS
-}));
+if (process.env.NODE_ENV === 'production') {
+    const RedisStore = require('connect-redis')(session);
+    const { createClient } = require('redis');
+
+    const redisClient = createClient({
+        url: process.env.PROD_REDIS_URL
+    });
+
+    redisClient.connect().catch(console.error);
+
+    app.use(session({
+        store: new RedisStore({ client: redisClient }),
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: true } // Set to true if using HTTPS
+    }));
+} else {
+    app.use(session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: false } // Set to true if using HTTPS
+    }));
+}
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -60,7 +70,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
-        res.redirect('http://localhost:5173'); // Redirect to frontend after successful login
+        res.redirect('http://localhost:5173/admin'); // Redirect to frontend after successful login
     }
 );
 
