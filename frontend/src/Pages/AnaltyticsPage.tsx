@@ -7,6 +7,7 @@ import SessionCard from "../components/AnalyticsCards/SessionCard";
 
 import VisitCharts from "../components/AnalyticsCards/VisitCharts";
 
+
 export default function Analytics(){
     return (
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
