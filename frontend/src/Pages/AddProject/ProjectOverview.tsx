@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
 import CancelIcon from '@mui/icons-material/Cancel'
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined'
 import AddProjectHeader from '../../components/AddProject/AddProjectHeader'
 import { ProjectFormContext } from '../../contexts/ProjectFormContext'
 import Project from '../../models/Project'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import axios from 'axios'
 
 const ProjectOverview: React.FC = () => {
     const [image, setImage] = useState<string>("")
@@ -17,6 +18,40 @@ const ProjectOverview: React.FC = () => {
     const [description, setDescription] = useState<string>("")
     const {projectFormDispatch} = useContext(ProjectFormContext)
     const navigate = useNavigate()
+    const {id} = useParams()
+    // cc243597-8698-43a8-a609-27a43563c6b7
+  
+    useEffect(() => {
+      if(!id) return
+      projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
+      axios.get(`https://intern-final-project.onrender.com/api/v1/projects/${id}`)
+      .then((res) => {
+        console.log(res.data.project)
+        setTitle(res.data.project.title)
+        setDescription(res.data.project.description)
+        setImage(res.data.project.coverphotourl)
+        setProjectFeatureList(() => {
+            return res.data.project.projectfeatures.map((feature: { featureName: string }) => feature.featureName);
+        })
+        setFutureUpdateList(() => {
+            return res.data.project.improvementareas.map((area: { areaName: string }) => area.areaName);
+        })
+        const data: Project = {
+            title: res.data.project.title,
+            description: res.data.project.description,
+            coverphotourl: res.data.project.image,
+            projectfeatures: res.data.project.projectfeatures,
+            improvementareas: res.data.project.improvementareas,
+            developmentstack: res.data.project.developmentstack,
+            linkeddocs: res.data.project.linkeddocs,
+            technicaldetailsvideo: res.data.project.technicaldetailsvideo,
+            createdat: res.data.project.createdat
+        }
+        projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
+      }).catch((err) => {
+        console.error(err)
+      })
+    }, [id, projectFormDispatch])
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(!e.target.files)
@@ -55,6 +90,8 @@ const ProjectOverview: React.FC = () => {
     }
 
     const handleSubmit = () => {
+        if(!id)
+            projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
         const projectfeatures = projectFeatureList.map((feature) => {
             return {featureName: feature}
         })
@@ -69,12 +106,15 @@ const ProjectOverview: React.FC = () => {
             improvementareas: futureupdates
         }
         projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
-        navigate('/add-project/technical-details')
+        if(id)
+            navigate(`/edit-project/technical-details/${id}`)
+        else
+            navigate('/add-project/technical-details')
     }
 
   return (
     <div className="bg-[#F9FAFB]">
-        <AddProjectHeader page="project-overview"/>
+        <AddProjectHeader page="project-overview" id={id}/>
         {/* project overview */}
         <div className='w-full flex justify-center items-center py-[80px]'>
             <div className='w-[544px] flex gap-[24px] flex-col'>
