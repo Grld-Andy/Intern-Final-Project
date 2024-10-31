@@ -8,12 +8,21 @@ import limiter from './middleware/rateLimiter.js';
 import morgan from "morgan";
 import session from 'express-session';
 import passport from './auth.js';
+import session from 'express-session';
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
 import dotenv from 'dotenv';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 dotenv.config();
+
+const redisClient = createClient({
+    url: process.env.PROD_REDIS_URL
+});
+
+redisClient.connect().catch(console.error);
 
 app.use(morgan("dev"));
 app.use(cors({
@@ -23,11 +32,14 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(express.json());
 
+app.set('trust proxy', 1); // Trust the first proxy
+
 app.use(session({
+    store: new RedisStore({ client: redisClient }),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } // Set to true if using HTTPS
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'production' } // Set to true if using HTTPS
 }));
 
 app.use(passport.initialize());
