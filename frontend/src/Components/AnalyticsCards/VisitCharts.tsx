@@ -18,10 +18,10 @@ const getBarColor = (value:number) => {
 
 export default function VisitCharts() {
     return (
-        <div className="bg-white mt-10 border-[1px] border-[#D0D5DD]">
-            <span className="flex flex-row p-2 md:p-[14px] justify-between">
-                <h1 className="text-[#344054] font-[500] text-[16px] leading-[24px]">
-                    Browser Used by Users
+        <div className="bg-white lg:w-1/2 mt-10 border-[1px] border-[#D0D5DD]">
+            <span className="flex border-b flex-row p-2 md:p-[14px] justify-between items-center">
+                <h1 className="text-[#344054] font-[500] md:text-[16px] text-[12px] leading-[24px]">
+                 Total Project Visits
                 </h1>
                 <h2 className="text-[#667085] text-[12px] leading-[18px] font-[400]">
                     Mar 01 - Mar 20, 2024
@@ -41,7 +41,7 @@ export default function VisitCharts() {
                 <tbody>
                     {Data.map((content, index) => {
                         return (
-                            <tr key={index} className="grid grid-cols-4 p-2 justify-around gap-10">
+                            <tr key={index} className="grid flex-1 grid-cols-4 items-center p-2  justify-around gap-10">
                                 <td className="mx-auto">
                                     <img src={arrowUp} alt="Arrow Up" />
                                 </td>

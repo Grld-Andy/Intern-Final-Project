@@ -48,9 +48,9 @@ const tablebody:tabletype[]=[
 
 export default function BrowsersCard(){
     return (
-        <div className='bg-white mt-10 border-[1px] border-[#D0D5DD]'>
-            <span className="flex flex-row p-2 md:p-[14px] justify-between">
-                <h1 className='text-[#344054 font-[500] text-[16px] leading-[24px]'>Browser Used by Users</h1>
+        <div className='bg-white lg:w-1/2   mt-10 border-[1px] border-[#D0D5DD]'>
+            <span className="flex border-b flex-row p-2 md:p-[14px] justify-between items-center">
+                <h1 className='text-[#344054 font-[500] text-[14px] lg:text-[16px] leading-[24px]'>Browser Used by Users</h1>
 
                 <h2 className='text-[#667085] text-[12px] leading-[18px] font-[400]'>Mar 01 - Mar,20 2024</h2>
             </span>
@@ -74,9 +74,9 @@ export default function BrowsersCard(){
  tablebody.map((content,index)=>{
     return (
         
-<tr key={index} className='grid grid-cols-4 p-2  justify-around gap-10 '>
-    <td className='flex flex-row  gap-[10px] items-center'>
-        <img src={content.imgurl} className='w-[16px] h-[16px]'/>
+<tr key={index} className='grid grid-cols-4 p-2  justify-around md:gap-10 '>
+    <td className='flex flex-row  gap-1 md:gap-[10px] items-center'>
+        <img src={content.imgurl} className='md:w-[16px] h-[16px]'/>
 
         {content.title}
         </td>

@@ -28,7 +28,7 @@ const propData:propsData[]=[
 export default function Acquisition(){
 
     return (
-        <div className="mt-10 lg:w-1/2 border p- bg-white">
+        <div className="mt-10 lg:w-1/2  border p- bg-white">
         <div className="flex flex-col items-start p-4 gap-6">
             <span className="flex flex-col  gap-[8px]">
                 <h1 className="text-[16px] text-[#344054] leading-[16px] font-[500]">
@@ -39,14 +39,14 @@ export default function Acquisition(){
                 </h2>
             </span>
 
-<div className="flex flex-row gap-10 md:gap-[29px] mt-6">
+<div className="sm:flex sm:flex-row sm:gap-10 md:gap-[29px] mt-6 gap-2 grid grid-cols-2">
 
     {
         propData.map((content,index)=>{
             return (
-                <div key={index} className="flex lg:min-w-[174px] p-2 flex-col gap-[8px]">
+                <div key={index} className="flex w-full 2xl:min-w-[174px] p-2 flex-col gap-[8px]">
                     <span className="flex flex-row gap-2">
-                        <img src={content.imgUrl}/>
+                        <img src={content.imgUrl} className=""/>
 
                         <h1 className="font-[500] text-[#344054] text-[18px] leading-[28px]">{content.title}</h1>
                     </span>

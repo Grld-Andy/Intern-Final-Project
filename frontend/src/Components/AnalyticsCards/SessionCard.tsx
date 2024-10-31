@@ -18,12 +18,14 @@ const Data=[{
 
 export default function SessionCard(){
     return (
-        <div className="lg:w-1/2 flex flex-col space-y-[24px] bg-white mt-10 p-[14px]">
-            <span className="">
+        <div className=" lg:w-1/2 space-y-[24px] bg-white border mt-10 ">
+            <span className="border-b">
                 <h1 className="p-4 text-[#344054] text-[16px] leading-[24px] font-[500]">Device Sessions</h1>
+           
+                
             </span>
 
-<div className="flex flex-row justify-between">{
+<div className="flex p-[14px] flex-row justify-between">{
     Data.map((content,index)=>(
         <div key={index} className="flex flex-col items-center gap-[8px]">
             <span className="flex flex-row gap-[8px]">

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -9,7 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler,
+  ChartOptions
 } from 'chart.js';
 
 ChartJS.register(
@@ -19,86 +19,121 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend,
-  Filler
+  Legend
 );
 
-export default function Stackedline() {
+const TrendChart = () => {
+  const labels = ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov', 'Dec'];
+  
   const data = {
-    labels: [
-      'Jan',  'Mar',  'May',  'Jul',  'Sep',  'Nov', 'Dec'
-    ],
+    labels,
     datasets: [
       {
-        label: 'User Engagement 1',
-        data: [500, 505, 500, 520, 530, 500, 500, 502, 490, 500, 560, 570],
-        backgroundColor: 'rgba(0, 123, 255, 0.2)', 
-        borderColor: 'rgba(0, 123, 255, 1)',
-        borderWidth: 1,
-        
+        label: '',  
+        data: [500, 550, 580, 600, 650, 670, 700],
+        borderColor: '#3b82f6',
+        backgroundColor: '#3b82f6',
+        tension: 0.4,
+        pointRadius: 0,
       },
       {
-        label: 'User Engagement 2',
-        data: [380, 370, 375, 379, 380, 389, 376.5, 380.5, 375.5, 374.5, 370.5, 400],
-        backgroundColor: 'rgba(255, 193, 7, 0.2)',
-        borderColor: 'rgba(255, 193, 7, 1)',
-        borderWidth: 1,
-      
+        label: '', 
+        data: [300, 350, 380, 360, 400, 410, 450],
+        borderColor: '#f59e0b',
+        backgroundColor: '#f59e0b',
+        tension: 0.4,
+        pointRadius: 0,
       },
       {
-        label: 'User Engagement 3',
-        data: [230, 230.5, 250.1, 270, 230, 281, 250, 180, 200, 240, 280, 300],
-        backgroundColor: 'rgba(108, 117, 125, 0.2)', // gray fill
-        borderColor: 'rgba(108, 117, 125, 1)',
-        borderWidth: 1,
-        fill: true,
+        label: '',  
+        data: [100, 150, 200, 180, 250, 300, 400],
+        borderColor: '#6b7280',
+        backgroundColor: '#6b7280',
+        tension: 0.4,
+        pointRadius: 0,
       },
     ],
   };
 
-  const options: any = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false, 
       },
       tooltip: {
-        enabled: true,
-        mode: 'index',
+        mode: 'index' as const,
         intersect: false,
+        backgroundColor: 'white',
+        titleColor: 'black',
+        bodyColor: 'black',
+        borderColor: '#e5e7eb',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: true,
+        callbacks: {
+          label: function(context) {
+            return `Value: ${context.parsed.y}`;
+          }
+        }
       },
     },
     scales: {
       x: {
-        title: {
-          display: true,
-          text: 'Month',
-        },
         grid: {
-            
-          color: 'rgba(255, 255, 255, 0.1)',
+          display: true,
+          color: '#f3f4f6',
+          drawTicks: false,
         },
+        border: {
+          display: false
+        },
+        ticks: {
+          font: {
+            size: 12
+          },
+          color: '#6b7280',
+          padding: 8
+        }
       },
       y: {
-        title: {
-          display: true,
-          text: 'User Engagement',
-        },
-        beginAtZero: true,
+        min: 0,
         max: 1000,
+        border: {
+          display: false
+        },
         ticks: {
           stepSize: 200,
+          font: {
+            size: 12
+          },
+          color: '#6b7280',
+          padding: 8
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-      },
+          display: true,
+          color: '#e5e7eb',
+          drawTicks: false,
+          lineWidth: 1
+        }
+      }
     },
+    interaction: {
+      mode: 'nearest' as const,
+      axis: 'x' as const,
+      intersect: false
+    }
   };
 
   return (
-    <div style={{ width: '100%', height: '400px' }}>
-      <Line data={data} options={options} />
+    <div className="w-full  lg:p-6">
+      
+      <div className="h-80 w-full bg-white">
+        <Line options={options} data={data} />
+      </div>
     </div>
   );
-}
+};
+
+export default TrendChart;

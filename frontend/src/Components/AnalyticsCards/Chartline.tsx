@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -7,74 +7,99 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 } from 'chart.js';
 
-// Register required components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BasicBars = () => {
-  // Data and configuration for the chart
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const Basicbars = () => {
   const data = {
-    labels: ['Group A', 'Group B', 'Group C'],
+    labels: ['Total visitors', 'Project views', 'Clicks on projects', 'Demo requests'],
     datasets: [
       {
-        label: 'Number of Axes',
-        data: [900, 600, 400],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
+        data: [850, 600, 450, 175],
+        backgroundColor: '#93c5fd',
+        borderRadius: 4,
+        barThickness: 40,
       },
     ],
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const, // Ensure 'top' is treated as a constant
+        display: false,
       },
-      title: {
-        display: true,
-        text: 'Conversion Stages',
+      tooltip: {
+        backgroundColor: 'white',
+        titleColor: 'black',
+        bodyColor: 'black',
+        borderColor: '#ccc',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: false,
+        callbacks: {
+          label: function(context: { parsed: { y: any; }; }) {
+            return `Value: ${context.parsed.y}`;
+          }
+        }
       },
     },
     scales: {
       x: {
-        title: {
-          display: true,
-          text: 'Conversion Stages', // X-axis label
+        grid: {
+          display: false,
         },
         ticks: {
-          padding: 20, // Adjusts the spacing of the ticks
-        },
-        grid: {
-          display: true,
-          color: 'rgba(0, 0, 0, 0.1)',
+          font: {
+            size: 12,
+          },
+          color: '#666',
         },
       },
       y: {
-        title: {
-          display: true,
-          text: 'Number of Axes', // Y-axis label
-        },
         beginAtZero: true,
+        max: 1000,
         ticks: {
-          stepSize: 100, // Controls spacing of ticks on Y-axis
+          stepSize: 200,
+          font: {
+            size: 12,
+          },
+          color: '#666',
         },
         grid: {
-          display: true,
-          color: 'rgba(0, 0, 0, 0.1)',
+          color: '#f0f0f0',
+          drawBorder: false,
         },
       },
     },
   };
 
   return (
-    <div style={{ width: '600px', height: '400px' }}>
-      <Bar data={data} options={options} />
+    <div className="w-full     p-6">
+      <div className="mb-6">
+        <h2 className=" font-bold text-[#344054] font-[500] text-[16px] leading-[24px]  mb-2">
+          Conversion Process from Visitors to Demo Requests
+        </h2>
+        <p className="text-[12px] font-[400] leading-[18px] text-[#667085]">
+          Shows the number of visitors and engagement over time (daily, weekly, monthly).
+        </p>
+      </div>
+      <div className="h-80 w-full">
+        <Bar data={data} options={options} />
+      </div>
     </div>
   );
 };
 
-export default BasicBars;
+export default Basicbars;
