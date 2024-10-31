@@ -7,20 +7,29 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 
 interface Props{
     page: string
+    id?: string
 }
 
-const AddProjectHeader: React.FC<Props> = ({page}) => {
+const AddProjectHeader: React.FC<Props> = ({page, id}) => {
 
   return (
     <>
         <div className="w-full md:h-[150px] py-[16px] px-[80px] border border-[#d0d5dd] bg-gradient-to-r from-[#bed6f840] to-[#dbe6f040] flex flex-col gap-[16px]">
             <div className="flex justify-between">
                 <div className="flex gap-[8px] flex-col">
-                <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">Add project</h1>
+                <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">
+                    {
+                        id?<>Edit Project</>:<>Add Project</>
+                    }
+                </h1>
                 <div className="flex gap-[8px] items-center">
                     <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Projects</h2>
                     <ChevronRightIcon style={{width: "16px", height: "16px", color: "#667085", position: "relative", top: "1px"}}/>
-                    <h2 className="text-[12px] leading-[18px] font-medium text-[#1570ef]">Add Project</h2>
+                    <h2 className="text-[12px] leading-[18px] font-medium text-[#1570ef]">
+                        {
+                            id?<>Edit Project</>:<>Add Project</>
+                        }
+                    </h2>
                 </div>
                 </div>
             </div>

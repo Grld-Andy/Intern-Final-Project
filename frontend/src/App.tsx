@@ -19,6 +19,9 @@ function App() {
         <Route path="/add-project/project-overview" element={<ProjectOverview />} />
         <Route path="/add-project/technical-details" element={<TechnicalDetails />} />
         <Route path="/add-project/preview" element={<AddProjectPreview />} />
+        <Route path="/edit-project/project-overview/:id" element={<ProjectOverview />} />
+        <Route path="/edit-project/technical-details/:id" element={<TechnicalDetails />} />
+        <Route path="/edit-project/preview/:id" element={<AddProjectPreview />} />
         <Route path="/admin" element={<Analytics />} />
       </Route>
     </Routes>

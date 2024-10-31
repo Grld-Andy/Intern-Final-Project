@@ -1,0 +1,9 @@
+.ql-container {
+    border: none; /* Remove the border */
+}
+
+.ql-editor {
+    border: none; /* Remove any border from the editor */
+    min-height: 200px; /* Set a minimum height if desired */
+    outline: none; /* Remove focus outline */
+}
