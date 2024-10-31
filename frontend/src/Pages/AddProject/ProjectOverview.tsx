@@ -31,10 +31,10 @@ const ProjectOverview: React.FC = () => {
         setDescription(res.data.project.description)
         setImage(res.data.project.coverphotourl)
         setProjectFeatureList(() => {
-            return res.data.project.projectfeatures.map((feature: { featureName: string }) => feature.featureName);
+            return res.data.project.projectfeatures.map((feature: { featureName: string }) => feature.featureName)
         })
         setFutureUpdateList(() => {
-            return res.data.project.improvementareas.map((area: { areaName: string }) => area.areaName);
+            return res.data.project.improvementareas.map((area: { areaName: string }) => area.areaName)
         })
         const data: Project = {
             title: res.data.project.title,
@@ -112,6 +112,19 @@ const ProjectOverview: React.FC = () => {
             navigate('/add-project/technical-details')
     }
 
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0]
+            const imageUrl = URL.createObjectURL(file)
+            setImage(imageUrl)
+        }
+    }
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+    }
+
   return (
     <div className="bg-[#F9FAFB]">
         <AddProjectHeader page="project-overview" id={id}/>
@@ -131,7 +144,7 @@ const ProjectOverview: React.FC = () => {
                 </div>
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Upload project cover photo/thumbnail</h1>
-                    <div className='relative text-[#667085] bg-[#eaecf0] w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg overflow-hidden' style={{ backgroundImage: image ? `url(${image})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                    <div onDrop={handleDrop} onDragOver={handleDragOver} className='relative text-[#667085] bg-[#eaecf0] w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg overflow-hidden' style={{ backgroundImage: image ? `url(${image})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
                         {
                             !image ?
                             <div className='flex flex-col items-center gap-[16px]'>

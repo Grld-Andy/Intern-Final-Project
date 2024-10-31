@@ -5,6 +5,8 @@ interface User {
     role: string
     created_at: string
     updated_at: string
+    profilepicture: string
+    position: string
 }
 
 export default User

@@ -34,10 +34,10 @@ const Projects: React.FC = () => {
 
     useEffect(() => {
         const filterBy = filters.join(",")
-        console.log(`filters: ${filterBy}`)
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}`)
+        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}`, {withCredentials: true})
         .then((res) => {
+            console.log(res.data)
             if(res.data){
                 setProjects(res.data.projects)
             }
