@@ -74,10 +74,13 @@ app.get("/", (req, res) => {
 });
 
 app.get('/auth/microsoft',
-    passport.authenticate('microsoft'));
+    passport.authenticate('microsoft', {
+        prompt: 'select_account'
+    })
+);
 
 app.get('/auth/microsoft/callback',
-    passport.authenticate('microsoft', { failureRedirect: '/' }),
+    passport.authenticate('microsoft', { failureRedirect: 'http://localhost:5173' }),   
     (req, res) => {
         res.redirect('http://localhost:5173/admin'); // Redirect to frontend after successful login
     }

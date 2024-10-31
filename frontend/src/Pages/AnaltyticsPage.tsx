@@ -13,7 +13,6 @@ export default function Analytics() {
 
     useEffect(() => {
         const checkUser = () => {
-            // window.open('https://intern-final-project.onrender.com/auth/google', '_self')
             console.log(user)
             if (!user) {
                 try {
@@ -38,6 +37,10 @@ export default function Analytics() {
         checkUser()
     }, [user, userDispatch])
 
+    const login = () => {
+        window.open('http://localhost:3000/auth/microsoft', '_self')
+    }
+
     return (
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
             <div className="mb-2 space-y-[8px] pt-[10px]">
@@ -51,6 +54,8 @@ export default function Analytics() {
                     Audience to which the users belonged while on the current date range
                 </h3>
             </div>
+
+            <button onClick={login}>login</button>
 
             <div className="lg:flex grid grid-cols-2 gap-4 lg:flex-row lg:gap-10 lg:gap-[32px]">
                 <Cards title="Total Visitors" content="13,596" />
