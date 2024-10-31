@@ -14,5 +14,6 @@ router.get('/projects', projectController.getProjects);
 router.get('/projects/:id', projectController.getProject);
 router.post('/demo-requests', projectController.createDemoRequest);
 router.get('/demo-requests', projectController.getDemoRequests);
+router.get('/auth/user', ensureAuthenticated, projectController.getCurrentUser);
 
 export default router;
