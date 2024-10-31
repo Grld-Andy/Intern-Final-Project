@@ -9,6 +9,8 @@ import morgan from "morgan";
 import session from 'express-session';
 import passport from './auth.js';
 import dotenv from 'dotenv';
+import connectRedis from 'connect-redis';
+import { createClient } from 'redis';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,9 +28,8 @@ app.use(express.json());
 app.set('trust proxy', 1); // Trust the first proxy
 
 if (process.env.NODE_ENV === 'production') {
-    const RedisStore = require('connect-redis')(session);
-    const { createClient } = require('redis');
-
+    const RedisStore = connectRedis(session);
+    
     const redisClient = createClient({
         url: process.env.PROD_REDIS_URL
     });
