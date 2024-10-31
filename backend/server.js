@@ -9,8 +9,8 @@ import morgan from "morgan";
 import session from 'express-session';
 import passport from './auth.js';
 import dotenv from 'dotenv';
-import connectRedis from 'connect-redis';
 import { createClient } from 'redis';
+import RedisStore from 'connect-redis';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,7 +19,7 @@ dotenv.config();
 
 app.use(morgan("dev"));
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://intern-final-project.onrender.com"],
     credentials: true
 }));
 app.use(bodyParser.json());
@@ -28,20 +28,27 @@ app.use(express.json());
 app.set('trust proxy', 1); // Trust the first proxy
 
 if (process.env.NODE_ENV === 'production') {
-    const RedisStore = connectRedis(session);
-    
     const redisClient = createClient({
         url: process.env.PROD_REDIS_URL
     });
 
-    redisClient.connect().catch(console.error);
+    redisClient.on('error', (err) => console.log('Redis Client Error', err));
+
+    await redisClient.connect();
 
     app.use(session({
-        store: new RedisStore({ client: redisClient }),
+        store: new RedisStore({ 
+            client: redisClient,
+            prefix: "myapp:"
+        }),
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: true } // Set to true if using HTTPS
+        cookie: { 
+            secure: true, // Set to true if using HTTPS
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 // 24 hours
+        }
     }));
 } else {
     app.use(session({
@@ -51,6 +58,8 @@ if (process.env.NODE_ENV === 'production') {
         cookie: { secure: false } // Set to true if using HTTPS
     }));
 }
+
+
 
 app.use(passport.initialize());
 app.use(passport.session());
