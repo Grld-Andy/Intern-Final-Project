@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
 import CancelIcon from '@mui/icons-material/Cancel'
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined'
