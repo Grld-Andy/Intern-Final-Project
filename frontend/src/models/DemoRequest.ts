@@ -1,8 +1,8 @@
 interface DemoRequest {
-    projectId: string,
+    projectId?: string,
     fullName: string,
     emailAddress: string,
-    requestDate: Date,
+    requestDate: string,
     requestTime: string,
     comments: string
 }

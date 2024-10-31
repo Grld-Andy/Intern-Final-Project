@@ -12,7 +12,7 @@ import MyEditor from '../../components/MyEditor'
 const TechnicalDetails: React.FC = () => {
     const [video, setVideo] = useState<string>("")
     const [developmentStack, setDevelopmentStack] = useState<string>("")
-    const [developmentStackList, setDevelopmentStackList] = useState<Array<string>>([])
+    const [developmentStackList, setDevelopmentStackList] = useState<Array<string|undefined>>([])
     const [contributor, setContributor] = useState<string>("")
     // const [contributorsList, setContributorsList] = useState<Array<string>>([])
     const [linkedDocs, setLinkedDocs] = useState<string>("")
@@ -26,7 +26,7 @@ const TechnicalDetails: React.FC = () => {
         if(!id) return
         console.log("called again")
         setVideo(projectForm.technicaldetailsvideo)
-        const devStacks: Array<string> = projectForm.developmentstack.map((stack: { stackName: string }) => stack.stackName)
+        const devStacks: Array<string|undefined> = projectForm.developmentstack.map((stack: {id?: number,stackName?: string}) => stack.stackName)
         setDevelopmentStackList(devStacks)
         setLinkedDocs(projectForm.linkeddocs)
     }, [id, projectForm])
