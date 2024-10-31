@@ -12,12 +12,11 @@ export default function Analytics() {
     const { user, userDispatch } = useContext(UserContext)
 
     useEffect(() => {
-        const checkUser = async () => {
+        const checkUser = () => {
+            console.log(user)
             if (!user) {
-                window.open('https://intern-final-project.onrender.com/auth/google', '_self')
-            } else {
                 try {
-                    axios.get('https://intern-final-project.onrender.com/api/v1/user', { withCredentials: true})
+                    axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
                         console.log(res.data)
                         if (res.data.user) {
@@ -29,6 +28,7 @@ export default function Analytics() {
                 } catch (error) {
                     console.error("Error fetching user data:", error)
                 }
+                // window.open('https://intern-final-project.onrender.com/auth/google', '_self')
             }
         }
         checkUser()
