@@ -28,7 +28,10 @@ app.use(express.json());
 app.set('trust proxy', 1); // Trust the first proxy
 
 if (process.env.NODE_ENV === 'production') {
-    const RedisStore = connectRedis(session);
+    const RedisStore = new (connectRedis(session))({
+        // You might want to pass some configuration options here
+        url: process.env.PROD_REDIS_URL
+    });
     
     const redisClient = createClient({
         url: process.env.PROD_REDIS_URL
@@ -37,7 +40,7 @@ if (process.env.NODE_ENV === 'production') {
     redisClient.connect().catch(console.error);
 
     app.use(session({
-        store: new RedisStore({ client: redisClient }),
+        store: RedisStore,
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
@@ -51,6 +54,7 @@ if (process.env.NODE_ENV === 'production') {
         cookie: { secure: false } // Set to true if using HTTPS
     }));
 }
+
 
 app.use(passport.initialize());
 app.use(passport.session());
