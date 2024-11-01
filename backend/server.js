@@ -80,18 +80,14 @@ app.get("/", (req, res) => {
     res.status(200).send(`<a href="${req.protocol + '://' + req.get('host')}/api-docs">Swagger docs</a>`);
 });
 
-app.get('/auth/microsoft',
-    passport.authenticate('microsoft', {
-        prompt: 'select_account'
-    }),
-    (err, req, res, next) => {
-        if (err) {
-            console.error('Authentication error:', err);
-            return res.redirect('http://localhost:5173/error'); // Redirect to an error page
-        }
-        next();
+app.get('/auth/microsoft', (req, res, next) => {
+    try {
+        passport.authenticate('microsoft', { prompt: 'select_account' })(req, res, next);
+    } catch (error) {
+        console.error("Error during Microsoft authentication:", error);
+        res.status(500).json({ error: "An error occurred during Microsoft authentication. Please try again later." });
     }
-);
+});
 
 app.get('/auth/microsoft/callback',
     passport.authenticate('microsoft', { failureRedirect: 'http://localhost:5173' }),   
