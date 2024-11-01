@@ -47,13 +47,19 @@ export default function AnaltyticsPage() {
         window.open('http://localhost:3000/auth/microsoft', '_self')
     }
 
+    const logout = () => {
+        window.location.href = 'http://localhost:3000/logout'
+    }
+
     return (
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
             <div className="mb-2 space-y-[8px] pt-[10px]">
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
                     Welcome to Dashboard, {user?.name || user?.email} 👋
                 </h1>
-                <button onClick={login}>Login</button>
+                <button onClick={login}>Login</button> <br />
+                
+                <button onClick={logout}>logout</button>
                 <h2 className="text-[#344054] text-[16px] font-[500]">
                     Website Audience Metrics
                 </h2>

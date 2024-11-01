@@ -8,18 +8,8 @@ import TechnicalDetails from './pages/AddProject/TechnicalDetails'
 import Analytics from './pages/AnaltyticsPage'
 import Home from './pages/Home'
 import Layout from './components/Layout'
-import {useEffect} from "react";
-import axios from "axios";
 
 function App() {
-  useEffect(() => {
-    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
-        .then((res) => {
-          console.log("Response data", res)
-        }).catch((err) => {
-        console.log("Error", err);
-    })
-  }, []);
 
   return (
     <Routes>

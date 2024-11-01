@@ -80,10 +80,15 @@ app.get("/", (req, res) => {
     res.status(200).send(`<a href="${req.protocol + '://' + req.get('host')}/api-docs">Swagger docs</a>`);
 });
 
-app.get('/auth/microsoft',
+app.get('/auth/microsoft', (req, res, next) =>{
+    try{
     passport.authenticate('microsoft', {
         prompt: 'select_account'
-    })
+    })}
+    catch{
+        console.error(err)
+    }
+}
 );
 
 app.get('/auth/microsoft/callback',
