@@ -27,39 +27,44 @@ app.use(express.json());
 
 app.set('trust proxy', 1); // Trust the first proxy
 
-if (process.env.NODE_ENV === 'production') {
-    const redisClient = createClient({
-        url: process.env.PROD_REDIS_URL
-    });
+// if (process.env.NODE_ENV === 'production') {
+//     const redisClient = createClient({
+//         url: process.env.PROD_REDIS_URL
+//     });
 
-    redisClient.on('error', (err) => console.log('Redis Client Error', err));
+//     redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
-    await redisClient.connect();
+//     await redisClient.connect();
 
-    app.use(session({
-        store: new RedisStore({ 
-            client: redisClient,
-            prefix: "myapp:"
-        }),
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: { 
-            secure: true, // Set to true if using HTTPS
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 // 24 hours
-        }
-    }));
-} else {
-    app.use(session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: { secure: false } // Set to true if using HTTPS
-    }));
-}
+//     app.use(session({
+//         store: new RedisStore({ 
+//             client: redisClient,
+//             prefix: "myapp:"
+//         }),
+//         secret: process.env.SESSION_SECRET,
+//         resave: false,
+//         saveUninitialized: false,
+//         cookie: { 
+//             secure: true, // Set to true if using HTTPS
+//             httpOnly: true,
+//             maxAge: 1000 * 60 * 60 * 24 // 24 hours
+//         }
+//     }));
+// } else {
+//     app.use(session({
+//         secret: process.env.SESSION_SECRET,
+//         resave: false,
+//         saveUninitialized: false,
+//         cookie: { secure: false } // Set to true if using HTTPS
+//     }));
+// }
 
-
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Set to true if using HTTPS
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());

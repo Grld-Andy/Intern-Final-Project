@@ -25,14 +25,14 @@ export default function AnaltyticsPage() {
                         if (res.data.user != null) {
                             userDispatch({ type: 'LOGIN', payload: res.data.user })
                         }
-                        else{
-                            window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
-                        }
+                        // else{
+                        //     window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
+                        // }
                     }).catch((err) => {
                         console.log("Error", err);
-                        if(err.response && err.response.status == 401) {
-                            window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
-                        }
+                        // if(err.response && err.response.status == 401) {
+                        //     window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
+                        // }
                     })
                 } catch (err) {
                     console.error(err)
@@ -43,13 +43,17 @@ export default function AnaltyticsPage() {
         checkUser()
     }, [navigate, user, userDispatch, axios])
 
+    const login = () => {
+        window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
+    }
+
     return (
-        user &&
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
             <div className="mb-2 space-y-[8px] pt-[10px]">
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
                     Welcome to Dashboard, {user?.name || user?.email} 👋
                 </h1>
+                <button onClick={login}>Login</button>
                 <h2 className="text-[#344054] text-[16px] font-[500]">
                     Website Audience Metrics
                 </h2>
