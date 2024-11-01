@@ -9,7 +9,7 @@ import { UserContext } from "../contexts/UserContext"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 
-export default function Analytics() {
+export default function AnaltyticsPage() {
     const { user, userDispatch } = useContext(UserContext)
     const navigate = useNavigate()
 
@@ -21,7 +21,7 @@ export default function Analytics() {
                     console.log("Checking user")
                     axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
-                        console.log("Response data", res.data.user)
+                        console.log("Response data", res)
                         if (res.data.user != null) {
                             userDispatch({ type: 'LOGIN', payload: res.data.user })
                         }
@@ -30,7 +30,7 @@ export default function Analytics() {
                         }
                     }).catch((err) => {
                         console.log("Error", err);
-                        if(err.status == 401) {
+                        if(err.response && err.response.status == 401) {
                             window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
                     })
@@ -41,7 +41,7 @@ export default function Analytics() {
             }
         }
         checkUser()
-    }, [navigate, user, userDispatch])
+    }, [navigate, user, userDispatch, axios])
 
     return (
         user &&

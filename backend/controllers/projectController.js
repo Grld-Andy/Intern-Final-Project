@@ -381,11 +381,11 @@ const updateDemoRequestStatus = async (req, res) => {
 
 
 const getCurrentUser = (req, res) => {
-    if (req.isAuthenticated()) {
-        res.status(200).json({ user: req.user });
-    } else {
-        res.status(200).json({ user: null });
-    }
+    // if (req.isAuthenticated()) {
+    res.status(200).json({ user: req.user });
+    // } else {
+    //     res.status(200).json({ user: null });
+    // }
 };
 
 
