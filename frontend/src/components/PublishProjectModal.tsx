@@ -18,7 +18,6 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
     const navigate = useNavigate()
 
     const publishProject = async () => {
-        console.log("loading")
         if (!projectForm) return
         if (!projectForm.coverphotourl) return
         if (!projectForm.technicaldetailsvideo) return
@@ -38,13 +37,15 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
                 await axios.patch(`http://localhost:3000/api/v1/projects/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
-                    }
+                    },
+                    withCredentials: true
                 })
             }else{
                 await axios.post('http://localhost:3000/api/v1/projects', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
-                    }
+                    },
+                    withCredentials: true
                 })
             }
             console.log("Project published")

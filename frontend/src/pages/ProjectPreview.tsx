@@ -62,9 +62,11 @@ const ProjectPreview: React.FC = () => {
               </div>
               {
                 user ?
-                <button className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]">
-                  Edit project
-                </button>:
+                <a href={`/edit-project/project-overview/${id}`}>
+                  <button className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]">
+                    Edit project
+                  </button>
+                </a>:
                 <button
                   className="bg-[#1570ef] rounded-lg text-white px-[18px] py-[10px] font-semibold text-base leading-[24px]" onClick={() => handleShowModal(true)}>
                   Request demo
