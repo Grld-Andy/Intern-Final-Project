@@ -18,16 +18,18 @@ export default function Analytics() {
             console.log(user)
             if (!user || user == null) {
                 try {
+                    console.log("Checking user")
                     axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
-                        console.log("Response data", res.data)
+                        console.log("Response data", res.data.user)
                         if (res.data.user != null) {
-                            userDispatch({ type: 'LOGIN', payload: res.data.user.user })
+                            userDispatch({ type: 'LOGIN', payload: res.data.user })
                         }
                         else{
                             window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
                     }).catch((err) => {
+                        console.log("Error", err);
                         if(err.status == 401) {
                             window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
