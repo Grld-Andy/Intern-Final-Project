@@ -13,9 +13,9 @@ import axios from "axios";
 
 function App() {
   useEffect(() => {
-    axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
+    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
         .then((res) => {
-          console.log("Response data", res.data)
+          console.log("Response data", res)
         }).catch((err) => {
         console.log("Error", err);
     })

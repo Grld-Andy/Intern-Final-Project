@@ -9,11 +9,13 @@ import morgan from "morgan";
 import session from 'express-session';
 import passport from './auth.js';
 import dotenv from 'dotenv';
+import cookieParser from "cookie-parser";
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis';
 
 const app = express();
 const port = process.env.PORT || 3000;
+app.use(cookieParser());
 
 dotenv.config();
 

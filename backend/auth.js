@@ -22,7 +22,6 @@ passport.use(new MicrosoftStrategy({
     scope: ['user.read']
 }, async (accessToken, refreshToken, profile, done) => {
     const client = await pool.connect();
-    console.log(profile);
     try {
         const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
         const name = profile.displayName;

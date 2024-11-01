@@ -382,9 +382,10 @@ const updateDemoRequestStatus = async (req, res) => {
 
 const getCurrentUser = (req, res) => {
     // if (req.isAuthenticated()) {
+    console.log(req.cookies);
     res.status(200).json({ user: req.user });
     // } else {
-    //     res.status(200).json({ user: null });
+    //     res.status(401).json({ user: null });
     // }
 };
 
