@@ -24,7 +24,7 @@ const ProjectOverview: React.FC = () => {
     useEffect(() => {
       if(!id) return
       projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
-      axios.get(`http://localhost:3000/api/v1/projects/${id}`)
+      axios.get(`http://localhost:3000/api/v1/projects/${id}`, { withCredentials: true })
       .then((res) => {
         console.log(res.data.project)
         setTitle(res.data.project.title)
@@ -134,7 +134,7 @@ const ProjectOverview: React.FC = () => {
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Project title</h1>
                     <div className='w-full border bg-white border-[#d0d5dd] rounded-lg py-[10px] px-[14px]'>
-                        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter project title' type='text' className='w-full outline-none text-[16px] font-normal leading-[24px] text-[#667085]' name='title'/>
+                        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter project title' type='text' className=' w-full outline-none text-[16px] font-normal leading-[24px] text-[#667085]' name='title'/>
                     </div>
                 </div>
                 <div className='flex gap-[6px] flex-col'>
@@ -144,7 +144,7 @@ const ProjectOverview: React.FC = () => {
                 </div>
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Upload project cover photo/thumbnail</h1>
-                    <div onDrop={handleDrop} onDragOver={handleDragOver} className='relative text-[#667085] bg-[#eaecf0] w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg overflow-hidden' style={{ backgroundImage: image ? `url(${image})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                    <div onDrop={handleDrop} onDragOver={handleDragOver} className='hover:shadow relative text-[#667085] bg-[#eaecf0] w-full h-[219px] flex gap-[40px] flex-col justify-center items-center rounded-lg overflow-hidden' style={{ backgroundImage: image ? `url(${image})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
                         {
                             !image ?
                             <div className='flex flex-col items-center gap-[16px]'>
@@ -165,7 +165,7 @@ const ProjectOverview: React.FC = () => {
                 </div>
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Project features</h1>
-                    <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg shadow'>
+                    <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
                             <input onKeyUp={(e) => e.key === "Enter" && addFeature()} value={projectFeature} onChange={(e) => setProjectFeature(e.target.value)} type="text" placeholder="Enter project features" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button onClick={addFeature} className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
@@ -191,7 +191,7 @@ const ProjectOverview: React.FC = () => {
                 </div>
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Areas of Improvement/Future Updates</h1>
-                    <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg shadow'>
+                    <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
                             <input onKeyUp={(e) => e.key === "Enter" && addFutureUpdate()} value={futureUpdate} onChange={(e) => setFutureUpdate(e.target.value)} type="text" placeholder="Enter future updates" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button onClick={addFutureUpdate} className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>

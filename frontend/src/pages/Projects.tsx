@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useContext, useEffect, useState } from "react"
+import React, { FormEventHandler, useContext, useEffect, useRef, useState } from "react"
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import FilterListIcon from '@mui/icons-material/FilterList'
@@ -18,7 +18,7 @@ const Projects: React.FC = () => {
     const [search, setSearch] = useState<string>("")
     const {user} = useContext(UserContext)
     const limit = 6
-
+    const prevSearch = useRef<string>("")
 
     const handleSearch: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault()
@@ -53,6 +53,8 @@ const Projects: React.FC = () => {
     }, [])
 
     useEffect(() => {
+        setPage(prevSearch.current == search ? page : 1)
+        prevSearch.current = search
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
         axios.get(`http://localhost:3000/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
@@ -92,6 +94,7 @@ const Projects: React.FC = () => {
 
   return (
     <div className="text-[#344054] bg-[#F9FAFB]">
+        <h1>prev search {prevSearch.current}</h1>
 
         {/* hero image and search bar */}
         <div className="bg-[linear-gradient(#17020266,#17020266),url('/Projects_page/project_hero.jpg')] bg-cover bg-[10%_25%] flex flex-col justify-center items-center relative w-full h-[482px] mb-20">
@@ -151,7 +154,9 @@ const Projects: React.FC = () => {
                     <h1 className="font-semibold text-[24px] leading-8">Projects ({totalProjects})</h1>
                     {
                         user &&
-                        <button className="bg-[#1570ef] text-white font-semibold rounded-lg px-4 py-2 text-base leading-6">Add Project</button>
+                        <a href="/add-project/project-overview">
+                            <button className="bg-[#1570ef] text-white font-semibold rounded-lg px-4 py-2 text-base leading-6">Add Project</button>
+                        </a>
                     }
                 </div>
 
