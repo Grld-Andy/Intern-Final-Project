@@ -7,6 +7,7 @@ import ProjectCell from "../components/ProjectCell"
 import axios from "axios"
 import Project from "../models/Project"
 import Footer from "../components/Footer"
+import projectStacks from "../utils/projectStacks"
 
 const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Array<Project>>([])
@@ -114,7 +115,7 @@ const Projects: React.FC = () => {
                 <div className="flex flex-col gap-2">
                     <h1 className="font-medium text-[16px] leading-7 p-1 text-[#1d2939]">Stack</h1>
                     <div className="flex flex-col gap-4 p-1">
-                        {["MEANstack", "MERNstack", "JAMstack", ".Net Stack", "Spring Boot Stack", "Flutter/Firebase Stack", "Django Stack", "Serverless Stack"].map((stack, index) => (
+                        {projectStacks.map((stack:string, index:number) => (
                             <div key={index} className="flex gap-2 items-center">
                                 <input onClick={() => updateFilters(stack)} type="checkbox" value={stack} checked={filters.includes(stack)} id={stack} className="w-4 h-4 cursor-pointer" />
                                 <label htmlFor={stack} className="text-sm font-normal text-[#667085] cursor-pointer leading-5">{stack}</label>

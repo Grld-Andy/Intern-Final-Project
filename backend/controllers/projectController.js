@@ -145,18 +145,8 @@ const getProjects = async (req, res) => {
 
         const result = await pool.query(query, queryParams);
 
-        // Count the total number of matching projects
-        const countQuery = `
-            SELECT COUNT(*) AS totalCount
-            FROM Project p
-            LEFT JOIN DevelopmentStack ds ON p.id = ds.projectId
-            WHERE 1=1
-            ${stackFilterQuery}
-            ${titleFilterQuery}
-        `;
-        
-        const countResult = await pool.query(countQuery, queryParams.slice(2)); // Skip limit and offset
-        const totalProjects = parseInt(countResult.rows[0].totalCount, 10);
+        const allProjectsResult = await pool.query('SELECT * FROM Project');
+        const totalProjects = allProjectsResult.rows.length;
 
         res.status(200).json({
             projects: keysToCamelCase(result.rows),

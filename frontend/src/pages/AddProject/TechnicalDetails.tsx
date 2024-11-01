@@ -14,7 +14,7 @@ const TechnicalDetails: React.FC = () => {
     const [developmentStack, setDevelopmentStack] = useState<string>("")
     const [developmentStackList, setDevelopmentStackList] = useState<Array<string|undefined>>([])
     const [contributor, setContributor] = useState<string>("")
-    // const [contributorsList, setContributorsList] = useState<Array<string>>([])
+    const [contributorsList, setContributorsList] = useState<Array<string>>([])
     const [linkedDocs, setLinkedDocs] = useState<string>("")
     const {projectForm, projectFormDispatch} = useContext(ProjectFormContext)
     const navigate = useNavigate()
@@ -24,7 +24,6 @@ const TechnicalDetails: React.FC = () => {
         if(!projectForm || !projectForm.technicaldetailsvideo || !projectForm.developmentstack || projectForm.developmentstack.length <= 0 || !projectForm.linkeddocs)
             return
         if(!id) return
-        console.log("called again")
         setVideo(projectForm.technicaldetailsvideo)
         const devStacks: Array<string|undefined> = projectForm.developmentstack.map((stack: {id?: number,stackName?: string}) => stack.stackName)
         setDevelopmentStackList(devStacks)
@@ -34,9 +33,9 @@ const TechnicalDetails: React.FC = () => {
     useEffect(() => {
         scrollTo(0, 0)
         if(!projectForm?.title){
-            if(!id)
-                navigate('/add-project/project-overview')
-            navigate(`/edit-project/project-overview/${id}`)
+            if(id)
+                navigate(`/edit-project/project-overview/${id}`)
+            navigate('/add-project/project-overview')
         }
     }, [id, navigate, projectForm])
 
@@ -45,13 +44,10 @@ const TechnicalDetails: React.FC = () => {
     }
     
     const toggleDevelopmentStack = (clickedStack: string) => {
-        console.log("here")
         console.log(clickedStack)
         if (isSelected(clickedStack)){
-            console.log("removing")
             removeDevelopmentStack(clickedStack)
         }else{
-            console.log("adding")
             setDevelopmentStackList([...developmentStackList, clickedStack])
         }
     }
@@ -59,8 +55,19 @@ const TechnicalDetails: React.FC = () => {
     const addDevelopmentStack = () => {
         if(developmentStack){
             setDevelopmentStackList([...developmentStackList, developmentStack])
-            setDevelopmentStack("added")
+            setDevelopmentStack("")
         }
+    }
+    
+    const addToContriubtorsList = () => {
+        if(contributor){
+            setContributorsList([...contributorsList, contributor])
+            setContributor("")
+        }
+    }
+
+    const removeFromContributorsList = (index: number) => {
+        setContributorsList(contributorsList.filter((_, i) => i !== index))
     }
 
     const isSelected = (stack: string) => {
@@ -91,9 +98,9 @@ const TechnicalDetails: React.FC = () => {
     }
 
     const stepBack = () => {
-        if(!id)
-            navigate('/add-project/project-overview')
-        navigate(`/edit-project/project-overview/${id}`)
+        if(id)
+            navigate(`/edit-project/project-overview/${id}`)
+        navigate('/add-project/project-overview')
     }
     const handleSubmit = () => {
         const developmentstacks = developmentStackList.map((stack) => {
@@ -106,9 +113,9 @@ const TechnicalDetails: React.FC = () => {
         }
         projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
         scrollTo(0, 0)
-        if(!id)
-            navigate('/add-project/preview')
-        navigate(`/edit-project/preview/${id}`)
+        if(id)
+            navigate(`/edit-project/preview/${id}`)
+        navigate('/add-project/preview')
     }
 
   return (
@@ -169,24 +176,28 @@ const TechnicalDetails: React.FC = () => {
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Development team/Contributors</h1>
                     <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg shadow'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
-                            <input value={contributor} onChange={(e) => setContributor(e.target.value)} type="text" placeholder="Add contributors to this project" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
+                            <input onKeyUp={(e) => e.key === "Enter" && addToContriubtorsList()} value={contributor} onChange={(e) => setContributor(e.target.value)} type="text" placeholder="Add contributors to this project" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button type='button' className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
                         </div>
-                        <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
+                        {
+                            contributorsList.length > 0 &&
+                            <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
                             {
-                                Array.from({length:7}).map((_, index) => (
-                                    <div key={index} className='bg-[#f2f4f7] text-[#374151] py-[4px] pr-[12px] pl-[6px] rounded-[5px] flex gap-[6px] items-center'>
+                                contributorsList.map((contrib, index) => (
+                                    <div key={index} className='relative transition-[3s] bg-[#f2f4f7] text-[#374151] py-[4px] pr-[12px] pl-[6px] rounded-[5px] flex gap-[6px] items-center'>
                                         <div className='overflow-hidden rounded-[50%] w-[21.22px] h-[21.22px]'>
                                             <img src='/profile_image.jpg'/>
                                         </div>
-                                        <h2 className='text-[12px] leading-[18px] font-normal'>MERNstack</h2>
-                                        <button type='button' className='relative bottom-[1px]'>
+                                        <h2 className='text-[12px] leading-[18px] font-normal'>{contrib}</h2>
+                                        <button onClick={() => removeFromContributorsList(index)} type='button' className='relative bottom-[1px]'>
                                             <CancelIcon style={{width:"16px", height:"16px"}}/>
                                         </button>
                                     </div>
                                 ))
                             }
                         </div>
+                        }
+                        
                     </div>
                 </div>
                 <MyEditor content={linkedDocs} setContent={setLinkedDocs} />
