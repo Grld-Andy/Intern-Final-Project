@@ -40,6 +40,7 @@ const keysToCamelCase = (obj) => {
 // Create a new project with related data
 const createProject = async (req, res) => {
     const { title, description, projectFeatures, improvementAreas, developmentStack, linkedDocs, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideoUrl, technicalDetailsVideoPublicId } = req.body;
+    console.log(req.body)
 
     const client = await pool.connect();
     try {
