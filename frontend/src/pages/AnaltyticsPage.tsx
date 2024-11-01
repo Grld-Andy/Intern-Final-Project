@@ -26,12 +26,12 @@ export default function AnaltyticsPage() {
                             userDispatch({ type: 'LOGIN', payload: res.data.user })
                         }
                         // else{
-                        //     window.open('http://localhost:3000/auth/microsoft', '_self')
+                        //     window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         // }
                     }).catch((err) => {
                         console.log("Error", err);
                         // if(err.response && err.response.status == 401) {
-                        //     window.open('http://localhost:3000/auth/microsoft', '_self')
+                            window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         // }
                     })
                 } catch (err) {
@@ -44,11 +44,11 @@ export default function AnaltyticsPage() {
     }, [navigate, user, userDispatch, axios])
 
     const login = () => {
-        window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
+        window.open('http://localhost:3000/auth/microsoft', '_self')
     }
 
     const logout = () => {
-        window.location.href = 'https://intern-final-project.onrender.com/logout'
+        window.location.href = 'http://localhost:3000/logout'
     }
 
     return (

@@ -49,6 +49,7 @@ if (process.env.NODE_ENV === 'production') {
         cookie: {
             secure: true, // Set to true if using HTTPS
             httpOnly: true,
+            sameSite: 'None', // Ensure cookies are sent with cross-site requests
             maxAge: 1000 * 60 * 60 * 24 // 24 hours
         }
     }));
@@ -57,7 +58,10 @@ if (process.env.NODE_ENV === 'production') {
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: false } // Set to true if using HTTPS
+        cookie: {
+            secure: false, // Set to true if using HTTPS
+            sameSite: 'Lax' // Adjust as needed for local development
+        }
     }));
 }
 
