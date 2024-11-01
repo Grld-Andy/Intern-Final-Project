@@ -40,7 +40,7 @@ const AddProjectPreview: React.FC = () => {
         showModal && 
         <PublishProjectModal handleShowModal={handleShowModal} id={id}/>
       }
-      <div className={`project-preview bg-[#F9FAFB] ${showModal && "h-screen overflow-hidden"}`}>
+      <div className={`project-preview bg-[#F9FAFB] ${showModal && "h-[89vh] overflow-hidden"}`}>
         {/* project progress */}
         <div className="w-full h-[150px] py-[16px] px-[80px] border border-[#d0d5dd] bg-gradient-to-r from-[#bed6f840] to-[#dbe6f040] flex flex-col gap-[16px]">
           <div className="flex justify-between">

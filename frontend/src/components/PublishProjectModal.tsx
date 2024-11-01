@@ -30,7 +30,6 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
             const videoFile = await convertUrlToFile(projectForm.technicaldetailsvideo, 'technical_details_video', 'mp4')
             formData.append('technicalDetailsVideo', videoFile)
             formData = validateProjectForm(projectForm, formData)
-            console.log(formData)
             console.log(projectForm)
 
             if(id){
@@ -48,9 +47,11 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
                     withCredentials: true
                 })
             }
-            console.log("Project published")
-            navigate('/add-project/project-overview')
             projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
+            if(id)
+                navigate(`/projects/${id}`)
+            else
+                navigate('/projects')
         } catch (err) {
             console.error(err)
         } finally {
@@ -87,8 +88,8 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
                         </div>
                         :<div className='flex gap-[16px] flex-col'>
                             <div className='flex gap-[16px]'>
-                                <button onClick={() => {handleShowModal(false)}} className='rounded-lg w-full border border-[#d0d5dd] bg-white py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] text-[#344054] shadow'>Cancel</button>
-                                <button onClick={publishProject} className='rounded-lg bg-[#1570ef] text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] w-full shadow'>
+                                <button onClick={() => {handleShowModal(false)}} className='rounded-lg w-full border border-[#d0d5dd] bg-white py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] text-[#344054] hover:shadow'>Cancel</button>
+                                <button onClick={publishProject} className='rounded-lg bg-[#1570ef] text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] w-full hover:shadow'>
                                     {
                                         id ? <>Yes update</> : <>Yes publish</>
                                     }

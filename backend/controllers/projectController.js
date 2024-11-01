@@ -40,7 +40,6 @@ const keysToCamelCase = (obj) => {
 // Create a new project with related data
 const createProject = async (req, res) => {
     const { title, description, projectFeatures, improvementAreas, developmentStack, linkedDocs, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideoUrl, technicalDetailsVideoPublicId } = req.body;
-    console.log(req.body)
 
     const client = await pool.connect();
     try {
@@ -190,6 +189,7 @@ const updateProject = async (req, res) => {
     const { id } = req.params;
     const { title, description, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideoUrl, technicalDetailsVideoPublicId, projectFeatures, improvementAreas, developmentStack, linkedDocs } = req.body;
     const client = await pool.connect();
+    console.log(req.body)
     try {
         await client.query('BEGIN');
 
@@ -253,9 +253,10 @@ const updateProject = async (req, res) => {
             const projectResult = await client.query(query, values);
 
             // Update project features
-            if (projectFeatures) {
+            const parsedProjectFeatures = projectFeatures ? JSON.parse(projectFeatures) : [];
+            if (parsedProjectFeatures) {
                 await client.query('DELETE FROM ProjectFeature WHERE projectId = $1', [id]);
-                for (const feature of projectFeatures) {
+                for (const feature of parsedProjectFeatures) {
                     await client.query(
                         'INSERT INTO ProjectFeature (projectId, featureName) VALUES ($1, $2)',
                         [id, feature.featureName]
@@ -264,9 +265,10 @@ const updateProject = async (req, res) => {
             }
 
             // Update improvement areas
-            if (improvementAreas) {
+            const parsedImprovementAreas = improvementAreas ? JSON.parse(improvementAreas) : [];
+            if (parsedImprovementAreas) {
                 await client.query('DELETE FROM ImprovementArea WHERE projectId = $1', [id]);
-                for (const area of improvementAreas) {
+                for (const area of parsedImprovementAreas) {
                     await client.query(
                         'INSERT INTO ImprovementArea (projectId, areaName) VALUES ($1, $2)',
                         [id, area.areaName]
@@ -275,9 +277,10 @@ const updateProject = async (req, res) => {
             }
 
             // Update development stack
-            if (developmentStack) {
+            const parsedDevelopmentStack = developmentStack ? JSON.parse(developmentStack) : [];
+            if (parsedDevelopmentStack) {
                 await client.query('DELETE FROM DevelopmentStack WHERE projectId = $1', [id]);
-                for (const stack of developmentStack) {
+                for (const stack of parsedDevelopmentStack) {
                     await client.query(
                         'INSERT INTO DevelopmentStack (projectId, stackName) VALUES ($1, $2)',
                         [id, stack.stackName]

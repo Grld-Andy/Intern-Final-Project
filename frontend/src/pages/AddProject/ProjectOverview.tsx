@@ -79,6 +79,13 @@ const ProjectOverview: React.FC = () => {
         setFutureUpdateList(futureUpdateList.filter((_, i) => i !== index))
     }
 
+    const stepBack = () => {
+        if(id)
+            navigate(`/projects/${id}`)
+        else
+            clearFields()
+    }
+
     const clearFields = () => {
         setTitle("")
         setProjectFeature("")
@@ -216,7 +223,7 @@ const ProjectOverview: React.FC = () => {
                     </div>
                 </div>
                 <div className='flex gap-[12px] justify-end'>
-                    <button onClick={clearFields} className='rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd] text-[#344054] text-[16px] leading-[24px] font-semibold'>
+                    <button onClick={stepBack} className='rounded-lg px-[14px] py-[10px] bg-white border border-[#d0d5dd] text-[#344054] text-[16px] leading-[24px] font-semibold'>
                         Discard
                     </button>
                     <button onClick={handleSubmit} className='rounded-lg px-[14px] py-[10px] bg-[#1570ef] border border-[#1570ef] text-white text-[16px] leading-[24px] font-semibold'>

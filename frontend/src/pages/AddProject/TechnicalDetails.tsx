@@ -98,8 +98,10 @@ const TechnicalDetails: React.FC = () => {
     }
 
     const stepBack = () => {
-        if(id)
+        if(id){
             navigate(`/edit-project/project-overview/${id}`)
+            return
+        }
         navigate('/add-project/project-overview')
     }
     const handleSubmit = () => {
@@ -115,7 +117,8 @@ const TechnicalDetails: React.FC = () => {
         scrollTo(0, 0)
         if(id)
             navigate(`/edit-project/preview/${id}`)
-        navigate('/add-project/preview')
+        else
+            navigate('/add-project/preview')
     }
 
   return (
