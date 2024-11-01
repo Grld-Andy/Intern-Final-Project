@@ -7,36 +7,42 @@ import SessionCard from "../components/AnalyticsCards/SessionCard"
 import VisitCharts from "../components/AnalyticsCards/VisitCharts"
 import { UserContext } from "../contexts/UserContext"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export default function Analytics() {
     const { user, userDispatch } = useContext(UserContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const checkUser = () => {
             console.log(user)
-            if (!user) {
+            if (!user || user == null) {
                 try {
                     axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
-                        console.log(res.data)
-                        if (res.data.user) {
+                        console.log("Response data", res.data)
+                        if (res.data.user != null) {
                             userDispatch({ type: 'LOGIN', payload: res.data.user.user })
                         }
-                    }).catch((error) => {
-                        if(error.status == 401) {
+                        else{
                             window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
-                        console.log(error)
+                    }).catch((err) => {
+                        if(err.status == 401) {
+                            window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
+                        }
                     })
-                } catch (error) {
-                    console.error("Error fetching user data:", error)
+                } catch (err) {
+                    console.error(err)
+                    navigate("/")
                 }
             }
         }
         checkUser()
-    }, [user, userDispatch])
+    }, [navigate, user, userDispatch])
 
     return (
+        user &&
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
             <div className="mb-2 space-y-[8px] pt-[10px]">
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
