@@ -86,7 +86,7 @@ app.get('/auth/microsoft', (req, res, next) =>{
         prompt: 'select_account'
     })}
     catch{
-        console.error(err)
+        console.log(err)
     }
 }
 );
