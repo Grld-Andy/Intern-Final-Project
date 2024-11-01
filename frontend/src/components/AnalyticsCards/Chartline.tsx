@@ -49,7 +49,7 @@ const Basicbars = () => {
         padding: 12,
         displayColors: false,
         callbacks: {
-          label: function(context: { parsed: { y: any; }; }) {
+          label: function(context: { parsed: { y }; }) {
             return `Value: ${context.parsed.y}`;
           }
         }
