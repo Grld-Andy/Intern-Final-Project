@@ -108,8 +108,8 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
                     {
                         formStatus === "" &&
                         <div className='flex gap-[16px]'>
-                            <button onClick={() => {handleShowModal(false)}} type='button' className='rounded-lg w-full border border-[#d0d5dd] bg-white py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] text-[#344054] shadow'>Cancel</button>
-                            <button onClick={handleSubmit} className='rounded-lg bg-[#1570ef] text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] w-full shadow'>Submit</button>
+                            <button onClick={() => {handleShowModal(false)}} type='button' className='rounded-lg w-full border border-[#d0d5dd] bg-white py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] text-[#344054] hover:shadow'>Cancel</button>
+                            <button onClick={handleSubmit} className='rounded-lg bg-[#1570ef] text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] w-full hover:shadow'>Submit</button>
                         </div>
                     }
                     
