@@ -19,7 +19,7 @@ export default function AnaltyticsPage() {
             if (!user || user == null) {
                 try {
                     console.log("Checking user")
-                    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
+                    axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
                         console.log("Response data", res)
                         if (res.data.user != null) {
@@ -44,11 +44,11 @@ export default function AnaltyticsPage() {
     }, [navigate, user, userDispatch, axios])
 
     const login = () => {
-        window.open('http://localhost:3000/auth/microsoft', '_self')
+        window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
     }
 
     const logout = () => {
-        window.location.href = 'http://localhost:3000/logout'
+        window.location.href = 'https://intern-final-project.onrender.com/logout'
     }
 
     return (
