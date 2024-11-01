@@ -31,7 +31,7 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
             comments: comments,
             projectId: id
         }
-        axios.post(`https://intern-final-project.onrender.com/api/v1/demo-requests`, data)
+        axios.post(`http://localhost:3000/api/v1/demo-requests`, data)
         .then((res) => {
             console.log(res.data)
             setFormStatus("success")

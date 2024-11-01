@@ -22,7 +22,7 @@ const ProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
-    axios.get(`https://intern-final-project.onrender.com/api/v1/projects/${id}`)
+    axios.get(`http://localhost:3000/api/v1/projects/${id}`)
     .then((res) => {
       console.log(res.data)
       setProject(res.data.project)

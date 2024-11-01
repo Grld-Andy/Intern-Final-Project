@@ -24,7 +24,7 @@ const ProjectOverview: React.FC = () => {
     useEffect(() => {
       if(!id) return
       projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
-      axios.get(`https://intern-final-project.onrender.com/api/v1/projects/${id}`)
+      axios.get(`http://localhost:3000/api/v1/projects/${id}`)
       .then((res) => {
         console.log(res.data.project)
         setTitle(res.data.project.title)

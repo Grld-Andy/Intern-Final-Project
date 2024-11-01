@@ -24,7 +24,7 @@ const Projects: React.FC = () => {
         e.preventDefault()
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`https://intern-final-project.onrender.com/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`)
+        axios.get(`http://localhost:3000/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`)
         .then((res) => {
             console.log(res.data)
             if(res.data){
@@ -38,7 +38,7 @@ const Projects: React.FC = () => {
     }
 
     useEffect(() => {
-        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}`)
+        axios.get(`http://localhost:3000/api/v1/projects?limit=${limit}`)
         .then((res) => {
             if(res.data){
                 console.log(res.data)
@@ -55,7 +55,7 @@ const Projects: React.FC = () => {
     useEffect(() => {
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`https://intern-final-project.onrender.com/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
+        axios.get(`http://localhost:3000/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
         .then((res) => {
             console.log(res.data)
             if(res.data){

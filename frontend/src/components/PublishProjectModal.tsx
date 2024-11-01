@@ -35,13 +35,13 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
             console.log(projectForm)
 
             if(id){
-                await axios.patch(`https://intern-final-project.onrender.com/api/v1/projects/${id}`, formData, {
+                await axios.patch(`http://localhost:3000/api/v1/projects/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
             }else{
-                await axios.post('https://intern-final-project.onrender.com/api/v1/projects', formData, {
+                await axios.post('http://localhost:3000/api/v1/projects', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
