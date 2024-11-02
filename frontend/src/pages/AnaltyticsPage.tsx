@@ -19,19 +19,19 @@ export default function AnaltyticsPage() {
             if (!user || user == null) {
                 try {
                     console.log("Checking user")
-                    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
+                    axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
                         console.log("Response data", res)
                         if (res.data.user != null) {
                             userDispatch({ type: 'LOGIN', payload: res.data.user })
                         }
                         else{
-                            window.open('http://localhost:3000/auth/microsoft', '_self')
+                            window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
                     }).catch((err) => {
                         console.log("Error", err);
                         if(err.response && err.response.status == 401) {
-                            window.open('http://localhost:3000/auth/microsoft', '_self')
+                            window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
                     })
                 } catch (err) {
@@ -44,12 +44,12 @@ export default function AnaltyticsPage() {
     }, [navigate, user, userDispatch])
 
     const login = () => {
-        window.open('http://localhost:3000/auth/microsoft', '_self')
+        window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
     }
 
     const logout = () => {
         userDispatch({ type: 'LOGOUT', payload: null })
-        window.location.href = 'http://localhost:3000/logout'
+        window.location.href = 'https://intern-final-project.onrender.com/logout'
     }
 
     return (
