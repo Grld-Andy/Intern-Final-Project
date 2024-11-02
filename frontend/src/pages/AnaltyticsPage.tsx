@@ -18,14 +18,19 @@ export default function AnaltyticsPage() {
             console.log(user)
             if (!user || user == null) {
                 try {
+<<<<<<< HEAD
                     console.log("Checking user")
                     axios.get('https://intern-final-project.onrender.com/api/v1/auth/user', { withCredentials: true})
+=======
+                    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
+>>>>>>> e54f85b839e792cbf44ee9c7c097e82fdfc30c1a
                     .then((res) => {
                         console.log("Response data", res)
                         if (res.data.user != null) {
                             userDispatch({ type: 'LOGIN', payload: res.data.user })
                         }
                         else{
+<<<<<<< HEAD
                             window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
                     }).catch((err) => {
@@ -33,6 +38,13 @@ export default function AnaltyticsPage() {
                         if(err.response && err.response.status == 401) {
                             window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
                         }
+=======
+                            navigate('/auth')
+                        }
+                    }).catch((err) => {
+                        console.log("Error", err);
+                        navigate('/auth')
+>>>>>>> e54f85b839e792cbf44ee9c7c097e82fdfc30c1a
                     })
                 } catch (err) {
                     console.error(err)
@@ -43,10 +55,13 @@ export default function AnaltyticsPage() {
         checkUser()
     }, [navigate, user, userDispatch])
 
+<<<<<<< HEAD
     const login = () => {
         window.open('https://intern-final-project.onrender.com/auth/microsoft', '_self')
     }
 
+=======
+>>>>>>> e54f85b839e792cbf44ee9c7c097e82fdfc30c1a
     const logout = () => {
         userDispatch({ type: 'LOGOUT', payload: null })
         window.location.href = 'https://intern-final-project.onrender.com/logout'
@@ -58,8 +73,6 @@ export default function AnaltyticsPage() {
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
                     Welcome to Dashboard, {user?.name || user?.email} 👋
                 </h1>
-                <button onClick={login}>Login</button> <br />
-
                 <button onClick={logout}>logout</button>
                 <h2 className="text-[#344054] text-[16px] font-[500]">
                     Website Audience Metrics
