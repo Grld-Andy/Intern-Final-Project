@@ -8,6 +8,8 @@ import axios from "axios"
 import Project from "../models/Project"
 import Footer from "../components/Footer"
 import projectStacks from "../utils/projectStacks"
+import FilterCheckbox from "../components/ProjectsPage/FilterCheckbox"
+import RadioButton from "../components/ProjectsPage/RadioButton"
 
 const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Array<Project>>([])
@@ -26,7 +28,6 @@ const Projects: React.FC = () => {
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
         axios.get(`http://localhost:3000/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`)
         .then((res) => {
-            console.log(res.data)
             if(res.data){
                 setProjects(res.data.projects)
                 setPage(1)
@@ -41,7 +42,6 @@ const Projects: React.FC = () => {
         axios.get(`http://localhost:3000/api/v1/projects?limit=${limit}`)
         .then((res) => {
             if(res.data){
-                console.log(res.data)
                 setProjects(res.data.projects)
                 setTotalProjects(res.data.totalProjects)
             }
@@ -59,7 +59,6 @@ const Projects: React.FC = () => {
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
         axios.get(`http://localhost:3000/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
         .then((res) => {
-            console.log(res.data)
             if(res.data){
                 setProjects(res.data.projects)
             }
@@ -73,7 +72,6 @@ const Projects: React.FC = () => {
     }
 
     const updateFilters = (value:string) => {
-        console.log(`update filters: ${filters} with ${value}`)
         if(filters.includes(value)) {
             setFilters(filters.filter((filter) => filter !== value))
         } else {
@@ -94,8 +92,6 @@ const Projects: React.FC = () => {
 
   return (
     <div className="text-[#344054] bg-[#F9FAFB]">
-        <h1>prev search {prevSearch.current}</h1>
-
         {/* hero image and search bar */}
         <div className="bg-[linear-gradient(#17020266,#17020266),url('/Projects_page/project_hero.jpg')] bg-cover bg-[10%_25%] flex flex-col justify-center items-center relative w-full h-[482px] mb-20">
             <h1 className="text-white text-[38px] font-bold">Projects</h1>
@@ -119,10 +115,7 @@ const Projects: React.FC = () => {
                     <h1 className="font-medium text-[16px] leading-7 p-1 text-[#1d2939]">Stack</h1>
                     <div className="flex flex-col gap-4 p-1">
                         {projectStacks.map((stack:string, index:number) => (
-                            <div key={index} className="flex gap-2 items-center">
-                                <input onClick={() => updateFilters(stack)} type="checkbox" value={stack} checked={filters.includes(stack)} id={stack} className="w-4 h-4 cursor-pointer" />
-                                <label htmlFor={stack} className="text-sm font-normal text-[#667085] cursor-pointer leading-5">{stack}</label>
-                            </div>
+                            <FilterCheckbox checked={filters.includes(stack)} key={index} stack={stack} updateFilters={updateFilters}/>
                         ))}
                     </div>
                 </div>
@@ -133,10 +126,7 @@ const Projects: React.FC = () => {
                     <h1 className="font-medium text-base leading-6 text-[#1d2939]">Date</h1>
                     <div className="flex flex-col gap-4 p-1">
                         {["Sort by most recent", "Sort by oldest first"].map((sortBy, index) => (
-                            <div key={index} className="flex gap-2 items-center">
-                                <input type="radio" id={sortBy} value={sortBy} onClick={() => setSort(sortBy)} name="sort" className="w-4 h-4 cursor-pointer" />
-                                <label htmlFor={sortBy} className="text-sm font-normal text-[#667085] cursor-pointer leading-5">{sortBy}</label>
-                            </div>
+                            <RadioButton checked={sortBy === sort} key={index} sortBy={sortBy} setSort={setSort}/>
                         ))}
                     </div>
                 </div>

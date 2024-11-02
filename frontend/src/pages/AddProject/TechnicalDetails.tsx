@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Project from '../../models/Project'
 import projectStacks from '../../utils/projectStacks'
 import MyEditor from '../../components/MyEditor'
+import validateProjectTechnicalDetailsForm from "../../utils/validateProjectTechnicalDetailsForm"
 
 const TechnicalDetails: React.FC = () => {
     const [video, setVideo] = useState<string>("")
@@ -17,6 +18,7 @@ const TechnicalDetails: React.FC = () => {
     const [contributorsList, setContributorsList] = useState<Array<string>>([])
     const [linkedDocs, setLinkedDocs] = useState<string>("")
     const {projectForm, projectFormDispatch} = useContext(ProjectFormContext)
+    const [error, setError] = useState<string>("")
     const navigate = useNavigate()
     const {id} = useParams()
   
@@ -113,12 +115,16 @@ const TechnicalDetails: React.FC = () => {
             developmentstack: developmentstacks,
             linkeddocs: linkedDocs
         }
-        projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
-        scrollTo(0, 0)
-        if(id)
-            navigate(`/edit-project/preview/${id}`)
-        else
-            navigate('/add-project/preview')
+        const formError = validateProjectTechnicalDetailsForm(data)
+        setError(formError)
+        if(!formError){
+            projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
+            scrollTo(0, 0)
+            if(id)
+                navigate(`/edit-project/preview/${id}`)
+            else
+                navigate('/add-project/preview')
+        }
     }
 
   return (
@@ -212,6 +218,14 @@ const TechnicalDetails: React.FC = () => {
                         Save & continue
                     </button>
                 </div>
+                {
+                    error &&
+                    <div className="relative bottom-[10px] w-full flex justify-end text-red-700 font-semibold text-sm leading-5">
+                        <div className="cursor-default">
+                            {error}
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
