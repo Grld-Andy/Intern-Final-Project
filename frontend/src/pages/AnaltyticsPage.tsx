@@ -18,7 +18,6 @@ export default function AnaltyticsPage() {
             console.log(user)
             if (!user || user == null) {
                 try {
-                    console.log("Checking user")
                     axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
                     .then((res) => {
                         console.log("Response data", res)
@@ -26,13 +25,11 @@ export default function AnaltyticsPage() {
                             userDispatch({ type: 'LOGIN', payload: res.data.user })
                         }
                         else{
-                            window.open('http://localhost:3000/auth/microsoft', '_self')
+                            navigate('/auth')
                         }
                     }).catch((err) => {
                         console.log("Error", err);
-                        if(err.response && err.response.status == 401) {
-                            window.open('http://localhost:3000/auth/microsoft', '_self')
-                        }
+                        navigate('/auth')
                     })
                 } catch (err) {
                     console.error(err)
@@ -42,10 +39,6 @@ export default function AnaltyticsPage() {
         }
         checkUser()
     }, [navigate, user, userDispatch])
-
-    const login = () => {
-        window.open('http://localhost:3000/auth/microsoft', '_self')
-    }
 
     const logout = () => {
         userDispatch({ type: 'LOGOUT', payload: null })
@@ -58,8 +51,6 @@ export default function AnaltyticsPage() {
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
                     Welcome to Dashboard, {user?.name || user?.email} 👋
                 </h1>
-                <button onClick={login}>Login</button> <br />
-
                 <button onClick={logout}>logout</button>
                 <h2 className="text-[#344054] text-[16px] font-[500]">
                     Website Audience Metrics

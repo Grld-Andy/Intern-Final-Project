@@ -5,6 +5,7 @@ import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined'
 import AddProjectHeader from '../../components/AddProject/AddProjectHeader'
 import { ProjectFormContext } from '../../contexts/ProjectFormContext'
 import Project from '../../models/Project'
+import validateProjectOverviewForm from '../../utils/validateProjectOverviewForm'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 
@@ -18,15 +19,14 @@ const ProjectOverview: React.FC = () => {
     const [description, setDescription] = useState<string>("")
     const {projectFormDispatch} = useContext(ProjectFormContext)
     const navigate = useNavigate()
+    const [error, setError] = useState<string>("")
     const {id} = useParams()
-    // cc243597-8698-43a8-a609-27a43563c6b7
   
     useEffect(() => {
       if(!id) return
       projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
       axios.get(`http://localhost:3000/api/v1/projects/${id}`, { withCredentials: true })
       .then((res) => {
-        console.log(res.data.project)
         setTitle(res.data.project.title)
         setDescription(res.data.project.description)
         setImage(res.data.project.coverphotourl)
@@ -112,11 +112,15 @@ const ProjectOverview: React.FC = () => {
             projectfeatures: projectfeatures,
             improvementareas: futureupdates
         }
-        projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
-        if(id)
-            navigate(`/edit-project/technical-details/${id}`)
-        else
-            navigate('/add-project/technical-details')
+        const formError: string = validateProjectOverviewForm(data)
+        setError(formError)
+        if(!formError){
+            projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
+            if(id)
+                navigate(`/edit-project/technical-details/${id}`)
+            else
+                navigate('/add-project/technical-details')
+        }
     }
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -174,7 +178,7 @@ const ProjectOverview: React.FC = () => {
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Project features</h1>
                     <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
-                            <input onKeyUp={(e) => e.key === "Enter" && addFeature()} value={projectFeature} onChange={(e) => setProjectFeature(e.target.value)} type="text" placeholder="Enter project features" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
+                            <input onKeyUp={(e) => e.key === "Enter" && projectFeature && addFeature()} value={projectFeature} onChange={(e) => setProjectFeature(e.target.value)} type="text" placeholder="Enter project features" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button onClick={addFeature} className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
                         </div>
                         {
@@ -200,7 +204,7 @@ const ProjectOverview: React.FC = () => {
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Areas of Improvement/Future Updates</h1>
                     <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg'>
                         <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
-                            <input onKeyUp={(e) => e.key === "Enter" && addFutureUpdate()} value={futureUpdate} onChange={(e) => setFutureUpdate(e.target.value)} type="text" placeholder="Enter future updates" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
+                            <input onKeyUp={(e) => e.key === "Enter" && futureUpdate && addFutureUpdate()} value={futureUpdate} onChange={(e) => setFutureUpdate(e.target.value)} type="text" placeholder="Enter future updates" className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button onClick={addFutureUpdate} className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
                         </div>
                         {
@@ -230,6 +234,14 @@ const ProjectOverview: React.FC = () => {
                         Save & continue
                     </button>
                 </div>
+                {
+                    error &&
+                    <div className="relative bottom-[10px] w-full flex justify-end text-red-700 font-semibold text-sm leading-5">
+                        <div className="cursor-default">
+                            {error}
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
