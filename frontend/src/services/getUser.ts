@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const getUser = () => {
-    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/user`, { withCredentials: true})
     .then((res) => {
         console.log("Response data", res)
         if (res.data.user != null) {

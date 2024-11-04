@@ -12,20 +12,22 @@ import Footer from "../../components/Footer"
 import {ProjectFormContext} from "../../contexts/ProjectFormContext"
 import getProjectCreationString from "../../utils/getProjectCreationString"
 import getFormattedLastModifiedDate from "../../utils/getFormattedLastModifiedDate"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
-const AddProjectPreview: React.FC = () => {
+const EditProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const {projectForm} = useContext(ProjectFormContext)
   const [fullDescription, setFullDescription] = useState<boolean>(false)
   const navigate = useNavigate()
+  const {id} = useParams()
 
   useEffect(() => {
     scrollTo(0, 0)
     if(!projectForm?.title){
-      navigate('/add-project/project-overview')
+      if(id)
+        navigate(`/edit-project/project-overview/${id}`)
     }
-  }, [navigate, projectForm])
+  }, [navigate, projectForm, id])
 
   const handleShowModal = (show: boolean) => {
     setShowModal(show)
@@ -35,7 +37,7 @@ const AddProjectPreview: React.FC = () => {
     <>
       {
         showModal && 
-        <PublishProjectModal handleShowModal={handleShowModal}/>
+        <PublishProjectModal handleShowModal={handleShowModal} id={id}/>
       }
       <div className={`project-preview bg-[#F9FAFB] ${showModal && "h-[89vh] overflow-hidden"}`}>
         {/* project progress */}
@@ -43,18 +45,18 @@ const AddProjectPreview: React.FC = () => {
           <div className="flex justify-between">
             <div className="flex gap-[8px] flex-col">
               <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">
-                Add Project
+                Edit Project
               </h1>
               <div className="flex gap-[8px] items-center">
                 <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Projects</h2>
                 <ChevronRightIcon style={{width: "16px", height: "16px", color: "#667085", position: "relative", top: "1px"}}/>
                 <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">
-                  Add Project
+                  Edit Project
                 </h2>
               </div>
             </div>
             <button onClick={() => {handleShowModal(true)}} className="bg-[#1570ef] h-[40px] w-[128px] rounded-lg text-white flex justify-center items-center font-semibold text-[14px] leading-[20px]">
-              Publish Project
+              Update Project
             </button>
           </div>
           <div className="flex gap-[24px] md:justify-normal justify-between">
@@ -239,4 +241,4 @@ const AddProjectPreview: React.FC = () => {
   )
 }
 
-export default AddProjectPreview
+export default EditProjectPreview

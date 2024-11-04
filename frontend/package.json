@@ -18,7 +18,9 @@
     "@supabase/supabase-js": "^2.46.1",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
+    "cheerio": "^1.0.0",
     "frontend": "file:",
+    "pretty": "^2.0.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@types/pretty": "^2.0.3",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
