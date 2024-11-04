@@ -19,7 +19,13 @@ passport.use(new MicrosoftStrategy({
     clientID: process.env.MICROSOFT_CLIENT_ID,
     clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
     callbackURL: callbackURL,
-    scope: ['user.read']
+    scope: ['user.read'],
+    tenant: 'common',
+    authorizationURL: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+    tokenURL: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+    graphApiVersion: 'v1.0',
+    addUPNAsEmail: false,
+    apiEntryPoint: 'https://graph.microsoft.com'
 }, async (accessToken, refreshToken, profile, done) => {
     const client = await pool.connect();
     try {
