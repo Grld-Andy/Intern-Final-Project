@@ -1,56 +1,96 @@
-import { useContext, useEffect } from "react"
-import Acquisition from "../components/AnalyticsCards/Acquisition"
-import BrowsersCard from "../components/AnalyticsCards/BrowsersCard"
-import Cards from "../components/AnalyticsCards/Cards"
-import BasicBars from "../components/AnalyticsCards/Chartline"
-import SessionCard from "../components/AnalyticsCards/SessionCard"
-import VisitCharts from "../components/AnalyticsCards/VisitCharts"
-import { UserContext } from "../contexts/UserContext"
-import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useContext, useEffect } from "react";
+import Acquisition from "../components/AnalyticsCards/Acquisition";
+import BrowsersCard from "../components/AnalyticsCards/BrowsersCard";
+import Cards from "../components/AnalyticsCards/Cards";
+import BasicBars from "../components/AnalyticsCards/Chartline";
+import SessionCard from "../components/AnalyticsCards/SessionCard";
+import VisitCharts from "../components/AnalyticsCards/VisitCharts";
+import { UserContext } from "../contexts/UserContext";
+import { createClient, Session } from "@supabase/supabase-js";
+import { useNavigate } from "react-router-dom";
 
-export default function AnaltyticsPage() {
-    const { user, userDispatch } = useContext(UserContext)
-    const navigate = useNavigate()
+
+// Initialize Supabase client
+const supabase = createClient(
+    "https://hgswyktwrjvtofjfxwlp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnc3d5a3R3cmp2dG9mamZ4d2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAyMTIzMzYsImV4cCI6MjA0NTc4ODMzNn0.xKQhy8kJ-nCS0wU0jPed7bB7Ymmg7zz27PwdUeO_DJo"
+);
+
+export default function AnalyticsPage() {
+    const { user, userDispatch } = useContext(UserContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const checkUser = () => {
-            console.log(user)
-            if (!user || user == null) {
-                try {
-                    console.log("Checking user")
-                    axios.get('http://localhost:3000/api/v1/auth/user', { withCredentials: true})
-                    .then((res) => {
-                        console.log("Response data", res)
-                        if (res.data.user != null) {
-                            userDispatch({ type: 'LOGIN', payload: res.data.user })
-                        }
-                        else{
-                            window.open('http://localhost:3000/auth/microsoft', '_self')
-                        }
-                    }).catch((err) => {
-                        console.log("Error", err);
-                        if(err.response && err.response.status == 401) {
-                            window.open('http://localhost:3000/auth/microsoft', '_self')
-                        }
-                    })
-                } catch (err) {
-                    console.error(err)
-                    navigate("/")
+        // Handle authentication state change
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+            async (event, session) => {
+                if (session) {
+                    // Update context and save user in local storage if session exists
+                    userDispatch({ type: "LOGIN", payload: session.user });
+                    localStorage.setItem("user", JSON.stringify(session.user));
+                    console.log("User details:", session.user);
+                } else {
+                    // Redirect to login if no active session
+                    login();
                 }
             }
+        );
+
+        // Check if there's an active session on component mount
+        const checkUser = async () => {
+            try {
+                const {
+                    data: { session },
+                    error,
+                } = await supabase.auth.getSession();
+                if (error) throw error;
+
+                if (session) {
+                    // Update context and local storage if session exists
+                    userDispatch({ type: "LOGIN", payload: session.user });
+                    localStorage.setItem("user", JSON.stringify(session.user));
+                } else {
+                    login();
+                }
+            } catch (err) {
+                console.error("Error fetching user:", err);
+                navigate("/");
+            }
+        };
+
+        checkUser();
+
+        // Cleanup listener on component unmount
+        return () => {
+            authListener.subscription.unsubscribe();
+        };
+    }, [navigate, userDispatch]);
+
+    const login = async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: "azure",
+            options: {
+                redirectTo: "http://localhost:5173/admin",
+            }
+        });
+        if (error) {
+            console.error("Login error:", error);
+        } else {
+            const token = data?.session?.access_token;
+            if (token) {
+              // Store the token in local storage
+              localStorage.setItem("accessToken", token);
+              console.log("User logged in:", data.user);
+            }
         }
-        checkUser()
-    }, [navigate, user, userDispatch])
+    };
 
-    const login = () => {
-        window.open('http://localhost:3000/auth/microsoft', '_self')
-    }
-
-    const logout = () => {
-        userDispatch({ type: 'LOGOUT', payload: null })
-        window.location.href = 'http://localhost:3000/logout'
-    }
+    const logout = async () => {
+        await supabase.auth.signOut();
+        userDispatch({ type: "LOGOUT", payload: null });
+        localStorage.removeItem("user");
+        navigate("/");
+    };
 
     return (
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
@@ -59,8 +99,7 @@ export default function AnaltyticsPage() {
                     Welcome to Dashboard, {user?.name || user?.email} 👋
                 </h1>
                 <button onClick={login}>Login</button> <br />
-
-                <button onClick={logout}>logout</button>
+                <button onClick={logout}>Logout</button>
                 <h2 className="text-[#344054] text-[16px] font-[500]">
                     Website Audience Metrics
                 </h2>
@@ -90,5 +129,5 @@ export default function AnaltyticsPage() {
                 <BasicBars />
             </div>
         </div>
-    )
+    );
 }
