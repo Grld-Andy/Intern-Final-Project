@@ -13,6 +13,7 @@ import Project from "../models/Project"
 import Footer from "../components/Footer"
 import getProjectCreationString from "../utils/getProjectCreationString"
 import getFormattedLastModifiedDate from "../utils/getFormattedLastModifiedDate"
+import parseLinkedDocs from "../utils/parseLinkedDocs"
 
 const ProjectPreview: React.FC = () => {
   const {user} = useContext(UserContext)
@@ -22,10 +23,11 @@ const ProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/v1/projects/${id}`)
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/${id}`)
     .then((res) => {
       console.log(res.data)
       setProject(res.data.project)
+      parseLinkedDocs(res.data.project?.linkeddocs)
     }).catch((err) => {
       console.error(err)
     })
@@ -103,7 +105,7 @@ const ProjectPreview: React.FC = () => {
                       {
                         fullDescription ?
                         <span onClick={() => setFullDescription(false)} className="font-semibold cursor-pointer text-[#1570ef]">See less</span>:
-                        <span onClick={() => setFullDescription(true)} className="font-semibold cursor-pointer text-[#1570ef]">See more...</span>
+                        <span onClick={() => setFullDescription(true)} className="font-semibold cursor-pointer text-[#1570ef]">See more</span>
                       }
                     </>
                   }

@@ -9,7 +9,7 @@ import validateProjectOverviewForm from '../../utils/validateProjectOverviewForm
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 
-const ProjectOverview: React.FC = () => {
+const EditProjectOverview: React.FC = () => {
     const [image, setImage] = useState<string>("")
     const [title, setTitle] = useState<string>("")
     const [projectFeature, setProjectFeature] = useState<string>("")
@@ -25,7 +25,7 @@ const ProjectOverview: React.FC = () => {
     useEffect(() => {
       if(!id) return
       projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
-      axios.get(`http://localhost:3000/api/v1/projects/${id}`, { withCredentials: true })
+      axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/${id}`, { withCredentials: true })
       .then((res) => {
         setTitle(res.data.project.title)
         setDescription(res.data.project.description)
@@ -80,25 +80,13 @@ const ProjectOverview: React.FC = () => {
     }
 
     const stepBack = () => {
-        if(id)
+        if(id){
+            projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
             navigate(`/projects/${id}`)
-        else
-            clearFields()
-    }
-
-    const clearFields = () => {
-        setTitle("")
-        setProjectFeature("")
-        setProjectFeatureList([])
-        setFutureUpdate("")
-        setFutureUpdateList([])
-        setDescription("")
-        projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
+        }
     }
 
     const handleSubmit = () => {
-        if(!id)
-            projectFormDispatch({type: "CLEAR_PROJECT", payload: null})
         const projectfeatures = projectFeatureList.map((feature) => {
             return {featureName: feature}
         })
@@ -118,8 +106,6 @@ const ProjectOverview: React.FC = () => {
             projectFormDispatch({type: "UPDATE_PROJECT", payload: data})
             if(id)
                 navigate(`/edit-project/technical-details/${id}`)
-            else
-                navigate('/add-project/technical-details')
         }
     }
 
@@ -248,4 +234,4 @@ const ProjectOverview: React.FC = () => {
   )
 }
 
-export default ProjectOverview
+export default EditProjectOverview

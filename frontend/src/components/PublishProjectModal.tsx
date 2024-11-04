@@ -33,14 +33,14 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
             console.log(projectForm)
 
             if(id){
-                await axios.patch(`http://localhost:3000/api/v1/projects/${id}`, formData, {
+                await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     },
                     withCredentials: true
                 })
             }else{
-                await axios.post('http://localhost:3000/api/v1/projects', formData, {
+                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     },
