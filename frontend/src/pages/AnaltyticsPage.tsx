@@ -6,15 +6,9 @@ import BasicBars from "../components/AnalyticsCards/Chartline";
 import SessionCard from "../components/AnalyticsCards/SessionCard";
 import VisitCharts from "../components/AnalyticsCards/VisitCharts";
 import { UserContext } from "../contexts/UserContext";
-import { createClient, Session } from "@supabase/supabase-js";
+import { supabase } from "../supabase";
 import { useNavigate } from "react-router-dom";
 
-
-// Initialize Supabase client
-const supabase = createClient(
-    "https://hgswyktwrjvtofjfxwlp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhnc3d5a3R3cmp2dG9mamZ4d2xwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAyMTIzMzYsImV4cCI6MjA0NTc4ODMzNn0.xKQhy8kJ-nCS0wU0jPed7bB7Ymmg7zz27PwdUeO_DJo"
-);
 
 export default function AnalyticsPage() {
     const { user, userDispatch } = useContext(UserContext);
