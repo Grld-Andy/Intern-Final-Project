@@ -20,12 +20,13 @@ export default function AnalyticsPage() {
             async (event, session) => {
                 if (session) {
                     // Update context and save user in local storage if session exists
+                    console.log(session)
                     userDispatch({ type: "LOGIN", payload: session.user });
                     localStorage.setItem("user", JSON.stringify(session.user));
                     console.log("User details:", session.user);
                 } else {
                     // Redirect to login if no active session
-                    login();
+                    navigate('/auth');
                 }
             }
         );
@@ -44,7 +45,7 @@ export default function AnalyticsPage() {
                     userDispatch({ type: "LOGIN", payload: session.user });
                     localStorage.setItem("user", JSON.stringify(session.user));
                 } else {
-                    login();
+                    navigate('/auth');
                 }
             } catch (err) {
                 console.error("Error fetching user:", err);
@@ -60,25 +61,6 @@ export default function AnalyticsPage() {
         };
     }, [navigate, userDispatch]);
 
-    const login = async () => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: "azure",
-            options: {
-                redirectTo: "http://localhost:5173/admin",
-            }
-        });
-        if (error) {
-            console.error("Login error:", error);
-        } else {
-            const token = data?.session?.access_token;
-            if (token) {
-              // Store the token in local storage
-              localStorage.setItem("accessToken", token);
-              console.log("User logged in:", data.user);
-            }
-        }
-    };
-
     const logout = async () => {
         await supabase.auth.signOut();
         userDispatch({ type: "LOGOUT", payload: null });
@@ -92,7 +74,6 @@ export default function AnalyticsPage() {
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
                     Welcome to Dashboard, {user?.name || user?.email} 👋
                 </h1>
-                <button onClick={login}>Login</button> <br />
                 <button onClick={logout}>Logout</button>
                 <h2 className="text-[#344054] text-[16px] font-[500]">
                     Website Audience Metrics
@@ -102,7 +83,7 @@ export default function AnalyticsPage() {
                 </h3>
             </div>
 
-            <div className="lg:flex grid grid-cols-2 gap-4 lg:flex-row lg:gap-10 lg:gap-[32px]">
+            <div className="lg:flex grid grid-cols-2 gap-4 lg:flex-row lg:gap-[32px]">
                 <Cards title="Total Visitors" content="13,596" />
                 <Cards title="Page Views" content="13,596" />
                 <Cards title="Page Sessions" content="16,596" />

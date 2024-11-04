@@ -12,23 +12,20 @@ import Footer from "../../components/Footer"
 import {ProjectFormContext} from "../../contexts/ProjectFormContext"
 import getProjectCreationString from "../../utils/getProjectCreationString"
 import getFormattedLastModifiedDate from "../../utils/getFormattedLastModifiedDate"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const AddProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const {projectForm} = useContext(ProjectFormContext)
   const [fullDescription, setFullDescription] = useState<boolean>(false)
   const navigate = useNavigate()
-  const {id} = useParams()
 
   useEffect(() => {
     scrollTo(0, 0)
     if(!projectForm?.title){
-      if(id)
-        navigate(`/edit-project/project-overview/${id}`)
       navigate('/add-project/project-overview')
     }
-  }, [navigate, projectForm, id])
+  }, [navigate, projectForm])
 
   const handleShowModal = (show: boolean) => {
     setShowModal(show)
@@ -38,7 +35,7 @@ const AddProjectPreview: React.FC = () => {
     <>
       {
         showModal && 
-        <PublishProjectModal handleShowModal={handleShowModal} id={id}/>
+        <PublishProjectModal handleShowModal={handleShowModal}/>
       }
       <div className={`project-preview bg-[#F9FAFB] ${showModal && "h-[89vh] overflow-hidden"}`}>
         {/* project progress */}
@@ -46,24 +43,18 @@ const AddProjectPreview: React.FC = () => {
           <div className="flex justify-between">
             <div className="flex gap-[8px] flex-col">
               <h1 className="text-[24px] leading-[32px] font-bold text-[#344054]">
-                {
-                  id?<>Edit Project</>:<>Add Project</>
-                }
+                Add Project
               </h1>
               <div className="flex gap-[8px] items-center">
                 <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">Projects</h2>
                 <ChevronRightIcon style={{width: "16px", height: "16px", color: "#667085", position: "relative", top: "1px"}}/>
                 <h2 className="text-[12px] leading-[18px] font-medium text-[#667085]">
-                  {
-                    id?<>Edit Project</>:<>Add Project</>
-                  }
+                  Add Project
                 </h2>
               </div>
             </div>
             <button onClick={() => {handleShowModal(true)}} className="bg-[#1570ef] h-[40px] w-[128px] rounded-lg text-white flex justify-center items-center font-semibold text-[14px] leading-[20px]">
-              {
-                id?<>Update Project</>:<>Publish Project</>
-              }
+              Publish Project
             </button>
           </div>
           <div className="flex gap-[24px] md:justify-normal justify-between">

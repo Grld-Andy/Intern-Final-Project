@@ -10,6 +10,7 @@ import Footer from "../components/Footer"
 import projectStacks from "../utils/projectStacks"
 import FilterCheckbox from "../components/ProjectsPage/FilterCheckbox"
 import RadioButton from "../components/ProjectsPage/RadioButton"
+import ProjectsSkeletonGrid from "../components/ProjectsPage/ProjectsSkeletonGrid"
 
 const Projects: React.FC = () => {
     const [projects, setProjects] = useState<Array<Project>>([])
@@ -19,6 +20,7 @@ const Projects: React.FC = () => {
     const [page, setPage] = useState<number>(1)
     const [search, setSearch] = useState<string>("")
     const {user} = useContext(UserContext)
+    const [status, setStatus] = useState<string>("loading")
     const limit = 6
     const prevSearch = useRef<string>("")
 
@@ -26,44 +28,51 @@ const Projects: React.FC = () => {
         e.preventDefault()
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`http://localhost:3000/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`)
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`)
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
                 setPage(1)
                 setTotalProjects(res.data.totalProjects)
+                setStatus("done")
             }
         }).catch((err) => {
             console.error(err)
+            setStatus("failed")
         })
     }
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/v1/projects?limit=${limit}`)
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects?limit=${limit}`)
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
                 setTotalProjects(res.data.totalProjects)
+                setStatus("done")
             }
         })
         .catch((err) => {
             setProjects([])
             console.error(err)
+            setStatus("failed")
         })
     }, [])
 
     useEffect(() => {
+        setStatus("loading")
         setPage(prevSearch.current == search ? page : 1)
         prevSearch.current = search
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`http://localhost:3000/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
+                setStatus("done")
             }
         }).catch((err) => {
             console.error(err)
+            setStatus("failed")
         })
     }, [sort, filters, page, search])
 
@@ -151,15 +160,26 @@ const Projects: React.FC = () => {
                 </div>
 
                 {/* projects grid */}
-                <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8">
-                    {
-                        projects.length === 0 ?
-                        <h1 className="text-[#344054] font-semibold text-xl">No projects found</h1>
-                        :projects.map((project, index) => (
-                            <ProjectCell project={project} key={index}/>
-                        ))
-                    }
-                </div>
+                {
+                    status === "loading"?
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8 h-[2290px] lg:h-[742px] md:h-[1129px]">
+                        {
+                            Array.from({length: 6}).map((_, index) => (
+                                <ProjectsSkeletonGrid key={index}/>
+                            ))
+                        }
+                    </div>:
+                    status === "done"?
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8 min-h-[660px]">
+                        {
+                            projects.length === 0 ?
+                            <h1 className="text-[#344054] font-semibold text-xl">No projects found</h1>
+                            :projects.map((project, index) => (
+                                <ProjectCell project={project} key={index}/>
+                            ))
+                        }
+                    </div>:<h1 className="text-[#344054] font-semibold text-xl">No projects found</h1>
+                }
                 <hr />
 
                 {/* pagination */}

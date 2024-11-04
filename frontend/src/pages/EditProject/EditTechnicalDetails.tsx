@@ -10,7 +10,7 @@ import projectStacks from '../../utils/projectStacks'
 import MyEditor from '../../components/MyEditor'
 import validateProjectTechnicalDetailsForm from "../../utils/validateProjectTechnicalDetailsForm"
 
-const TechnicalDetails: React.FC = () => {
+const EditTechnicalDetails: React.FC = () => {
     const [video, setVideo] = useState<string>("")
     const [developmentStack, setDevelopmentStack] = useState<string>("")
     const [developmentStackList, setDevelopmentStackList] = useState<Array<string|undefined>>([])
@@ -37,7 +37,6 @@ const TechnicalDetails: React.FC = () => {
         if(!projectForm?.title){
             if(id)
                 navigate(`/edit-project/project-overview/${id}`)
-            navigate('/add-project/project-overview')
         }
     }, [id, navigate, projectForm])
 
@@ -46,7 +45,6 @@ const TechnicalDetails: React.FC = () => {
     }
     
     const toggleDevelopmentStack = (clickedStack: string) => {
-        console.log(clickedStack)
         if (isSelected(clickedStack)){
             removeDevelopmentStack(clickedStack)
         }else{
@@ -104,7 +102,6 @@ const TechnicalDetails: React.FC = () => {
             navigate(`/edit-project/project-overview/${id}`)
             return
         }
-        navigate('/add-project/project-overview')
     }
     const handleSubmit = () => {
         const developmentstacks = developmentStackList.map((stack) => {
@@ -122,8 +119,6 @@ const TechnicalDetails: React.FC = () => {
             scrollTo(0, 0)
             if(id)
                 navigate(`/edit-project/preview/${id}`)
-            else
-                navigate('/add-project/preview')
         }
     }
 
@@ -232,4 +227,4 @@ const TechnicalDetails: React.FC = () => {
   )
 }
 
-export default TechnicalDetails
+export default EditTechnicalDetails
