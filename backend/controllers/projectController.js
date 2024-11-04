@@ -1,6 +1,14 @@
 import { v2 as cloudinary } from 'cloudinary';
 import pg from 'pg';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path'; // Add this line
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
@@ -18,6 +26,13 @@ const pool = new pg.Pool({
     port: process.env.REMOTE_DB_PORT
 });
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
 
 const toCamelCase = (str) => {
     return str.replace(/([-_][a-z])/gi, ($1) => {
@@ -35,6 +50,17 @@ const keysToCamelCase = (obj) => {
         }, {});
     }
     return obj;
+};
+
+const sendEmail = (to, subject, html) => {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        html
+    };
+
+    return transporter.sendMail(mailOptions);
 };
 
 // Create a new project with related data
@@ -150,7 +176,8 @@ const getProjects = async (req, res) => {
 
         res.status(200).json({
             projects: keysToCamelCase(result.rows),
-            totalProjects
+            totalProjects,
+            filteredProjects: result.rows.length,
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -189,7 +216,6 @@ const updateProject = async (req, res) => {
     const { id } = req.params;
     const { title, description, coverPhotoUrl, coverPhotoPublicId, technicalDetailsVideoUrl, technicalDetailsVideoPublicId, projectFeatures, improvementAreas, developmentStack, linkedDocs } = req.body;
     const client = await pool.connect();
-    console.log(req.body)
     try {
         await client.query('BEGIN');
 
@@ -361,6 +387,8 @@ const getDemoRequests = async (req, res) => {
             totalPages: Math.ceil(totalDemoRequests / limit)
         });
     } catch (err) {
+        console.log(err.message);
+        
         res.status(500).json({ error: err.message });
     }
 };
@@ -369,6 +397,7 @@ const getDemoRequests = async (req, res) => {
 const updateDemoRequestStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
+
     try {
         const result = await pool.query(
             'UPDATE DemoRequest SET status = $1 WHERE id = $2 RETURNING *',
@@ -377,20 +406,40 @@ const updateDemoRequestStatus = async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Demo request not found' });
         }
-        res.status(200).json({ demoRequest: result.rows[0] });
+
+        const demoRequest = result.rows[0];
+        const { fullname, emailaddress, requestdate, requesttime } = demoRequest;
+
+        
+
+        let emailTemplatePath;
+        let emailSubject;
+        let emailHtml;
+
+        if (status === 'approved') {
+            emailTemplatePath = path.join(__dirname, '../templates/Emails/ApprovedDemo.html');
+            emailSubject = 'Your Demo Request has been Approved';
+        } else if (status === 'denied') {
+            emailTemplatePath = path.join(__dirname, '../templates/Emails/DeniedDemo.html');
+            emailSubject = 'Your Demo Request has been Denied';
+        }
+
+        if (emailTemplatePath) {
+            emailHtml = fs.readFileSync(emailTemplatePath, 'utf8');
+            emailHtml = emailHtml.replace('[User Name]', fullname)
+                                 .replace('[Insert Demo Date]', requestdate)
+                                 .replace('[Insert Demo Time]', requesttime)
+                                 .replace('[Link here]', 'https://www.google.com/meet/783687sbyu2');
+
+            await sendEmail(emailaddress, emailSubject, emailHtml);
+        }
+
+        res.status(200).json({ demoRequest });
     } catch (err) {
+        console.log(err.message);
+        
         res.status(500).json({ error: err.message });
     }
-}
-
-
-const getCurrentUser = (req, res) => {
-    // if (req.isAuthenticated()) {
-    console.log(req.cookie);
-    res.status(200).json({ user: req.user });
-    // } else {
-    //     res.status(401).json({ user: null });
-    // }
 };
 
 
@@ -402,6 +451,5 @@ export default {
     deleteProject,
     createDemoRequest,
     getDemoRequests,
-    updateDemoRequestStatus,
-    getCurrentUser
+    updateDemoRequestStatus
 };

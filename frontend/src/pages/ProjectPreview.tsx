@@ -103,7 +103,7 @@ const ProjectPreview: React.FC = () => {
                       {
                         fullDescription ?
                         <span onClick={() => setFullDescription(false)} className="font-semibold cursor-pointer text-[#1570ef]">See less</span>:
-                        <span onClick={() => setFullDescription(true)} className="font-semibold cursor-pointer text-[#1570ef]">See more...</span>
+                        <span onClick={() => setFullDescription(true)} className="font-semibold cursor-pointer text-[#1570ef]">See more</span>
                       }
                     </>
                   }

@@ -1,22 +1,14 @@
 /**
  * @swagger
- * components:
- *   securitySchemes:
- *     cookieAuth:
- *       type: apiKey
- *       in: cookie
- *       name: connect.sid
  *
  * /api/v1/projects:
  *   post:
  *     summary: Create a new project
  *     tags: [Projects]
- *     security:
- *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -44,19 +36,21 @@
  *               linkedDocs:
  *                 type: string
  *                 description: A URL to the linked documentation
- *               coverPhoto:
+ *               coverPhotoUrl:
  *                 type: string
- *                 format: binary
- *                 description: The cover photo file for the project
- *               technicalDetailsVideo:
+ *                 description: The URL of the cover photo
+ *               coverPhotoPublicId:
  *                 type: string
- *                 format: binary
- *                 description: The technical details video file for the project
+ *                 description: The public ID of the cover photo
+ *               technicalDetailsVideoUrl:
+ *                 type: string
+ *                 description: The URL of the technical details video
+ *               technicalDetailsVideoPublicId:
+ *                 type: string
+ *                 description: The public ID of the technical details video
  *     responses:
  *       201:
  *         description: Project created successfully
- *       400:
- *         description: Missing required files
  *       500:
  *         description: Internal server error
  *   get:
@@ -115,8 +109,6 @@
  *   patch:
  *     summary: Update a project by ID
  *     tags: [Projects]
- *     security:
- *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -127,7 +119,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -155,14 +147,18 @@
  *               linkedDocs:
  *                 type: string
  *                 description: A URL to the linked documentation
- *               coverPhoto:
+ *               coverPhotoUrl:
  *                 type: string
- *                 format: binary
- *                 description: The cover photo file for the project
- *               technicalDetailsVideo:
+ *                 description: The URL of the cover photo
+ *               coverPhotoPublicId:
  *                 type: string
- *                 format: binary
- *                 description: The technical details video file for the project
+ *                 description: The public ID of the cover photo
+ *               technicalDetailsVideoUrl:
+ *                 type: string
+ *                 description: The URL of the technical details video
+ *               technicalDetailsVideoPublicId:
+ *                 type: string
+ *                 description: The public ID of the technical details video
  *     responses:
  *       200:
  *         description: Project updated successfully
@@ -173,8 +169,6 @@
  *   delete:
  *     summary: Delete a project by ID
  *     tags: [Projects]
- *     security:
- *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -197,27 +191,27 @@
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
  *               projectId:
  *                 type: string
- *                 description: The ID of the project for which the demo is requested
+ *                 description: The ID of the project
  *               fullName:
  *                 type: string
- *                 description: Full name of the person requesting the demo
+ *                 description: The full name of the requester
  *               emailAddress:
  *                 type: string
- *                 description: Email address of the person requesting the demo
+ *                 description: The email address of the requester
  *               requestDate:
  *                 type: string
  *                 format: date
- *                 description: Date of the demo request
+ *                 description: The date of the demo request
  *               requestTime:
  *                 type: string
  *                 format: time
- *                 description: Time of the demo request
+ *                 description: The time of the demo request
  *               comments:
  *                 type: string
  *                 description: Additional comments for the demo request
@@ -229,8 +223,6 @@
  *   get:
  *     summary: Get all demo requests
  *     tags: [Demo Requests]
- *     security:
- *       - cookieAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -252,8 +244,6 @@
  *   patch:
  *     summary: Update the status of a demo request by ID
  *     tags: [Demo Requests]
- *     security:
- *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -270,46 +260,12 @@
  *             properties:
  *               status:
  *                 type: string
- *                 enum: [active, denied, approved]
  *                 description: The new status of the demo request
  *     responses:
  *       200:
  *         description: Demo request status updated successfully
  *       404:
  *         description: Demo request not found
- *       500:
- *         description: Internal server error
- * /api/v1/auth/user:
- *   get:
- *     summary: Get the currently authenticated user
- *     tags: [Authenticated User]
- *     security:
- *       - cookieAuth: []
- *     responses:
- *       200:
- *         description: The currently authenticated user
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     email:
- *                       type: string
- *                     name:
- *                       type: string
- *                     role:
- *                       type: string
- *                     profilePicture:
- *                       type: string
- *                     position:
- *                       type: string
- *       401:
- *         description: User not authenticated
  *       500:
  *         description: Internal server error
  */
