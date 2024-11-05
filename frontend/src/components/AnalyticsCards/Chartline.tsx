@@ -49,7 +49,7 @@ const Basicbars = () => {
         padding: 12,
         displayColors: false,
         callbacks: {
-          label: function(context: { parsed: { y:string }; }) {
+          label: function(context: { parsed: { y:number }; }) {
             return `Value: ${context.parsed.y}`;
           }
         }
@@ -88,7 +88,7 @@ const Basicbars = () => {
   return (
     <div className="w-full     p-6">
       <div className="mb-6">
-        <h2 className=" font-bold text-[#344054] font-[500] text-[16px] leading-[24px]  mb-2">
+        <h2 className=" text-[#344054] font-[500] text-[16px] leading-[24px]  mb-2">
           Conversion Process from Visitors to Demo Requests
         </h2>
         <p className="text-[12px] font-[400] leading-[18px] text-[#667085]">
