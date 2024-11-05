@@ -19,11 +19,8 @@ export default function AnalyticsPage() {
         const { data: authListener } = supabase.auth.onAuthStateChange(
             async (event, session) => {
                 if (session) {
-                    // Update context and save user in local storage if session exists
-                    // console.log(session)
                     userDispatch({ type: "LOGIN", payload: session.user });
                     localStorage.setItem("user", JSON.stringify(session.user));
-                    // console.log("User details:", session.user);
                 } else {
                     // Redirect to login if no active session
                     navigate('/auth');

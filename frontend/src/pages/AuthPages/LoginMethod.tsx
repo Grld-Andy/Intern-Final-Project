@@ -16,12 +16,13 @@ const LoginMethod: React.FC = () => {
             console.error("Login error:", error);
             setTimeout(() => {setIsLoading(false)}, 5000)
         } else {
-            const token = data?.session?.access_token;
-            if (token) {
-              // Store the token in local storage
-              localStorage.setItem("accessToken", token);
-              console.log("User logged in:", data.user);
-            }
+            // const token = data?.session?.access_token;
+          console.log(data) 
+            // if (token) {
+            //   // Store the token in local storage
+            //   localStorage.setItem("accessToken", token);
+            // //   console.log("User logged in:", data.user);
+            // }
             setTimeout(() => {setIsLoading(false)}, 5000)
         }
     };
