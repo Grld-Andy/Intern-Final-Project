@@ -1,5 +1,4 @@
 import * as cheerio from 'cheerio'
-// import pretty from 'pretty'
 
 const parseLinkedDocs = (links: string) => {
     const $ = cheerio.load(links)
