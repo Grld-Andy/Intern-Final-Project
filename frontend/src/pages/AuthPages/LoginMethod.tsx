@@ -9,7 +9,7 @@ const LoginMethod: React.FC = () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: "azure",
             options: {
-                redirectTo: `${import.meta.env.VITE_FRONTEND_URL}/admin`,
+                redirectTo: `http://localhost:5173/admin`,
             }
         });
         if (error) {
