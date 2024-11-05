@@ -28,7 +28,7 @@ function App() {
       <Route path='/auth' element={<AuthLayout/>}>
         <Route index element={<LoginMethod />} />
       </Route>
-      <Route path="/" element={<ProtectedRoutes/>}
+      <Route path="/" element={<ProtectedRoutes/>}>
         <Route path="demo-page" element={<Demopage/>} />
       </Route>
       <Route path='/add-project' element={<ProtectedRoutes/>}>
