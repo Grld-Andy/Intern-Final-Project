@@ -8,6 +8,7 @@ import AddTechnicalDetails from './pages/AddProject/AddTechnicalDetails'
 import AddProjectOverview from './pages/AddProject/AddProjectOverview'
 import Analytics from './pages/AnaltyticsPage'
 import Home from './pages/Home'
+import Demopage from './pages/Demopage'
 import Layout from './components/Layout/Layout'
 import AuthLayout from './components/Layout/AuthLayout'
 import ProtectedRoutes from './components/Layout/ProtectedRoutes'
@@ -26,6 +27,9 @@ function App() {
       </Route>
       <Route path='/auth' element={<AuthLayout/>}>
         <Route index element={<LoginMethod />} />
+      </Route>
+      <Route path="/" element={<ProtectedRoutes/>}
+        <Route path="demo-page" element={<Demopage/>} />
       </Route>
       <Route path='/add-project' element={<ProtectedRoutes/>}>
         <Route path="project-overview" element={<AddProjectOverview />} />
