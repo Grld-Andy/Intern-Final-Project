@@ -374,7 +374,11 @@ const getDemoRequests = async (req, res) => {
 
     try {
         const result = await pool.query(
-            'SELECT * FROM DemoRequest ORDER BY createdAt DESC LIMIT $1 OFFSET $2',
+            `SELECT dr.*, p.title AS projectName
+             FROM DemoRequest dr
+             LEFT JOIN Project p ON dr.projectId = p.id
+             ORDER BY dr.createdAt DESC
+             LIMIT $1 OFFSET $2`,
             [limit, offset]
         );
         const totalResult = await pool.query('SELECT COUNT(*) FROM DemoRequest');
@@ -388,7 +392,6 @@ const getDemoRequests = async (req, res) => {
         });
     } catch (err) {
         console.log(err.message);
-        
         res.status(500).json({ error: err.message });
     }
 };
