@@ -9,7 +9,6 @@ import { UserContext } from "../contexts/UserContext";
 import { supabase } from "../supabase";
 import { useNavigate } from "react-router-dom";
 
-
 export default function AnalyticsPage() {
     const { user, userDispatch } = useContext(UserContext);
     const navigate = useNavigate();
@@ -17,7 +16,7 @@ export default function AnalyticsPage() {
     useEffect(() => {
         // Handle authentication state change
         const { data: authListener } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
+            async (_event, session) => {
                 if (session) {
                     userDispatch({ type: "LOGIN", payload: session.user });
                     localStorage.setItem("user", JSON.stringify(session.user));

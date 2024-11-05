@@ -32,7 +32,7 @@ export default function Demopage() {
     const [data, setData] = useState<Data | null>(null);
     const[pageData,setPageData]=useState<PageData >({
         demolength:null,
-pageNumber:0
+        pageNumber:0
     })
     const [pages,setPages]=useState<Array<number>>([])
     const[index,setIndex]=useState<number>(1)
