@@ -10,3 +10,5 @@
 ## Start app
 
 ```npm start```
+
+### Remote API Docs: [https://intern-final-project.onrender.com/api-docs](https://intern-final-project.onrender.com/api-docs)
