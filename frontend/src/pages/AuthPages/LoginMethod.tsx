@@ -6,7 +6,7 @@ const LoginMethod: React.FC = () => {
 
     const signInWithMicrosoft = async () => {
         setIsLoading(true);
-        const baseUri = import.meta.env.VITE_FRONTEND_LOCAL_URL == "development" ? import.meta.env.VITE_FRONTEND_LOCAL_URL : import.meta.env.VITE_FRONTEND_DEPLOYED_URL
+        const baseUri = import.meta.env.VITE_ENV == "development" ? import.meta.env.VITE_FRONTEND_LOCAL_URL : import.meta.env.VITE_FRONTEND_DEPLOYED_URL
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: "azure",
             options: {
