@@ -65,6 +65,7 @@ export default function AnalyticsPage() {
     };
 
     return (
+        user &&
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
             <div className="mb-2 space-y-[8px] pt-[10px]">
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
