@@ -17,7 +17,7 @@ export default function AnalyticsPage() {
     useEffect(() => {
         // Handle authentication state change
         const { data: authListener } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
+            async (_event, session) => {
                 if (session) {
                     // Update context and save user in local storage if session exists
                 
