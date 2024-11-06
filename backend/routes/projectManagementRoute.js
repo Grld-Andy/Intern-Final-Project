@@ -14,5 +14,6 @@ router.delete('/projects/:id', projectController.deleteProject);
 router.patch('/demo-requests/:id/status', projectController.updateDemoRequestStatus);
 router.post('/demo-requests', projectController.createDemoRequest);
 router.get('/demo-requests', projectController.getDemoRequests);
+router.get('/demo-requests/active/count', projectController.getActiveDemoRequestsCount);
 
 export default router;

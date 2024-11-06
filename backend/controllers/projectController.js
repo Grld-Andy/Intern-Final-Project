@@ -538,7 +538,7 @@ const updateDemoRequestStatus = async (req, res) => {
             emailHtml = emailHtml.replace('[User Name]', fullname)
                                  .replace('[Insert Demo Date]', requestdate)
                                  .replace('[Insert Demo Time]', requesttime)
-                                 .replace('[Link here]', 'https://www.google.com/meet/783687sbyu2');
+                                 .replace('[Link here]', 'https://meet.google.com/nrw-aqmy-ngk');
 
             await sendEmail(emailaddress, emailSubject, emailHtml);
         }
@@ -551,6 +551,16 @@ const updateDemoRequestStatus = async (req, res) => {
     }
 };
 
+// Get the number of active demo requests
+const getActiveDemoRequestsCount = async (req, res) => {
+    try {
+        const result = await pool.query('SELECT COUNT(*) FROM DemoRequest WHERE LOWER(status) = $1', ['active']);
+        const activeDemoRequestsCount = parseInt(result.rows[0].count, 10);
+        res.status(200).json({ activeDemoRequestsCount });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 export default {
     createProject,
@@ -561,5 +571,6 @@ export default {
     createDemoRequest,
     getDemoRequests,
     updateDemoRequestStatus,
-    filterProjects
+    filterProjects,
+    getActiveDemoRequestsCount // Export the new function
 };

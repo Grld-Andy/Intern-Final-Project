@@ -570,4 +570,21 @@
  *         description: Demo request not found
  *       500:
  *         description: Internal server error
+ * /api/v1/demo-requests/active/count:
+ *   get:
+ *     summary: Get the number of active demo requests
+ *     tags: [Demo Requests]
+ *     responses:
+ *       200:
+ *         description: Number of active demo requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 activeDemoRequestsCount:
+ *                   type: integer
+ *                   example: 5
+ *       500:
+ *         description: Internal server error
  */
