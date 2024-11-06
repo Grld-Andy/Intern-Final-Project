@@ -56,7 +56,6 @@ export default function Demopage() {
             console.log(error);
         }
     };
-    
     console.log(pageData)
     const genPage=()=>{
         if(pageData){
@@ -73,53 +72,92 @@ export default function Demopage() {
        return setPages([...genArray])
         }
         
-    }
 }
 
+
+   
+}
     useEffect(() => {
+      
+
+
+          
         fetchData(index);
+
+
     },[index]);
 
     useEffect(()=>{
-        genPage()
+genPage()
+
     },[pageData.pageNumber])
+ 
 
    console.log(index)
 
-    const changeApprove = async() => {
-        console.log("Id: ", id)
-        setLoading(true)
-        const requestBody = {
-            status: "Approved"
-        }
-        axios.patch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`, requestBody)
-        .then((res) => {
-            console.log(res.data)
-            fetchData(index)
-            setLoading(false)
-        }).catch((err) => {
-            console.log(err)
-        })
+
+
+    const changeApprove=async()=>{
+        console.log(id)
+setLoading(true)
+        const requestBody={
+            "status": "Approved"
+          }
+try {
+    
+    
+    const results=await fetch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json"
+
+        },
+        body:JSON.stringify(requestBody)
+        
+    })
+    const da= await results.json()
+    fetchData(index)
+    if(da){
+        setLoading(false)
+    
+    }
+    console.log(da)
+
+//  data?.demoRequests.map(content)   
+} catch (error) {
+    console.log(error)
+}
     }
 
-    const changeDeny = async() => {
-        console.log("Id: ", id)
-        setLoading(true)
+    const disapprove=async()=>{
+        console.log(id)
+     setLoading(true)
         const requestBody={
             "status": "Denied"
-        }
-        axios.patch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`, requestBody)
-        .then((res) => {
-            console.log("response data: ", res.data)
-            fetchData(index)
-            setLoading(false)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
+          }
+try {
+    
+    const results=await fetch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json"
 
+        },
+        body:JSON.stringify(requestBody)
+        
+    })
+    const da= await results.json()
+    fetchData(index)
+    console.log(da)
+    if(da){
+        setLoading(false)
+    
+    }
+} catch (error) {
+    console.log(error)
+}
+    }
     const changeDisplay=(ids:string,stats:string)=>{
-        console.log("Ids: ",ids)
         setId(ids)
         setStatus({...status,modal:true,state:stats})
     }
@@ -191,7 +229,7 @@ export default function Demopage() {
    
     <button
     disabled={loading? true:false}
-    onClick={changeDeny} className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#B42318]  font-[600] leading-[20px] text-white rounded-[8px] py-[10px] px-[16px]`}>
+    onClick={disapprove} className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#B42318]  font-[600] leading-[20px] text-white rounded-[8px] py-[10px] px-[16px]`}>
         Deny
 
     {
@@ -251,23 +289,23 @@ export default function Demopage() {
                                 <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px]">{request.fullname}</td>
                                 <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px]">{request.emailaddress}</td>
                                 <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{new Date(request.requestdate).toLocaleDateString()}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectname}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectid}</td>
                        
                        <td className=" py-[16px] px-[24px]  flex justify-center text-center font-[400] text-[14px] leading-[20px]">
 
 
                        <h1 className={`
-                       ${request.status.toLowerCase() ==='approved' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                          ${request.status.toLowerCase() ==='active' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                           ${request.status.toLowerCase() ==='denied' && 'text-[#B42318] p-2 bg-[#FEF3F2] w-fit font-[500]'}
+                       ${request.status ==='Approved' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
+                          ${request.status ==='active' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
+                           ${request.status ==='Denied' && 'text-[#B42318] p-2 bg-[#FEF3F2] w-fit font-[500]'}
                        text-[#667085] 
                                 
-                               `}>{request.status}</h1>
+                               `}>{request.status === "Approved" && ("Approve") || request.status=== "active"&& ("Active") || request.status ==="Denied" && ("Denied")}</h1>
                         
                        </td>
                                 <td className="flex flex-col lg:flex-row  py-[16px] px-[24px] justify-center  gap-[8px]">
 
-                                    <button onClick={()=>changeDisplay(request.id,"Approve")} className="bg-[#1570EF] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] w-24 px-[16px] w-fit lg:w-auto">{request.id}</button>
+                                    <button onClick={()=>changeDisplay(request.id,"Approve")} className="bg-[#1570EF] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] w-24 px-[16px] w-fit lg:w-auto">Approve</button>
                                     <button onClick={()=>changeDisplay(request.id,"Deny")} className="bg-white border font-[600] leading-[20px]  rounded-[8px] py-[10px] px-[16px] w-24 lg:w-auto">Deny</button>
                                 </td>
                             </tr>
@@ -284,7 +322,7 @@ export default function Demopage() {
             <div className=" flex flex-row justify-between gap-12  lg:justify-between pt-10 mb-4  px-8 ">
                 <button
             onClick={()=>setIndex(index-1)}
-            className="gap-[8px] w-fit lg:w-auto inline-flex items-center rounded-[8px] border py-[8px] px-[14px]">
+            className="border gap-[8px] w-fit lg:w-auto items-center inline-flex items-center rounded-[8px] border py-[8px] px-[14px]">
                 <img src={arrowLeft}/>
                 Previous</button>
             

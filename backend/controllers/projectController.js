@@ -5,7 +5,8 @@ import nodemailer from 'nodemailer';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import path from 'path'; // Add this line
+import path from 'path';
+import { listeners } from 'process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -374,7 +375,11 @@ const getDemoRequests = async (req, res) => {
 
     try {
         const result = await pool.query(
-            'SELECT * FROM DemoRequest ORDER BY createdAt DESC LIMIT $1 OFFSET $2',
+            `SELECT dr.*, p.title AS projectName
+             FROM DemoRequest dr
+             LEFT JOIN Project p ON dr.projectId = p.id
+             ORDER BY dr.createdAt DESC
+             LIMIT $1 OFFSET $2`,
             [limit, offset]
         );
         const totalResult = await pool.query('SELECT COUNT(*) FROM DemoRequest');
@@ -388,7 +393,6 @@ const getDemoRequests = async (req, res) => {
         });
     } catch (err) {
         console.log(err.message);
-        
         res.status(500).json({ error: err.message });
     }
 };
@@ -396,7 +400,8 @@ const getDemoRequests = async (req, res) => {
 // Update the status of a demo request by ID
 const updateDemoRequestStatus = async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body;
+    let { status } = req.body;
+    status = status.toLowerCase();
 
     try {
         const result = await pool.query(
