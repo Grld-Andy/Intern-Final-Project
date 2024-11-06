@@ -2,13 +2,13 @@ import { useState,useEffect,useContext } from 'react';
 import amalitechLogo from '../assets/amalitechlogo.svg';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import avatar from "../assets/Avatar.svg"
 import { useNavigate } from "react-router-dom"
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { UserContext } from "../contexts/UserContext";
 import { supabase } from '../supabase';
+import createNameAvatar from '../utils/createNameAvatar';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,7 @@ export default function Navbar() {
    
     const[authstate,setAuthstate]=useState<boolean>(false)
     
-    const {userDispatch } = useContext(UserContext);
+    const {user, userDispatch } = useContext(UserContext);
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
@@ -52,8 +52,8 @@ checkUser()
         <>
             <div className='mt-[96px]'></div>
             <nav className="fixed h-[96px] pt-[10px] justify-between items-center z-20 md:px-[80px] px-[10px] pb-[10px] top-0 bg-white w-full flex flex-row border-[1px] border-[#D0D5DD]">
-                <span id="amalitech-logo">
-                    <img src={amalitechLogo} alt="amalitech logo" className="md:h-[35px]" />
+                <span id="amalitech-logo" className='w-[123.63px]'>
+                    <img src={"/amalitech_logo.jpg"} alt="amalitech logo" className="md:h-[35px] w-full" />
                 </span>
         
                
@@ -79,7 +79,7 @@ checkUser()
     authstate && (
         <div className='md:flex hidden flex-row items-center gap-2 relative'>
 <NotificationsNoneIcon style={{fontSize:"24px"}} className='cursor-pointer'/>
-<img src={avatar}/>
+<span className="w-[40px] h-[40px] rounded-[50%] bg-gradient-to-r from-cyan-200 to-blue-100 flex items-center text-[#344054] justify-center">{createNameAvatar(user?.email)}</span>
 <div className=''>
 
 <KeyboardArrowDownIcon onClick={()=>setLogout(!logout)} className='cursor-pointer'/>
@@ -126,7 +126,7 @@ Sign out <LogoutIcon/>
             </span>
             <span className='flex flex-row items-center gap-1'>
 
-            <img src={avatar} className='w-8 md:w-auto'/>
+            <span className="w-[40px] h-[40px] rounded-[50%] bg-gradient-to-r from-cyan-200 to-blue-100 flex items-center text-[#344054] justify-center">{createNameAvatar(user?.email)}</span>
 <div className=''>
 
 <KeyboardArrowDownIcon onClick={()=>setLogout(!logout)} className='cursor-pointer'/>
