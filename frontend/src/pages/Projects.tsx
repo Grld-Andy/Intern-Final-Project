@@ -28,7 +28,7 @@ const Projects: React.FC = () => {
         e.preventDefault()
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/filter?limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
@@ -43,7 +43,7 @@ const Projects: React.FC = () => {
     }
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects?limit=${limit}`, {withCredentials: true})
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/filter?limit=${limit}`, {withCredentials: true})
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
@@ -64,10 +64,11 @@ const Projects: React.FC = () => {
         prevSearch.current = search
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/filter?limit=${limit}&page=${page}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
+                setTotalProjects(res.data.totalProjects)
                 setStatus("done")
             }
         }).catch((err) => {
@@ -105,7 +106,7 @@ const Projects: React.FC = () => {
         <div className="bg-[linear-gradient(#17020266,#17020266),url('/Projects_page/project_hero.jpg')] bg-cover bg-[10%_25%] flex flex-col justify-center items-center relative w-full h-[482px] mb-20">
             <h1 className="text-white text-[38px] font-bold">Projects</h1>
             <form onSubmit={handleSearch} className="absolute flex bg-white top-[432px] border border-[#d0d5dd] p-6 gap-2 shadow-md">
-                <div className="flex border border-[#d0d5dd] rounded-lg p-2 w-[364px] gap-2 items-center">
+                <div className="flex border border-[#d0d5dd] rounded-lg p-2 md:w-[364px] gap-2 items-center">
                     <SearchOutlinedIcon />
                     <input value={search} onChange={(e) => {setSearch(e.target.value)}} type="text" placeholder="Search projects by name" className="w-full text-base font-normal leading-6 border-none outline-none text-[14px]" />
                 </div>
@@ -184,10 +185,10 @@ const Projects: React.FC = () => {
 
                 {/* pagination */}
                 <div className="flex items-center justify-between gap-4 p-3 text-sm leading-5 text-[#344054]">
-                    <h1>Page {page} of {`${Math.ceil(totalProjects/6)}`}</h1>
+                    <h1>Page {page} of {`${Math.ceil(totalProjects/limit)}`}</h1>
                     <div className="flex gap-3">
-                        <button type="button" onClick={prevPage} className="bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm">Previous</button>
-                        <button type="button" onClick={nextPage} className="bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm">Next</button>
+                        <button type="button" onClick={prevPage} className={`bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm ${page === 1 ? "opacity-50 pointer-events-none" : ""}`}>Previous</button>
+                        <button type="button" onClick={nextPage} className={`bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm ${page === Math.ceil(totalProjects/limit) ? "opacity-50 pointer-events-none" : ""}`}>Next</button>
                     </div>
                 </div>
             </div>

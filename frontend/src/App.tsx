@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
 import ProjectPreview from './pages/ProjectPreview'
 import Projects from './pages/Projects'
@@ -15,8 +15,15 @@ import ProtectedRoutes from './components/Layout/ProtectedRoutes'
 import EditProjectOverview from './pages/EditProject/EditProjectOverview'
 import EditTechnicalDetails from './pages/EditProject/EditTechnicalDetails'
 import EditProjectPreview from './pages/EditProject/EditProjectPreview'
+import { useEffect } from 'react'
 
 function App() {
+  const location = useLocation()
+
+  useEffect(() => {
+    scrollTo(0,0)
+  }, [location])
+
   return (
     <Routes>
       <Route path='/' element={<Layout />}>

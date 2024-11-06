@@ -8,6 +8,7 @@ import VisitCharts from "../components/AnalyticsCards/VisitCharts";
 import { UserContext } from "../contexts/UserContext";
 import { supabase } from "../supabase";
 import { useNavigate } from "react-router-dom";
+import getNameFromEmail from "../utils/getNameFromEmail";
 
 export default function AnalyticsPage() {
     const { user, userDispatch } = useContext(UserContext);
@@ -58,21 +59,13 @@ export default function AnalyticsPage() {
         };
     }, [navigate, userDispatch]);
 
-    const logout = async () => {
-        await supabase.auth.signOut();
-        userDispatch({ type: "LOGOUT", payload: null });
-        localStorage.removeItem("user");
-        navigate("/");
-    };
-
     return (
         user &&
         <div className="lg:px-[80px] px-[20px] mt-[96px] pt-10 bg-[#F9FAFB] pb-20 ">
             <div className="mb-2 space-y-[8px] pt-[10px]">
                 <h1 className="font-[600] lg:mb-10 text-[20px] text-[#101828] leading-[30px]">
-                    {user ? `Welcome to Dashboard, ${user.name || user.email} 👋` : ""}
+                    {user ? `Welcome to Dashboard, ${user.name || getNameFromEmail(user.email)} 👋` : ""}
                 </h1>
-                <button onClick={logout}>Logout</button>
                 <h2 className="text-[#344054] text-[16px] font-[500]">
                     Website Audience Metrics
                 </h2>
