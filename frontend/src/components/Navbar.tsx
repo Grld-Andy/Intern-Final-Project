@@ -12,6 +12,7 @@ import { supabase } from '../supabase';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const navigate=useNavigate()
     const[logout,setLogout]=useState(false)
    
     const[authstate,setAuthstate]=useState<boolean>(false)
@@ -33,7 +34,7 @@ export default function Navbar() {
     
 if(users){
 const changeUser=JSON.parse(users)
-console.log(typeof(changeUser))
+
 if(changeUser){
     
     setAuthstate(true)
@@ -59,14 +60,14 @@ checkUser()
 {
     authstate ? (
         <ul className="hidden md:flex flex-row gap-[8px] text-lg md:gap-10 font-[600] md:flex-1 justify-center md:leading-[20px] md:text-[14px]">
-        <li className="text-[#667085] cursor-pointer">Analytics</li>
-        <li className="text-[#667085] cursor-pointer">Projects</li>
-        <li className="text-[#667085] cursor-pointer">Demo Requests</li>
+        <li onClick={()=>navigate('/admin')} className="text-[#667085] cursor-pointer">Analytics</li>
+        <li onClick={()=>navigate('/projects')} className="text-[#667085] cursor-pointer">Projects</li>
+        <li onClick={()=>navigate('demo-page')} className="text-[#667085] cursor-pointer">Demo Requests</li>
     </ul>
     ):(  <ul className="hidden md:flex flex-row gap-[8px] text-lg md:gap-10 font-[600] md:flex-1 justify-center md:leading-[20px] md:text-[14px]">
-        <li className="text-[#667085] cursor-pointer">Home</li>
-        <li className="text-[#667085] cursor-pointer">Projects</li>
-        <li className="text-[#667085] cursor-pointer">Contact us</li>
+        <li onClick={()=>navigate('/')} className="text-[#667085] cursor-pointer">Home</li>
+        <li onClick={()=>navigate('projects')} className="text-[#667085] cursor-pointer">Projects</li>
+        <li onClick={()=>navigate('')} className="text-[#667085] cursor-pointer">Contact us</li>
     </ul>)
 }
            
@@ -110,7 +111,7 @@ Sign out <LogoutIcon/>
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } transition-transform duration-300 ease-in-out`}
             >
-                <div className="p-5 flex items-center gap-4">
+                <div className="p-5 flex justify-between items-center gap-4">
                     <img src={amalitechLogo} alt="amalitech logo" className="h-[35px]" />
                     <CloseIcon onClick={toggleMenu} className="cursor-pointer" />
                 </div>
@@ -118,7 +119,7 @@ Sign out <LogoutIcon/>
                 {
     authstate && (
         <div className='flex flex-row items-center justify-between  px-[20px] gap-2 relative'>
-            <h1>Hello</h1>
+            <h1 className='text-[#667085]'>Welcome</h1>
             <span className='hidden md:block'>
             <NotificationsNoneIcon style={{fontSize:"24px"}} className=' cursor-pointer  '/>
 
@@ -145,11 +146,19 @@ Sign out <LogoutIcon/>
     )
  }
 
-                <ul className="flex flex-col mt-5 p-5 gap-4 text-lg font-[600] text-[#667085]">
-                    <li onClick={toggleMenu} className="cursor-pointer">Home</li>
-                    <li onClick={toggleMenu} className="cursor-pointer">Projects</li>
-                    <li onClick={toggleMenu} className="cursor-pointer">Contact us</li>
-                </ul>
+{
+    authstate ? (
+        <ul className="flex md:hidden flex-col mt-10 p-4  text-lg gap-10 font-[600]  justify-center leading-[20px] text-[14px]">
+        <li onClick={()=>navigate('/admin')} className="text-[#667085] cursor-pointer">Analytics</li>
+        <li onClick={()=>navigate('/projects')} className="text-[#667085] cursor-pointer">Projects</li>
+        <li onClick={()=>navigate('demo-page')} className="text-[#667085] cursor-pointer">Demo Requests</li>
+    </ul>
+    ):(  <ul className="flex md:hidden flex-col mt-10 p-4  text-lg gap-10 font-[600]  justify-center leading-[20px] text-[14px]">
+        <li onClick={()=>navigate('/')} className="text-[#667085] cursor-pointer">Home</li>
+        <li onClick={()=>navigate('projects')} className="text-[#667085] cursor-pointer">Projects</li>
+        <li onClick={()=>navigate('')} className="text-[#667085] cursor-pointer">Contact us</li>
+    </ul>)
+}
             </div>
         </>
     );
