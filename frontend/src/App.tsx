@@ -7,7 +7,7 @@ import './App.css'
 // import AddTechnicalDetails from './pages/AddProject/AddTechnicalDetails'
 // import AddProjectOverview from './pages/AddProject/AddProjectOverview'
 // import Analytics from './pages/AnaltyticsPage'
-// import Home from './pages/Home'
+import Home from './Pages/Home'
 // import Demopage from './pages/Demopage'
 // import Layout from './components/Layout/Layout'
 // import AuthLayout from './components/Layout/AuthLayout'
@@ -18,17 +18,30 @@ import './App.css'
 import Navbar from './components/Navbar'
 import AnalyticsPage from './Pages/AnaltyticsPage'
 import LoginMethod from './Pages/AuthPages/LoginMethod'
+import ProjectCard from './components/ProjectCard'
+import Projects from './Pages/Projects'
+import { Routes, Route } from 'react-router-dom'
+import ProjectPreview from './Pages/ProjectPreview'
+import Demopage from './Pages/Demopage'
 function App() {
   return (
     <>
     <Navbar/>
-    <LoginMethod/>
-    <AnalyticsPage/>
+   <Demopage/>
+    {/* <Routes>
+    <Route path="/projects/:id" element={<ProjectPreview />} />
+      
+    </Routes> */}
+     
+    {/* <ProjectCard/> */}
+
+    {/* <Projects/> */}
+    {/* <LoginMethod/>
+    <AnalyticsPage/> */}
     {/* <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:id" element={<ProjectPreview />} />
         <Route path="/admin" element={<Analytics />} />
       </Route>
       <Route path='/auth' element={<AuthLayout />}>
