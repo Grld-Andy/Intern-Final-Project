@@ -13,7 +13,6 @@ type Request = {
     comments: string;
     createdat: string;
     status: string;
-}
 
 type Data = {
     demoRequests: Request[];
@@ -56,7 +55,6 @@ export default function Demopage() {
             console.log(error);
         }
     };
-    console.log(pageData)
     const genPage=()=>{
         if(pageData){
           
@@ -91,14 +89,10 @@ export default function Demopage() {
 genPage()
 
     },[pageData.pageNumber])
- 
-
-   console.log(index)
 
 
 
     const changeApprove=async()=>{
-        console.log(id)
 setLoading(true)
         const requestBody={
             "status": "Approved"
@@ -115,13 +109,23 @@ try {
         body:JSON.stringify(requestBody)
         
     })
+
     const da= await results.json()
-    fetchData(index)
+    if(data?.demoRequests){
+    //update the state of the array 
+    //push it 
+       const newm=data.demoRequests.map(content=>content.id===id ? ({...content,status:"Approved"}):content )
+
+const changedType:Data={
+    demoRequests:newm
+}
+setData(changedType)
+    }
+
     if(da){
         setLoading(false)
     
     }
-    console.log(da)
 
 //  data?.demoRequests.map(content)   
 } catch (error) {
@@ -147,7 +151,18 @@ try {
         
     })
     const da= await results.json()
-    fetchData(index)
+    //find element 
+    
+    if(data?.demoRequests){
+        //update the state of the array 
+        //push it 
+           const newm=data.demoRequests.map(content=>content.id===id ? ({...content,status:"Denied"}):content )
+  
+    const changedType:Data={
+        demoRequests:newm
+    }
+    setData(changedType)
+        }
     console.log(da)
     if(da){
         setLoading(false)
@@ -285,22 +300,21 @@ try {
                     <tbody>
                         {data.demoRequests.map(request=> (
                             <tr key={request.id} className="p-2 px-4 grid grid-cols-6 justify-between items-center">
-                               
-                                <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.fullname}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.emailaddress}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{getDemoRequestCreationString(request.requestdate)}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.projectname}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px]">{request.fullname}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px]">{request.emailaddress}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{new Date(request.requestdate).toLocaleDateString()}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectid}</td>
                        
                        <td className=" py-[16px] px-[24px]  flex justify-center text-center font-[400] text-[14px] leading-[20px]">
 
 
                        <h1 className={`
-                       ${request.status ==='Approved' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                          ${request.status ==='active' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                           ${request.status ==='Denied' && 'text-[#B42318] p-2 bg-[#FEF3F2] w-fit font-[500]'}
+                       ${request.status.toLowerCase() ==='approved' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
+                          ${request.status.toLowerCase() ==='active' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
+                           ${request.status.toLowerCase() ==='denied'  && 'text-[#B42318] p-2 bg-[#FEF3F2] w-fit font-[500]'}
                        text-[#667085] 
                                 
-                               `}>{request.status === "Approved" && ("Approve") || request.status=== "active"&& ("Active") || request.status ==="Denied" && ("Denied")}</h1>
+                               `}>{request.status.toLowerCase() === "approved" && ("Approve") || request.status.toLowerCase()=== "active"&& ("Active") || request.status.toLowerCase() ==="denied" && ("Denied")}</h1>
                         
                        </td>
                                 <td className="flex flex-col lg:flex-row  py-[16px] px-[24px] justify-center  gap-[8px]">
