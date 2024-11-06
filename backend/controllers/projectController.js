@@ -5,8 +5,7 @@ import nodemailer from 'nodemailer';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import path from 'path'; // Add this line
-import { listeners } from 'process';
+import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -125,34 +124,13 @@ const createProject = async (req, res) => {
     }
 };
 
-// Get all projects with filtering, sorting, pagination, and search by title
+// Get all projects with pagination
 const getProjects = async (req, res) => {
-    const { stackNames, page = 1, limit = 6, sort = 'mostRecent', title } = req.query;
+    const { page = 1, limit = 6 } = req.query;
     const offset = (page - 1) * limit;
-    const sortOrder = sort === 'oldestFirst' ? 'ASC' : 'DESC';
-    let stackFilterQuery = '';
-    let titleFilterQuery = '';
-    let queryParams = [limit, offset];
-
-    if (stackNames) {
-        const stackNamesArray = stackNames.split(',');
-        stackFilterQuery = `
-            AND p.id IN (
-                SELECT projectId
-                FROM DevelopmentStack
-                WHERE stackName = ANY($3::text[])
-            )
-        `;
-        queryParams.push(stackNamesArray);
-    }
-
-    if (title) {
-        titleFilterQuery = `AND p.title ILIKE $${queryParams.length + 1}`;
-        queryParams.push(`%${title}%`);
-    }
 
     try {
-        const query = `
+        const result = await pool.query(`
             SELECT
                 p.id, p.title, p.description, p.coverPhotoUrl, p.technicalDetailsVideo, p.linkedDocs, p.createdAt, p.updatedAt,
                 json_agg(DISTINCT jsonb_build_object('id', pf.id, 'featureName', pf.featureName)) AS projectFeatures,
@@ -162,29 +140,155 @@ const getProjects = async (req, res) => {
             LEFT JOIN ProjectFeature pf ON p.id = pf.projectId
             LEFT JOIN ImprovementArea ia ON p.id = ia.projectId
             LEFT JOIN DevelopmentStack ds ON p.id = ds.projectId
-            WHERE 1=1
-            ${stackFilterQuery}
-            ${titleFilterQuery}
             GROUP BY p.id, p.title, p.description, p.coverPhotoUrl, p.technicalDetailsVideo, p.linkedDocs, p.createdAt, p.updatedAt
-            ORDER BY p.createdAt ${sortOrder}
+            ORDER BY p.createdAt DESC
             LIMIT $1 OFFSET $2
-        `;
+        `, [limit, offset]);
 
-        const result = await pool.query(query, queryParams);
-
-        const allProjectsResult = await pool.query('SELECT * FROM Project');
-        const totalProjects = allProjectsResult.rows.length;
+        const totalProjectsResult = await pool.query('SELECT COUNT(*) FROM Project');
+        const totalProjects = parseInt(totalProjectsResult.rows[0].count, 10);
 
         res.status(200).json({
             projects: keysToCamelCase(result.rows),
             totalProjects,
-            filteredProjects: result.rows.length,
+            currentPage: parseInt(page, 10),
+            totalPages: Math.ceil(totalProjects / limit)
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
+// Filters and search with pagination
+const filterProjects = async (req, res) => {
+    try {
+        const { stackNames, page = '1', limit = '6', sort = 'mostRecent', title } = req.query;
+        const parsedLimit = parseInt(limit, 10);
+        const parsedPage = parseInt(page, 10);
+        const offset = (parsedPage - 1) * parsedLimit;
+        const sortOrder = sort === 'oldestFirst' ? 'ASC' : 'DESC';
+
+        let query = `
+            WITH FilteredProjects AS (
+                SELECT DISTINCT p.id
+                FROM Project p
+                WHERE 1=1
+        `;
+
+        const queryParams = [];
+        const countQueryParams = [];
+
+        if (stackNames) {
+            const stackNamesArray = stackNames.split(',');
+            queryParams.push(stackNamesArray);
+            countQueryParams.push(stackNamesArray);
+            query += `
+                AND EXISTS (
+                    SELECT 1
+                    FROM DevelopmentStack ds
+                    WHERE ds.projectId = p.id
+                    AND ds.stackName = ANY($${queryParams.length}::text[])
+                )
+            `;
+        }
+
+        if (title) {
+            queryParams.push(`%${title}%`);
+            countQueryParams.push(`%${title}%`);
+            query += `
+                AND p.title ILIKE $${queryParams.length}
+            `;
+        }
+
+        query += `
+            )
+            SELECT
+                p.id,
+                p.title,
+                p.description,
+                p.coverPhotoUrl,
+                p.technicalDetailsVideo,
+                p.linkedDocs,
+                p.createdAt,
+                p.updatedAt,
+                COALESCE(
+                    json_agg(DISTINCT jsonb_build_object(
+                        'id', pf.id,
+                        'featureName', pf.featureName
+                    )) FILTER (WHERE pf.id IS NOT NULL),
+                    '[]'::json
+                ) AS projectFeatures,
+                COALESCE(
+                    json_agg(DISTINCT jsonb_build_object(
+                        'id', ia.id,
+                        'areaName', ia.areaName
+                    )) FILTER (WHERE ia.id IS NOT NULL),
+                    '[]'::json
+                ) AS improvementAreas,
+                COALESCE(
+                    json_agg(DISTINCT jsonb_build_object(
+                        'id', ds.id,
+                        'stackName', ds.stackName
+                    )) FILTER (WHERE ds.id IS NOT NULL),
+                    '[]'::json
+                ) AS developmentStack
+            FROM FilteredProjects fp
+            INNER JOIN Project p ON p.id = fp.id
+            LEFT JOIN ProjectFeature pf ON p.id = pf.projectId
+            LEFT JOIN ImprovementArea ia ON p.id = ia.projectId
+            LEFT JOIN DevelopmentStack ds ON p.id = ds.projectId
+            GROUP BY
+                p.id,
+                p.title,
+                p.description,
+                p.coverPhotoUrl,
+                p.technicalDetailsVideo,
+                p.linkedDocs,
+                p.createdAt,
+                p.updatedAt
+            ORDER BY p.createdAt ${sortOrder}
+            LIMIT ${parsedLimit} OFFSET ${offset}
+        `;
+
+        const result = await pool.query(query, queryParams);
+
+        let countQuery = `
+            SELECT COUNT(DISTINCT p.id)
+            FROM Project p
+            WHERE 1=1
+        `;
+
+        if (stackNames) {
+            countQuery += `
+                AND EXISTS (
+                    SELECT 1
+                    FROM DevelopmentStack ds
+                    WHERE ds.projectId = p.id
+                    AND ds.stackName = ANY($1::text[])
+                )
+            `;
+        }
+
+        if (title) {
+            const paramPosition = stackNames ? 2 : 1;
+            countQuery += `
+                AND p.title ILIKE $${paramPosition}
+            `;
+        }
+
+        const totalProjectsResult = await pool.query(countQuery, countQueryParams);
+        const totalProjects = parseInt(totalProjectsResult.rows[0].count, 10);
+
+        res.status(200).json({
+            projects: keysToCamelCase(result.rows),
+            totalProjects,
+            currentPage: parsedPage,
+            totalPages: Math.ceil(totalProjects / parsedLimit)
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 // Get a single project by ID with related data
 const getProject = async (req, res) => {
@@ -456,5 +560,6 @@ export default {
     deleteProject,
     createDemoRequest,
     getDemoRequests,
-    updateDemoRequestStatus
+    updateDemoRequestStatus,
+    filterProjects
 };

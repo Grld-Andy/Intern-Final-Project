@@ -54,7 +54,108 @@
  *       500:
  *         description: Internal server error
  *   get:
- *     summary: Get all projects
+ *     summary: Get all projects with pagination
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination (default is 1)
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page (default is 6)
+ *         example: 6
+ *     responses:
+ *       200:
+ *         description: A list of projects
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 projects:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "123e4567-e89b-12d3-a456-426614174000"
+ *                       title:
+ *                         type: string
+ *                         example: "Project Title"
+ *                       description:
+ *                         type: string
+ *                         example: "Project Description"
+ *                       coverPhotoUrl:
+ *                         type: string
+ *                         example: "http://example.com/photo.jpg"
+ *                       technicalDetailsVideo:
+ *                         type: string
+ *                         example: "http://example.com/video.mp4"
+ *                       linkedDocs:
+ *                         type: string
+ *                         example: "http://example.com/docs"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2023-01-01T00:00:00Z"
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2023-01-01T00:00:00Z"
+ *                       projectFeatures:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             featureName:
+ *                               type: string
+ *                               example: "Feature 1"
+ *                       improvementAreas:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             areaName:
+ *                               type: string
+ *                               example: "Area 1"
+ *                       developmentStack:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             stackName:
+ *                               type: string
+ *                               example: "React"
+ *                 totalProjects:
+ *                   type: integer
+ *                   example: 100
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 17
+ *       500:
+ *         description: Internal server error
+ *
+ * /api/v1/projects/filter:
+ *   get:
+ *     summary: Filter and search projects with pagination
  *     tags: [Projects]
  *     parameters:
  *       - in: query
@@ -62,29 +163,112 @@
  *         schema:
  *           type: string
  *         description: Comma-separated list of stack names to filter by
+ *         example: "React,Node.js"
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
  *         description: Page number for pagination (default is 1)
+ *         example: 1
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *         description: Number of items per page (default is 6)
+ *         example: 6
  *       - in: query
  *         name: sort
  *         schema:
  *           type: string
  *         description: Sort order (mostRecent or oldestFirst)
+ *         example: "mostRecent"
  *       - in: query
  *         name: title
  *         schema:
  *           type: string
  *         description: Project title to search for
+ *         example: "Project H"
  *     responses:
  *       200:
- *         description: A list of projects
+ *         description: A list of filtered projects
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 projects:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "123e4567-e89b-12d3-a456-426614174000"
+ *                       title:
+ *                         type: string
+ *                         example: "Project H"
+ *                       description:
+ *                         type: string
+ *                         example: "Description of Project H"
+ *                       coverPhotoUrl:
+ *                         type: string
+ *                         example: "http://example.com/photo.jpg"
+ *                       technicalDetailsVideo:
+ *                         type: string
+ *                         example: "http://example.com/video.mp4"
+ *                       linkedDocs:
+ *                         type: string
+ *                         example: "http://example.com/docs"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2023-01-01T00:00:00Z"
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2023-01-01T00:00:00Z"
+ *                       projectFeatures:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             featureName:
+ *                               type: string
+ *                               example: "Feature 1"
+ *                       improvementAreas:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             areaName:
+ *                               type: string
+ *                               example: "Area 1"
+ *                       developmentStack:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             stackName:
+ *                               type: string
+ *                               example: "React"
+ *                 totalProjects:
+ *                   type: integer
+ *                   example: 9
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 2
  *       500:
  *         description: Internal server error
  *
@@ -102,6 +286,73 @@
  *     responses:
  *       200:
  *         description: Project details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 project:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "123e4567-e89b-12d3-a456-426614174000"
+ *                     title:
+ *                       type: string
+ *                       example: "Project Title"
+ *                     description:
+ *                       type: string
+ *                       example: "Project Description"
+ *                     coverPhotoUrl:
+ *                       type: string
+ *                       example: "http://example.com/photo.jpg"
+ *                     technicalDetailsVideo:
+ *                       type: string
+ *                       example: "http://example.com/video.mp4"
+ *                     linkedDocs:
+ *                       type: string
+ *                       example: "http://example.com/docs"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2023-01-01T00:00:00Z"
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2023-01-01T00:00:00Z"
+ *                     projectFeatures:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 1
+ *                           featureName:
+ *                             type: string
+ *                             example: "Feature 1"
+ *                     improvementAreas:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 1
+ *                           areaName:
+ *                             type: string
+ *                             example: "Area 1"
+ *                     developmentStack:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 1
+ *                           stackName:
+ *                             type: string
+ *                             example: "React"
  *       404:
  *         description: Project not found
  *       500:
@@ -229,14 +480,65 @@
  *         schema:
  *           type: integer
  *         description: Page number for pagination (default is 1)
+ *         example: 1
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *         description: Number of items per page (default is 9)
+ *         example: 9
  *     responses:
  *       200:
  *         description: A list of demo requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 demoRequests:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "123e4567-e89b-12d3-a456-426614174000"
+ *                       projectId:
+ *                         type: string
+ *                         example: "123e4567-e89b-12d3-a456-426614174000"
+ *                       fullName:
+ *                         type: string
+ *                         example: "John Doe"
+ *                       emailAddress:
+ *                         type: string
+ *                         example: "john.doe@example.com"
+ *                       requestDate:
+ *                         type: string
+ *                         format: date
+ *                         example: "2023-01-01"
+ *                       requestTime:
+ *                         type: string
+ *                         format: time
+ *                         example: "14:00:00"
+ *                       comments:
+ *                         type: string
+ *                         example: "Looking forward to the demo"
+ *                       status:
+ *                         type: string
+ *                         example: "active"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2023-01-01T00:00:00Z"
+ *                 totalDemoRequests:
+ *                   type: integer
+ *                   example: 100
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 12
  *       500:
  *         description: Internal server error
  *
