@@ -168,7 +168,13 @@ const ProjectPreview: React.FC = () => {
                 } */}
                 <div className="cursor-pointer w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
                   <div className="flex items-center w-full">
-                    <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">{project?.linkeddocs}</h1>
+                    <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">
+                      { 
+                        project && project?.linkeddocs &&
+                        <div dangerouslySetInnerHTML={{__html: project?.linkeddocs}}></div>
+                      }
+                      {/* {project?.linkeddocs} */}
+                    </h1>
                     <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
                   </div>
                 </div>
