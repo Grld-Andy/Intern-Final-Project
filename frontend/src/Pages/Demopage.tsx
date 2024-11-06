@@ -7,13 +7,13 @@ import axios from "axios";
 type Request = {
     id: string;
     emailaddress:string,
-    projectid: string;
+    projectname: string;
     fullname: string;
     requestdate: string;
     comments: string;
     createdat: string;
     status: string;
-};
+}
 
 type Data = {
     demoRequests: Request[];
@@ -102,7 +102,7 @@ export default function Demopage() {
         })
     }
 
-    const disapprove = async() => {
+    const changeDeny = async() => {
         console.log(id)
         setLoading(true)
         const requestBody={
@@ -110,7 +110,7 @@ export default function Demopage() {
         }
         axios.patch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`, requestBody)
         .then((res) => {
-            console.log(res.data)
+            console.log("response data: ", res.data)
             fetchData(index)
             setLoading(false)
         }).catch((err) => {
@@ -190,7 +190,7 @@ export default function Demopage() {
    
     <button
     disabled={loading? true:false}
-    onClick={disapprove} className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#B42318]  font-[600] leading-[20px] text-white rounded-[8px] py-[10px] px-[16px]`}>
+    onClick={changeDeny} className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#B42318]  font-[600] leading-[20px] text-white rounded-[8px] py-[10px] px-[16px]`}>
         Deny
 
     {
@@ -235,7 +235,6 @@ export default function Demopage() {
            </thead>
                     <thead className="">
                         <tr className="border-b p-2 bg-[#EAECF0 grid grid-cols-6 justify-between w-full border]">
-                            
                             <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Name</th>
                             <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Email address</th>
                             <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Demo request date & time</th>
@@ -251,18 +250,18 @@ export default function Demopage() {
                                 <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px]">{request.fullname}</td>
                                 <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px]">{request.emailaddress}</td>
                                 <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{new Date(request.requestdate).toLocaleDateString()}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectid}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectname}</td>
                        
                        <td className=" py-[16px] px-[24px]  flex justify-center text-center font-[400] text-[14px] leading-[20px]">
 
 
                        <h1 className={`
-                       ${request.status ==='Approved' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                          ${request.status ==='active' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                           ${request.status ==='Denied' && 'text-[#B42318] p-2 bg-[#FEF3F2] w-fit font-[500]'}
+                       ${request.status.toLowerCase() ==='approved' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
+                          ${request.status.toLowerCase() ==='active' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
+                           ${request.status.toLowerCase() ==='denied' && 'text-[#B42318] p-2 bg-[#FEF3F2] w-fit font-[500]'}
                        text-[#667085] 
                                 
-                               `}>{request.status === "Approved" && ("Approve") || request.status=== "active"&& ("Active") || request.status ==="Denied" && ("Denied")}</h1>
+                               `}>{request.status}</h1>
                         
                        </td>
                                 <td className="flex flex-col lg:flex-row  py-[16px] px-[24px] justify-center  gap-[8px]">
@@ -284,7 +283,7 @@ export default function Demopage() {
             <div className=" flex flex-row justify-between gap-12  lg:justify-between pt-10 mb-4  px-8 ">
                 <button
             onClick={()=>setIndex(index-1)}
-            className="border gap-[8px] w-fit lg:w-auto items-center inline-flex items-center rounded-[8px] border py-[8px] px-[14px]">
+            className="gap-[8px] w-fit lg:w-auto inline-flex items-center rounded-[8px] border py-[8px] px-[14px]">
                 <img src={arrowLeft}/>
                 Previous</button>
             
