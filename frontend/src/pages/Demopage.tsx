@@ -286,10 +286,10 @@ try {
                         {data.demoRequests.map(request=> (
                             <tr key={request.id} className="p-2 px-4 grid grid-cols-6 justify-between items-center">
                                
-                                <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px]">{request.fullname}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px]">{request.emailaddress}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{getDemoRequestCreationString(request.requestdate)}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectname}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.fullname}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.emailaddress}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{getDemoRequestCreationString(request.requestdate)}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.projectname}</td>
                        
                        <td className=" py-[16px] px-[24px]  flex justify-center text-center font-[400] text-[14px] leading-[20px]">
 

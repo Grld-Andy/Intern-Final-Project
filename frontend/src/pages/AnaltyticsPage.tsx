@@ -29,6 +29,7 @@ export default function AnalyticsPage() {
 
         // Check if there's an active session on component mount
         const checkUser = async () => {
+            console.log("checking for user")
             try {
                 const {
                     data: { session },
