@@ -3,6 +3,7 @@ import arrowLeft from "../assets/arrow-left.svg"
 import arrowRight from "../assets/arrow-right.svg"
 import { CircularProgress, LinearProgress} from "@mui/material";
 import Box from '@mui/material/Box';
+import axios from "axios";
 type Request = {
     id: string;
     emailaddress:string,
@@ -49,13 +50,13 @@ export default function Demopage() {
            
             if (dataResponse) {
                 setPageData({...pageData,demolength:dataResponse.totalDemoRequests,pageNumber:dataResponse.totalPages})
-
                 setData(dataResponse);
             }
         } catch (error) {
             console.log(error);
         }
     };
+    
     console.log(pageData)
     const genPage=()=>{
         if(pageData){
@@ -72,91 +73,51 @@ export default function Demopage() {
        return setPages([...genArray])
         }
         
+    }
 }
 
-
-   
-}
     useEffect(() => {
-      
-
-
-          
         fetchData(index);
-
-
     },[index]);
 
     useEffect(()=>{
-genPage()
-
+        genPage()
     },[pageData.pageNumber])
- 
 
    console.log(index)
 
-
-
-    const changeApprove=async()=>{
+    const changeApprove = async() => {
         console.log(id)
-setLoading(true)
-        const requestBody={
-            "status": "Approved"
-          }
-try {
-    
-    
-    const results=await fetch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`,{
-        method:"PATCH",
-        headers:{
-            "Content-Type":"application/json"
-
-        },
-        body:JSON.stringify(requestBody)
-        
-    })
-    const da= await results.json()
-    fetchData(index)
-    if(da){
-        setLoading(false)
-    
-    }
-    console.log(da)
-
-//  data?.demoRequests.map(content)   
-} catch (error) {
-    console.log(error)
-}
+        setLoading(true)
+        const requestBody = {
+            status: "Approved"
+        }
+        axios.patch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`, requestBody)
+        .then((res) => {
+            console.log(res.data)
+            fetchData(index)
+            setLoading(false)
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
-    const disapprove=async()=>{
+    const disapprove = async() => {
         console.log(id)
-     setLoading(true)
+        setLoading(true)
         const requestBody={
             "status": "Denied"
-          }
-try {
-    
-    const results=await fetch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`,{
-        method:"PATCH",
-        headers:{
-            "Content-Type":"application/json"
+        }
+        axios.patch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`, requestBody)
+        .then((res) => {
+            console.log(res.data)
+            fetchData(index)
+            setLoading(false)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
 
-        },
-        body:JSON.stringify(requestBody)
-        
-    })
-    const da= await results.json()
-    fetchData(index)
-    console.log(da)
-    if(da){
-        setLoading(false)
-    
-    }
-} catch (error) {
-    console.log(error)
-}
-    }
     const changeDisplay=(ids:string,stats:string)=>{
         setId(ids)
         setStatus({...status,modal:true,state:stats})
