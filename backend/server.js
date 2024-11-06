@@ -17,10 +17,11 @@ dotenv.config();
 
 app.use(morgan("dev"));
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: ["http://localhost:5173", "https://amali-project-git-main-grld-andys-projects.vercel.app"],
+    optionsSuccessStatus: 204,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
-}))
-;
+}));
 app.use(bodyParser.json());
 app.use(express.json());
 

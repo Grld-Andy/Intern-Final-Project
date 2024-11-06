@@ -3,16 +3,16 @@ import arrowLeft from "../assets/arrow-left.svg"
 import arrowRight from "../assets/arrow-right.svg"
 import { CircularProgress, LinearProgress} from "@mui/material";
 import Box from '@mui/material/Box';
+import getDemoRequestCreationString from "../utils/getDemoRequestCreationString";
 type Request = {
     id: string;
     emailaddress:string,
-    projectid: string;
+    projectname: string;
     fullname: string;
     requestdate: string;
     comments: string;
     createdat: string;
     status: string;
-};
 
 type Data = {
     demoRequests: Request[];
@@ -32,7 +32,7 @@ export default function Demopage() {
     const [data, setData] = useState<Data | null>(null);
     const[pageData,setPageData]=useState<PageData >({
         demolength:null,
-pageNumber:0
+        pageNumber:0
     })
     const [pages,setPages]=useState<Array<number>>([])
     const[index,setIndex]=useState<number>(1)
@@ -49,14 +49,12 @@ pageNumber:0
            
             if (dataResponse) {
                 setPageData({...pageData,demolength:dataResponse.totalDemoRequests,pageNumber:dataResponse.totalPages})
-
                 setData(dataResponse);
             }
         } catch (error) {
             console.log(error);
         }
     };
- 
     const genPage=()=>{
         if(pageData){
           
@@ -91,14 +89,10 @@ pageNumber:0
 genPage()
 
     },[pageData.pageNumber])
- 
-
-   
 
 
 
     const changeApprove=async()=>{
-
 setLoading(true)
         const requestBody={
             "status": "Approved"
@@ -132,7 +126,6 @@ setData(changedType)
         setLoading(false)
     
     }
-  
 
 //  data?.demoRequests.map(content)   
 } catch (error) {
@@ -296,7 +289,6 @@ try {
            </thead>
                     <thead className="">
                         <tr className="border-b p-2 bg-[#EAECF0 grid grid-cols-6 justify-between w-full border]">
-                            
                             <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Name</th>
                             <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Email address</th>
                             <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Demo request date & time</th>
@@ -308,7 +300,6 @@ try {
                     <tbody>
                         {data.demoRequests.map(request=> (
                             <tr key={request.id} className="p-2 px-4 grid grid-cols-6 justify-between items-center">
-                               
                                 <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px]">{request.fullname}</td>
                                 <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px]">{request.emailaddress}</td>
                                 <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{new Date(request.requestdate).toLocaleDateString()}</td>
