@@ -87,7 +87,7 @@ export default function Demopage() {
    console.log(index)
 
     const changeApprove = async() => {
-        console.log(id)
+        console.log("Id: ", id)
         setLoading(true)
         const requestBody = {
             status: "Approved"
@@ -103,7 +103,7 @@ export default function Demopage() {
     }
 
     const changeDeny = async() => {
-        console.log(id)
+        console.log("Id: ", id)
         setLoading(true)
         const requestBody={
             "status": "Denied"
@@ -119,6 +119,7 @@ export default function Demopage() {
     }
 
     const changeDisplay=(ids:string,stats:string)=>{
+        console.log("Ids: ",ids)
         setId(ids)
         setStatus({...status,modal:true,state:stats})
     }
@@ -266,7 +267,7 @@ export default function Demopage() {
                        </td>
                                 <td className="flex flex-col lg:flex-row  py-[16px] px-[24px] justify-center  gap-[8px]">
 
-                                    <button onClick={()=>changeDisplay(request.id,"Approve")} className="bg-[#1570EF] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] w-24 px-[16px] w-fit lg:w-auto">Approve</button>
+                                    <button onClick={()=>changeDisplay(request.id,"Approve")} className="bg-[#1570EF] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] w-24 px-[16px] w-fit lg:w-auto">{request.id}</button>
                                     <button onClick={()=>changeDisplay(request.id,"Deny")} className="bg-white border font-[600] leading-[20px]  rounded-[8px] py-[10px] px-[16px] w-24 lg:w-auto">Deny</button>
                                 </td>
                             </tr>
