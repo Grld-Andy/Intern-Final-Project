@@ -62,13 +62,13 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
                     <div className='flex flex-col gap-[6px]'>
                         <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Full name</h1>
                         <div className='border border-[#d0d5dd] rounded-lg py-[10px] px-[14px]'>
-                            <input onChange={(e) => {setFullName(e.target.value)}} required placeholder='Enter full name here' className='outline-none text-[16px] font-normal leading-[24px] text-[#667085]' type="text" name="fullname" id="fullname" />
+                            <input onChange={(e) => {setFullName(e.target.value)}} required placeholder='Enter full name here' className='w-full outline-none text-[16px] font-normal leading-[24px] text-[#667085]' type="text" name="fullname" id="fullname" />
                         </div>
                     </div>
                     <div className='flex flex-col gap-[6px]'>
                         <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Email address</h1>
                         <div className='border border-[#d0d5dd] rounded-lg py-[10px] px-[14px]'>
-                            <input onChange={(e) => {setEmail(e.target.value)}} required placeholder='Enter email address here' className='outline-none text-[16px] font-normal leading-[24px] text-[#667085]' type="email" name="email" id="email" />
+                            <input onChange={(e) => {setEmail(e.target.value)}} required placeholder='Enter email address here' className='w-full outline-none text-[16px] font-normal leading-[24px] text-[#667085]' type="email" name="email" id="email" />
                         </div>
                     </div>
                     <div className='flex flex-col gap-[6px]'>

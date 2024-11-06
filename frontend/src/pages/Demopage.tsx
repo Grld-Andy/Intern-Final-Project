@@ -4,6 +4,7 @@ import arrowRight from "../assets/arrow-right.svg";
 import { CircularProgress, LinearProgress } from "@mui/material";
 import Box from '@mui/material/Box';
 import getDemoRequestCreationString from "../utils/getDemoRequestCreationString";
+import axios from "axios";
 
 type Request = {
     id: string;
@@ -38,6 +39,7 @@ export default function Demopage() {
         demolength: null,
         pageNumber: 0,
     });
+    const [activeDemos, setActiveDemos] = useState<number>(0)
     const [pages, setPages] = useState<Array<number>>([]);
     const [index, setIndex] = useState<number>(1);
     const [loading, setLoading] = useState(false);
@@ -76,12 +78,21 @@ export default function Demopage() {
     };
 
     useEffect(() => {
+        axios.get("https://intern-final-project.onrender.com/api/v1/demo-requests/active/count")
+        .then((res) =>{
+            setActiveDemos(res.data.activeDemoRequestsCount)
+        }).catch(() => {
+            console.log("error")
+        })
+    }, [])
+
+    useEffect(() => {
         fetchData(index);
-    }, [index]);
+    }, [fetchData, index]);
 
     useEffect(() => {
         genPage();
-    }, [pageData.pageNumber]);
+    }, [genPage, pageData.pageNumber]);
 
     const changeApprove = async () => {
         setLoading(true);
@@ -115,6 +126,7 @@ export default function Demopage() {
             console.log(error);
         }
     };
+
 
     const disapprove = async () => {
         console.log(id);
@@ -159,7 +171,7 @@ export default function Demopage() {
     };
 
     return (
-        <div className="mt-[126px] lg:w-[95%] min-w-[1200px] mx-auto lg:border overflow-x lg:shadow-m w-full mb-10 2xl:mx-auto bg-white">
+        <div className="bg-[#F9FAFB] border mt-[132px] lg:w-[95%] min-w-[1200px] mx-auto lg:border overflow-x lg:shadow-m w-full mb-10 2xl:mx-auto">
             {data ? (
                 <div className="relative">
                     <div className="w-full">
@@ -227,38 +239,38 @@ export default function Demopage() {
                         )}
                     </div>
 
-                    <table className="grid grid-rows">
-                        <thead className="lg:bg-[#EAECF0] w-full">
-                            <th className="py-[10px] px-[24px] flex w-full flex-row items-start gap-2">
-                                <h1 className="text-[#101828] font-[500] leading-[28px] text-[18px]">Demo Requests</h1>
-                                <h2 className="font-[#6941C6] font-[500] bg-[#F9F5FF] leading-[18px] text-[12px] p-1 xl:min-w-[24px] rounded-full text-[#6941C6]">
-                                    {pageData?.demolength}
+                    <div className="grid grid-rows">
+                        <div className="bg-white h-[67px] flex items-center w-full">
+                            <th className="py-[10px] px-[24px] flex w-full flex-row items-center gap-2">
+                                <h1 className="text-[#101828] font-[500] leading-[28px] text-[18px]">Demo requests</h1>
+                                <h2 className="font-[#6941C6] font-[500] bg-[#F9F5FF] leading-[18px] text-[12px] p-1 w-[22px] h-[22px] rounded-full text-[#6941C6] flex items-center justify-center">
+                                    {activeDemos}
                                 </h2>
                             </th>
-                        </thead>
+                        </div>
 
-                        <thead>
-                            <tr className="border-b p-2 bg-[#EAECF0 grid grid-cols-6 justify-between w-full border]">
-                                <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Name</th>
-                                <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Email address</th>
-                                <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Demo request date & time</th>
-                                <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Project requested</th>
-                                <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Status</th>
-                                <th className="text-[#667085] py-[12px] px-[24px] font-[500] leading-[18px]">Actions</th>
+                        <div>
+                            <tr className="border-b h-[44px] bg-[#EAECF0] grid grid-cols-6 justify-between w-full border">
+                                <th className="text-[#667085] text-[12px] py-[12px] px-[24px] font-[500] leading-[18px]">Name</th>
+                                <th className="text-[#667085] text-[12px] py-[12px] px-[24px] font-[500] leading-[18px]">Email address</th>
+                                <th className="text-[#667085] text-[12px] py-[12px] px-[24px] font-[500] leading-[18px]">Demo request date & time</th>
+                                <th className="text-[#667085] text-[12px] py-[12px] px-[24px] font-[500] leading-[18px]">Project requested</th>
+                                <th className="text-[#667085] text-[12px] py-[12px] px-[24px] font-[500] leading-[18px]">Status</th>
+                                <th className="text-[#667085] text-[12px] py-[12px] px-[24px] font-[500] leading-[18px]">Actions</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {data.demoRequests.map(request => (
-                                <tr key={request.id} className="p-2 px-4 grid grid-cols-6 justify-between items-center">
-                                    <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.fullname}</td>
-                                    <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.emailaddress}</td>
-                                    <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{getDemoRequestCreationString(request.requestdate)}</td>
-                                    <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectname}</td>
-                                    <td className="py-[16px] px-[24px] flex justify-center text-center font-[400] text-[14px] leading-[20px]">
+                        </div>
+                        <div>
+                            {data.demoRequests.map((request, index) => (
+                                <tr key={request.id} className={`${index % 2 === 0 ? 'bg-[#F9F5FF]' : 'bg-white'} p-2 px-4 grid grid-cols-6 justify-between items-center h-[72px]`}>
+                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.fullname}</td>
+                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.emailaddress}</td>
+                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{getDemoRequestCreationString(request.requestdate)}</td>
+                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden line-clamp-1">{request.projectname}</td>
+                                    <td className=" px-[24px] flex justify-center text-center font-[400] text-[14px] leading-[20px]">
                                         <h1 className={`
-                                            ${request.status.toLowerCase() === 'approved' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                                            ${request.status.toLowerCase() === 'active' && 'text-[#027A48] p-2 bg-[#ECFDF3] w-fit font-[500]'}
-                                            ${request.status.toLowerCase() === 'denied' && 'text-[#B42318] p-2 bg-[#FEF3F2] w-fit font-[500]'}
+                                            ${request.status.toLowerCase() === 'approved' && 'text-[#027A48] bg-[#ECFDF3] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
+                                            ${request.status.toLowerCase() === 'active' && 'text-[#027A48] bg-[#ECFDF3] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
+                                            ${request.status.toLowerCase() === 'denied' && 'text-[#B42318] bg-[#FEF3F2] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
                                             text-[#667085]
                                         `}>
                                             {request.status.toLowerCase() === "approved" && "Approve"}
@@ -266,30 +278,30 @@ export default function Demopage() {
                                             {request.status.toLowerCase() === "denied" && "Denied"}
                                         </h1>
                                     </td>
-                                    <td className="flex flex-col lg:flex-row py-[16px] px-[24px] justify-center gap-[8px]">
+                                    <td className="flex px-[24px] justify-center gap-[8px]">
                                         <button
                                             onClick={() => changeDisplay(request.id, "Approve")}
-                                            className="bg-[#1570EF] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] w-24 px-[16px] w-fit lg:w-auto"
+                                            className="bg-[#1570EF] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] px-[16px] lg:w-auto"
                                         >
                                             Approve
                                         </button>
                                         <button
                                             onClick={() => changeDisplay(request.id, "Deny")}
-                                            className="bg-white border font-[600] leading-[20px] rounded-[8px] py-[10px] px-[16px] w-24 lg:w-auto"
+                                            className="bg-white border font-[600] leading-[20px] rounded-[8px] py-[10px] px-[16px]"
                                         >
                                             Deny
                                         </button>
                                     </td>
                                 </tr>
                             ))}
-                        </tbody>
-                        </table>
+                        </div>
+                        </div>
 
                         {/* Pagination controls */}
-                        <div className="flex flex-row justify-between gap-12 lg:justify-between pt-10 mb-4 px-8">
+                        <div className="flex items-center flex-row justify-between gap-12 px-8 bg-white h-[68px]">
                             <button
                                 onClick={() => setIndex(index - 1)}
-                                className="border gap-[8px] w-fit lg:w-auto items-center inline-flex items-center rounded-[8px] border py-[8px] px-[14px]"
+                                className="border gap-[8px] w-fit lg:w-auto inline-flex items-center rounded-[8px] py-[8px] px-[14px]"
                             >
                                 <img src={arrowLeft} alt="Previous" />
                                 Previous
