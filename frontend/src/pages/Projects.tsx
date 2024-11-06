@@ -28,7 +28,7 @@ const Projects: React.FC = () => {
         e.preventDefault()
         const filterBy = filters.join(",")
         const sortBy = sort == "Sort by most recent" ? "mostRecent" : "oldestFirst"
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`)
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects??limit=${limit}&sort=${sortBy}&stackNames=${filterBy}&title=${search}`, {withCredentials: true})
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
@@ -43,7 +43,7 @@ const Projects: React.FC = () => {
     }
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects?limit=${limit}`)
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects?limit=${limit}`, {withCredentials: true})
         .then((res) => {
             if(res.data){
                 setProjects(res.data.projects)
