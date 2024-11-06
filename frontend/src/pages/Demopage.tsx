@@ -3,7 +3,7 @@ import arrowLeft from "../assets/arrow-left.svg"
 import arrowRight from "../assets/arrow-right.svg"
 import { CircularProgress, LinearProgress} from "@mui/material";
 import Box from '@mui/material/Box';
-import axios from "axios";
+import getDemoRequestCreationString from "../utils/getDemoRequestCreationString";
 type Request = {
     id: string;
     emailaddress:string,
@@ -288,8 +288,8 @@ try {
                                
                                 <td className="text-[#667085] py-[16px] px-[24px]   text-center font-[400] text-[14px] leading-[20px]">{request.fullname}</td>
                                 <td className="text-[#667085] py-[16px] px-[24px]  text-center font-[400] text-[14px] leading-[20px]">{request.emailaddress}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{new Date(request.requestdate).toLocaleDateString()}</td>
-                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectid}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{getDemoRequestCreationString(request.requestdate)}</td>
+                                <td className="text-[#667085] py-[16px] px-[24px] text-center font-[400] text-[14px] leading-[20px]">{request.projectname}</td>
                        
                        <td className=" py-[16px] px-[24px]  flex justify-center text-center font-[400] text-[14px] leading-[20px]">
 
