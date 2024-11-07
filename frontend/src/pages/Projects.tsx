@@ -170,12 +170,10 @@ const Projects: React.FC = () => {
                             ))
                         }
                     </div>:
-                    status === "done"?
+                    status === "done" && projects.length > 0?
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8 min-h-[660px]">
                         {
-                            projects.length === 0 ?
-                            <h1 className="text-[#344054] font-semibold text-xl">No projects found</h1>
-                            :projects.map((project, index) => (
+                            projects.map((project, index) => (
                                 <ProjectCell project={project} key={index}/>
                             ))
                         }
@@ -188,7 +186,7 @@ const Projects: React.FC = () => {
                     <h1>Page {page} of {`${Math.ceil(totalProjects/limit)}`}</h1>
                     <div className="flex gap-3">
                         <button type="button" onClick={prevPage} className={`bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm ${page === 1 ? "opacity-50 pointer-events-none" : ""}`}>Previous</button>
-                        <button type="button" onClick={nextPage} className={`bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm ${page === Math.ceil(totalProjects/limit) ? "opacity-50 pointer-events-none" : ""}`}>Next</button>
+                        <button type="button" onClick={nextPage} className={`bg-white border border-[#d0d5dd] rounded-lg px-4 py-2 font-medium shadow-sm ${page === Math.ceil(totalProjects/limit) || page === 0 ? "opacity-50 pointer-events-none" : ""}`}>Next</button>
                     </div>
                 </div>
             </div>

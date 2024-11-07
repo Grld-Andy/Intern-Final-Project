@@ -6,6 +6,7 @@ import Navbar from '../Navbar'
 const ProtectedRoutes: React.FC = () => {
     const { user } = useContext(UserContext)
     const navigate = useNavigate()
+    
 
     useEffect(() => {
         if(!user) {
