@@ -7,7 +7,7 @@ const LoginMethod: React.FC = () => {
     const signInWithMicrosoft = async () => {
         setIsLoading(true);
         const baseUri = import.meta.env.VITE_ENV == "development" ? import.meta.env.VITE_FRONTEND_LOCAL_URL : import.meta.env.VITE_FRONTEND_DEPLOYED_URL
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
             provider: "azure",
             options: {
                 redirectTo: `${baseUri}/admin`,
@@ -17,13 +17,6 @@ const LoginMethod: React.FC = () => {
             console.error("Login error:", error);
             setTimeout(() => {setIsLoading(false)}, 5000)
         } else {
-            // const token = data?.session?.access_token;
-          console.log(data) 
-            // if (token) {
-            //   // Store the token in local storage
-            //   localStorage.setItem("accessToken", token);
-            // //   console.log("User logged in:", data.user);
-            // }
             setTimeout(() => {setIsLoading(false)}, 5000)
         }
     };

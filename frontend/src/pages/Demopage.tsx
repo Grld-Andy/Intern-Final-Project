@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import arrowLeft from "../assets/arrow-left.svg";
 import arrowRight from "../assets/arrow-right.svg";
-import { CircularProgress, LinearProgress } from "@mui/material";
-import Box from '@mui/material/Box';
+import { LinearProgress } from "@mui/material";
 import getDemoRequestCreationString from "../utils/getDemoRequestCreationString";
 import axios from "axios";
+import { ActiveDemoRequestsContext } from "../contexts/ActiveDemoRequestsContext"; // Import ActiveDemoRequestsContext
 
 type Request = {
     id: string;
@@ -12,6 +12,7 @@ type Request = {
     projectname: string;
     fullname: string;
     requestdate: string;
+    requesttime: string;
     comments: string;
     createdat: string;
     status: string;
@@ -34,40 +35,41 @@ type ResponseData = {
 };
 
 export default function Demopage() {
+    const { activeDemoRequests, activeDemoRequestsDispatch } = useContext(ActiveDemoRequestsContext); // Use context for active demo requests
     const [demos, setDemos] = useState<Data | null>(null);
     const [pageData, setPageData] = useState<PageData>({
         demolength: null,
         pageNumber: 0,
     });
-    const [activeDemos, setActiveDemos] = useState<number>(0)
     const [pages, setPages] = useState<Array<number>>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [index, setIndex] = useState<number>(1);
-    const [loading, setLoading] = useState(false);
+    const [requestStatus, setRequestStatus] = useState<string>("");
     const [status, setStatus] = useState({ modal: false, state: "" });
     const [id, setId] = useState<string | number>(0);
 
     useEffect(() => {
         axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/active/count`)
-        .then((res) =>{
-            setActiveDemos(res.data.activeDemoRequestsCount)
-        }).catch(() => {
-            console.log("error")
-        })
-    }, [])
+            .then((res) => {
+                activeDemoRequestsDispatch({ type: 'SET', payload: res.data.activeDemoRequestsCount });
+            })
+            .catch((error) => {
+                console.error('Failed to fetch active demo requests:', error);
+            });
+    }, [activeDemoRequestsDispatch]);
 
     useEffect(() => {
         const fetchData = async (id: number) => {
             try {
                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests?page=${id < 1 ? 1 : id}`);
                 const dataResponse = (await response.json()) as ResponseData;
-    
+
                 if (dataResponse) {
                     setPageData({
                         demolength: dataResponse.totalDemoRequests,
                         pageNumber: dataResponse.totalPages,
                     });
-                    setCurrentPage(id < 1 ? 1 : id)
+                    setCurrentPage(id < 1 ? 1 : id);
                     setDemos(dataResponse);
                 }
             } catch (error) {
@@ -84,9 +86,8 @@ export default function Demopage() {
                 for (let i = 0; i < pageData.pageNumber; i++) {
                     genArray.push(i + 1);
                 }
-    
                 if (genArray.length > 0) {
-                    return setPages([...genArray]);
+                    setPages([...genArray]);
                 }
             }
         };
@@ -95,7 +96,7 @@ export default function Demopage() {
     }, [pageData]);
 
     const changeApprove = async () => {
-        setLoading(true);
+        setRequestStatus("loading");
         const requestBody = { status: "Approved" };
         try {
             const results = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/${id}/status`, {
@@ -108,28 +109,25 @@ export default function Demopage() {
 
             const data = await results.json();
             if (demos?.demoRequests) {
-                const udpatedDemos = demos.demoRequests.map((content) =>
+                const updatedDemos = demos.demoRequests.map((content) =>
                     content.id === id ? { ...content, status: "Approved" } : content
                 );
 
-                const changedType: Data = {
-                    demoRequests: udpatedDemos,
-                };
-                setDemos(changedType);
+                setDemos({ demoRequests: updatedDemos });
             }
 
             if (data) {
-                setLoading(false);
-                setActiveDemos(activeDemos - 1)
+                setRequestStatus("done");
+                activeDemoRequestsDispatch({ type: 'DECREMENT', payload: 1 });
+                setStatus({ ...status, modal: false });
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-
     const disapprove = async () => {
-        setLoading(true);
+        setRequestStatus("loading");
         const requestBody = { status: "Denied" };
         try {
             const results = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/${id}/status`, {
@@ -142,18 +140,16 @@ export default function Demopage() {
             const data = await results.json();
 
             if (demos?.demoRequests) {
-                const udpatedDemos = demos.demoRequests.map((content) =>
+                const updatedDemos = demos.demoRequests.map((content) =>
                     content.id === id ? { ...content, status: "Denied" } : content
                 );
-
-                const changedType: Data = {
-                    demoRequests: udpatedDemos,
-                };
-                setDemos(changedType);
-                setActiveDemos(activeDemos - 1)
+                setDemos({ demoRequests: updatedDemos });
             }
+
             if (data) {
-                setLoading(false);
+                setRequestStatus("done");
+                activeDemoRequestsDispatch({ type: 'DECREMENT', payload: 1 });
+                setStatus({ ...status, modal: false });
             }
         } catch (error) {
             console.log(error);
@@ -172,7 +168,7 @@ export default function Demopage() {
                     <div className="w-full">
                         {status.modal && (
                             status.state === "Approve" ? (
-                                <div className="shadow-lg z-40 fixed bg-white md:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <div className={`shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${requestStatus == "loading" ? "opacity-80" : ""}`}>
                                     <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Approve demo</h1>
                                     <div className="flex flex-col gap-[16px]">
                                         <p className="text-[#667085] font-[400] text-[14px] leading-[20px]">
@@ -183,21 +179,21 @@ export default function Demopage() {
                                             <button onClick={() => setStatus({ ...status, modal: false })} className="w-full rounded-[8px] border px-[16px] text-[#344054] font-[600] text-[18px] leading-[28px]">Cancel</button>
                                             <button
                                                 onClick={changeApprove}
-                                                disabled={loading}
-                                                className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#1570EF] w-full font-[600] leading-[20px] text-white rounded-[8px] px-[16px]`}
+                                                disabled={requestStatus == "loading"}
+                                                className={`flex flex-row gap-[4px] justify-center items-center bg-[#1570EF] w-full font-[600] leading-[20px] text-white rounded-[8px] px-[16px]`}
                                             >
-                                                Approve
-                                                {loading && (
-                                                    <Box sx={{ display: 'flex' }}>
-                                                        <CircularProgress color={"info"} />
-                                                    </Box>
-                                                )}
+                                                {
+                                                    requestStatus == "loading" ?
+                                                    <div className="w-6 h-6 border-4 border-l-cyan-400 border-white rounded-full animate-spin"></div>
+
+                                                    :<>Approve</>
+                                                }
                                             </button>
                                         </span>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <div className={`shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${requestStatus == "loading" ? "opacity-80" : ""}`}>
                                     <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Deny demo</h1>
                                     <div className="flex flex-col gap-[16px]">
                                         <p className="text-[#667085] font-[400] text-[14px] leading-[20px]">
@@ -208,16 +204,15 @@ export default function Demopage() {
                                         <span className="flex flex-row gap-[8px] mt-[5px] h-[44px]">
                                             <button onClick={() => setStatus({ ...status, modal: false })} className="rounded-[8px] w-full border px-[16px] text-[#344054] font-[600] text-[18px] leading-[28px]">Cancel</button>
                                             <button
-                                                disabled={loading}
+                                                disabled={requestStatus == "loading"}
                                                 onClick={disapprove}
-                                                className={`${loading && 'flex flex-row gap-[4px] items-center'} w-full bg-[#B42318] font-[600] leading-[20px] text-white rounded-[8px] px-[16px]`}
+                                                className={`flex flex-row gap-[4px] items-center justify-center w-full bg-[#B42318] font-[600] leading-[20px] text-white rounded-[8px] px-[16px]`}
                                             >
-                                                Deny
-                                                {loading && (
-                                                    <Box sx={{ display: 'flex' }}>
-                                                        <CircularProgress color={"info"} />
-                                                    </Box>
-                                                )}
+                                                {
+                                                    requestStatus == "loading" ?
+                                                    <div className="w-6 h-6 border-4 border-l-white border-cyan-400 rounded-full animate-spin"></div>
+                                                    :<>Deny</>
+                                                }
                                             </button>
                                         </span>
                                     </div>
@@ -231,7 +226,7 @@ export default function Demopage() {
                             <th className="py-[10px] px-[24px] flex w-full flex-row items-center gap-2">
                                 <h1 className="text-[#101828] font-[500] leading-[28px] text-[18px]">Demo requests</h1>
                                 <h2 className="font-[#6941C6] font-[500] bg-[#F9F5FF] leading-[18px] text-[12px] p-1 w-[22px] h-[22px] rounded-full text-[#6941C6] flex items-center justify-center">
-                                    {activeDemos}
+                                    {activeDemoRequests}
                                 </h2>
                             </th>
                         </div>
@@ -249,11 +244,11 @@ export default function Demopage() {
                         <div>
                             {demos.demoRequests.map((request, index) => (
                                 <tr key={request.id} className={`${index % 2 === 0 ? 'bg-[#F9F5FF]' : 'bg-white'} ${request.status.toLowerCase() === 'denied' ? "opacity-50 select-none pointer-events-none" : ""} p-2 px-4 grid grid-cols-6 justify-between items-center h-[72px]`}>
-                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.fullname}</td>
-                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.emailaddress}</td>
-                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{getDemoRequestCreationString(request.requestdate)}</td>
-                                    <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden line-clamp-1">{request.projectname}</td>
-                                    <td className=" px-[24px] flex justify-center text-center font-[400] text-[14px] leading-[20px]">
+                                    <td className="text-[#667085] px-[24px] font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.fullname}</td>
+                                    <td className="text-[#667085] px-[24px] font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.emailaddress}</td>
+                                    <td className="text-[#667085] px-[24px] font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{getDemoRequestCreationString(request.requestdate, request.requesttime)}</td>
+                                    <td className="text-[#667085] px-[24px] font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden line-clamp-1">{request.projectname}</td>
+                                    <td className=" px-[24px] flex justify-center font-[400] text-[14px] leading-[20px]">
                                         <h1 className={`
                                             ${request.status.toLowerCase() === 'approved' && 'text-[#027A48] bg-[#ECFDF3] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
                                             ${request.status.toLowerCase() === 'active' && 'text-[#027A48] bg-[#ECFDF3] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
@@ -294,67 +289,66 @@ export default function Demopage() {
                                 Previous
                             </button>
                             <span className="inline-flex gap-6">
-                                {pages?.length <= 6 ? (
-                                    pages?.map((content, index) => (
-                                    <div 
-                                        key={index} 
-                                        onClick={() => setIndex(content)} 
-                                        className={`${
-                                        content === currentPage ? "bg-[#F9F5FF]" : ""
-                                        } p-2 rounded-sm px-4 cursor-pointer`}
-                                    >
-                                        <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
-                                    </div>
-                                    ))
-                                ) : (
-                                    <>
-                                    {currentPage >= 3 && currentPage <= pages?.length - 3 ? (
-                                        <>
-                                        <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
-                                            <span className="text-[#667085] flex items-center justify-center">...</span>
-                                        </div>
-
-                                        {pages?.slice(currentPage - 2, currentPage + 1).map((content, index) => (
-                                            <div
-                                            key={index}
-                                            onClick={() => setIndex(content)}
+                                {
+                                    pages?.length <= 6 ? (
+                                        pages?.map((content, index) => (
+                                        <div 
+                                            key={index} 
+                                            onClick={() => setIndex(content)} 
                                             className={`${
-                                                content === currentPage ? "bg-[#F9F5FF]" : ""
-                                            } p-2 rounded-sm px-4 cursor-pointer`}
-                                            >
-                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
-                                            </div>
-                                        ))}
-                                        </>
-                                    ) : (
-                                        <>
-                                        {pages?.slice(0, 3).map((content, index) => (
-                                            <div
-                                            key={index}
-                                            onClick={() => setIndex(content)}
-                                            className={`${
-                                                content === currentPage ? "bg-[#F9F5FF]" : ""
-                                            } p-2 rounded-sm px-4 cursor-pointer`}
-                                            >
-                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
-                                            </div>
-                                        ))}
-                                        </>
-                                    )}
-                                    <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
-                                        <span className="text-[#667085] flex items-center justify-center">...</span>
-                                    </div>
-                                    {pages?.slice(pages.length - 3).map((content, index) => (
-                                        <div
-                                        key={index}
-                                        onClick={() => setIndex(content)}
-                                        className={`${
                                             content === currentPage ? "bg-[#F9F5FF]" : ""
-                                        } p-2 rounded-sm px-4 cursor-pointer`}
+                                            } p-2 rounded-sm px-4 cursor-pointer`}
                                         >
-                                        <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
                                         </div>
-                                    ))}
+                                        ))
+                                    ) : (
+                                    <>
+                                        {
+                                            currentPage >= 3 && currentPage <= pages?.length - 3 ? (
+                                                <>
+                                                    <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
+                                                        <span className="text-[#667085] flex items-center justify-center">...</span>
+                                                    </div>
+                                                    {
+                                                        pages?.slice(currentPage - 2, currentPage === pages.length - 3 ? currentPage : currentPage + 1).map((content, index) => (
+                                                            <div key={index} onClick={() => setIndex(content)}
+                                                            className={`${ content === currentPage ? "bg-[#F9F5FF]" : ""} p-2 rounded-sm px-4 cursor-pointer`}>
+                                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </>
+                                            ) : (
+                                            <>
+                                            {
+                                                pages?.slice(0, 3).map((content, index) => (
+                                                    <div key={index} onClick={() => setIndex(content)}
+                                                    className={`${ content === currentPage ? "bg-[#F9F5FF]" : ""} p-2 rounded-sm px-4 cursor-pointer`}>
+                                                    <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                        {
+                                            currentPage === (pages?.length - 3) ||
+                                            <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
+                                                <span className="text-[#667085] flex items-center justify-center">...</span>
+                                            </div>
+                                        }
+                                        {
+                                            pages?.slice(pages.length - 3).map((content, index) => (
+                                                <div
+                                                key={index}
+                                                onClick={() => setIndex(content)}
+                                                className={`${
+                                                    content === currentPage ? "bg-[#F9F5FF]" : ""
+                                                } p-2 rounded-sm px-4 cursor-pointer`}
+                                                >
+                                                <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                                </div>
+                                            ))
+                                        }
                                     </>
                                 )}
                             </span>

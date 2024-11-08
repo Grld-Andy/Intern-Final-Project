@@ -7,36 +7,37 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { UserContext } from "../contexts/UserContext";
+import { ActiveDemoRequestsContext } from '../contexts/ActiveDemoRequestsContext'; // Import ActiveDemoRequestsContext
 import { supabase } from '../supabase';
 import createNameAvatar from '../utils/createNameAvatar';
-import axios from 'axios';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
     const [logout, setLogout] = useState(false);
-    const [activeDemos, setActiveDemos] = useState<number>(localStorage.getItem("activeDemos") ? Number(localStorage.getItem("activeDemos")) : 0)
     const [authstate, setAuthstate] = useState<boolean>(false);
     const { user, userDispatch } = useContext(UserContext);
+    const { activeDemoRequests, activeDemoRequestsDispatch } = useContext(ActiveDemoRequestsContext); // Consume the context
+    
     const navbarContent: Array<{name: string, link: string}> = [
         { name: 'Home', link: '/' },
         { name: 'Projects', link: '/projects' },
         { name: 'Contact', link: 'https://amalitech.com/locations-contact/' }
-    ]
+    ];
+
     const adminNavbarContent: Array<{name: string, link: string}> = [
         { name: 'Analytics', link: '/admin' },
         { name: 'Projects', link: '/projects' },
         { name: 'Demo requests', link: '/demo-page' }
-    ]
+    ];
 
-    useEffect(() => {
-        localStorage.setItem("activeDemos", activeDemos.toString())
-    }, [activeDemos])
-
+    // Toggle the menu
     const toggleMenu = () => {
         setIsOpen(!isOpen);
+        setLogout(false);
     };
 
+    // Log out user
     const logOut = async () => {
         await supabase.auth.signOut();
         userDispatch({ type: "LOGOUT", payload: null });
@@ -45,28 +46,30 @@ export default function Navbar() {
     };
 
     useEffect(() => {
+        const user = localStorage.getItem('user');
+        
+        if((!user || user === null || user === "null") && location.pathname.includes("admin")){
+            supabase.auth.onAuthStateChange(
+                async (_event, session) => {
+                    if (session) {
+                        userDispatch({ type: "LOGIN", payload: session.user });
+                        localStorage.setItem("user", JSON.stringify(session.user));
+                    }
+                }
+            );
+        }
+
         const checkUser = () => {
-            const user = localStorage.getItem('user');
-            if (user != "null") {
-                console.log("true")
+            if (user !== "null") {
                 setAuthstate(true);
             } else {
                 setAuthstate(false);
             }
         };
         checkUser();
-        setIsOpen(false)
-
-        if(location.pathname.includes("demo-page")){
-            axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/active/count`)
-            .then((res) =>{
-                console.log(res.data.activeDemoRequestsCount)
-                setActiveDemos(res.data.activeDemoRequestsCount)
-            }).catch(() => {
-                console.log("error")
-            })
-        }
-    }, [location]);
+        setIsOpen(false);
+        setLogout(false);
+    }, [userDispatch, activeDemoRequestsDispatch]);
 
     return (
         <>
@@ -91,7 +94,7 @@ export default function Navbar() {
                                         <div key={index} className='flex gap-[8px]'>
                                             <NavLink to={item.link} className={`${location.pathname === item.link ? "text-[#1570EF]" : "text-[#667085]"} leading-[20px] text-[14px] font-[600] cursor-pointer hover:text-[#1570EF]`}>{item.name}</NavLink>
                                             <h2 className="font-[#6941C6] font-[500] bg-[#D92D20] leading-[18px] text-[12px] p-1 w-[22px] h-[22px] rounded-full text-white flex items-center justify-center">
-                                                {activeDemos}
+                                                {activeDemoRequests}
                                             </h2>
                                         </div>
                                     )
@@ -121,11 +124,15 @@ export default function Navbar() {
                         <span className="w-[40px] h-[40px] rounded-[50%] bg-gradient-to-r from-cyan-200 to-blue-100 flex items-center text-[#344054] justify-center">
                             {createNameAvatar(user?.email)}
                         </span>
-                        <div>
-                            <KeyboardArrowDownIcon onClick={() => setLogout(!logout)} className='cursor-pointer' />
+                        <div className="relative">
+                            <KeyboardArrowDownIcon
+                                onClick={() => setLogout(!logout)}
+                                className={`cursor-pointer transition-transform duration-300 ${logout ? "rotate-180" : ""}`}
+                            />
                             {logout && (
-                                <span onClick={logOut} className='absolute cursor-pointer flex flex-row gap-1 p-2 right-0 -bottom-12 bg-white shadow-md border'>
-                                    Sign out <LogoutIcon />
+                                <span onClick={logOut} className='absolute bg-white border rounded-[8px] cursor-pointer flex gap-2 p-1 shadow text-[#667085] leading-[20px] text-[14px] font-[400]'>
+                                    <h1 className="flex w-[max-content]">Sign out</h1>
+                                    <LogoutIcon />
                                 </span>
                             )}
                         </div>
@@ -158,11 +165,15 @@ export default function Navbar() {
                             <span className="w-[40px] h-[40px] rounded-[50%] bg-gradient-to-r from-cyan-200 to-blue-100 flex items-center text-[#344054] justify-center">
                                 {createNameAvatar(user?.email)}
                             </span>
-                            <div>
-                                <KeyboardArrowDownIcon onClick={() => setLogout(!logout)} className='cursor-pointer' />
+                            <div className="relative md:hidden">
+                                <KeyboardArrowDownIcon
+                                    onClick={() => setLogout(!logout)}
+                                    className={`cursor-pointer transition-transform duration-300 ${logout ? "rotate-180" : ""}`}
+                                />
                                 {logout && (
-                                    <span onClick={logOut} className='absolute md:hidden cursor-pointer flex flex-row gap-1 p-2 bg-white shadow-md border'>
-                                        Sign out <LogoutIcon />
+                                    <span onClick={logOut} className='absolute bg-white border rounded-[8px] cursor-pointer flex gap-2 p-1 shadow text-[#667085] leading-[20px] text-[14px] font-[400]'>
+                                        <h1 className="flex w-[max-content]">Sign out</h1>
+                                        <LogoutIcon />
                                     </span>
                                 )}
                             </div>
@@ -174,9 +185,22 @@ export default function Navbar() {
                     <ul className="flex md:hidden flex-col mt-10 p-4 text-lg gap-10 justify-center">
                         {
                             adminNavbarContent.map((item, index) => {
-                                return (
-                                    <NavLink key={index} to={item.link} className={`${location.pathname === item.link ? "text-[#1570EF]" : "text-[#667085]"} leading-[20px] text-[14px] font-[600] cursor-pointer hover:text-[#1570EF]`}>{item.name}</NavLink>
-                                )
+                                if(item.link !== "/demo-page"){
+                                    return (
+                                        <NavLink key={index} to={item.link} className={`${location.pathname === item.link ? "text-[#1570EF]" : "text-[#667085]"} leading-[20px] text-[14px] font-[600] cursor-pointer hover:text-[#1570EF]`}>
+                                            {item.name}
+                                        </NavLink>
+                                    )
+                                }else{
+                                    return(
+                                        <div key={index} className='flex gap-[8px]'>
+                                            <NavLink to={item.link} className={`${location.pathname === item.link ? "text-[#1570EF]" : "text-[#667085]"} leading-[20px] text-[14px] font-[600] cursor-pointer hover:text-[#1570EF]`}>{item.name}</NavLink>
+                                            <h2 className="font-[#6941C6] font-[500] bg-[#D92D20] leading-[18px] text-[12px] p-1 w-[22px] h-[22px] rounded-full text-white flex items-center justify-center">
+                                                {activeDemoRequests}
+                                            </h2>
+                                        </div>
+                                    )
+                                }
                             })
                         }
                     </ul>
