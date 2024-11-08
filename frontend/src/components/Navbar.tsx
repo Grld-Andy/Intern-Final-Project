@@ -46,9 +46,7 @@ export default function Navbar() {
     };
 
     useEffect(() => {
-        const user = localStorage.getItem('user');
-        
-        if((!user || user === null || user === "null") && location.pathname.includes("admin")){
+        if((!user || user == null) && location.pathname.includes("admin")){
             supabase.auth.onAuthStateChange(
                 async (_event, session) => {
                     if (session) {
@@ -60,7 +58,7 @@ export default function Navbar() {
         }
 
         const checkUser = () => {
-            if (user !== "null") {
+            if (user != null) {
                 setAuthstate(true);
             } else {
                 setAuthstate(false);
@@ -69,7 +67,7 @@ export default function Navbar() {
         checkUser();
         setIsOpen(false);
         setLogout(false);
-    }, [userDispatch, activeDemoRequestsDispatch]);
+    }, [user, userDispatch, activeDemoRequestsDispatch, location.pathname]);
 
     return (
         <>

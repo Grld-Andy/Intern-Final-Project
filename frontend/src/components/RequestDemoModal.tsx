@@ -38,6 +38,10 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
                 handleShowModal(false)
             }, 5000)
         }).catch((err) => {
+            if(err.status(409)){
+                setFormStatus("conflict")
+            }
+            setFormStatus("error")
             console.error(err)
         })
     }
@@ -100,6 +104,22 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
                         <div className='cursor-default rounded-lg bg-[#1570ef] text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[16px] leading-[24px] w-full shadow'>
                             <div className="w-full flex justify-center items-center">
                                 <div className="ml-2 text-white">Your request has been sent</div>
+                            </div>
+                        </div>
+                    }
+                    {
+                        formStatus === "conflict" &&
+                        <div className='cursor-default rounded-lg bg-red-800 text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[14px] leading-[24px] w-full shadow'>
+                            <div className="w-full flex justify-center items-center">
+                                <div className="ml-2 text-white">You have already requested for a demo on this project.</div>
+                            </div>
+                        </div>
+                    }
+                    {
+                        formStatus === "error" &&
+                        <div className='cursor-default rounded-lg bg-red-800 text-white border border-[#d0d5dd] py-[10px] px-[18px] font-semibold text-[14px] leading-[24px] w-full shadow'>
+                            <div className="w-full flex justify-center items-center">
+                                <div className="ml-2 text-white text-center">There was an error submitting you form, please check your network connection and try again.</div>
                             </div>
                         </div>
                     }

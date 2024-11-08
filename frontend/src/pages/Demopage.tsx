@@ -168,7 +168,7 @@ export default function Demopage() {
                     <div className="w-full">
                         {status.modal && (
                             status.state === "Approve" ? (
-                                <div className={`shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${requestStatus == "loading" ? "opacity-80" : ""}`}>
+                                <div className={`shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                                     <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Approve demo</h1>
                                     <div className="flex flex-col gap-[16px]">
                                         <p className="text-[#667085] font-[400] text-[14px] leading-[20px]">
@@ -185,7 +185,6 @@ export default function Demopage() {
                                                 {
                                                     requestStatus == "loading" ?
                                                     <div className="w-6 h-6 border-4 border-l-cyan-400 border-white rounded-full animate-spin"></div>
-
                                                     :<>Approve</>
                                                 }
                                             </button>
@@ -193,7 +192,7 @@ export default function Demopage() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className={`shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${requestStatus == "loading" ? "opacity-80" : ""}`}>
+                                <div className={`shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}>
                                     <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Deny demo</h1>
                                     <div className="flex flex-col gap-[16px]">
                                         <p className="text-[#667085] font-[400] text-[14px] leading-[20px]">
@@ -250,12 +249,12 @@ export default function Demopage() {
                                     <td className="text-[#667085] px-[24px] font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden line-clamp-1">{request.projectname}</td>
                                     <td className=" px-[24px] flex justify-center font-[400] text-[14px] leading-[20px]">
                                         <h1 className={`
-                                            ${request.status.toLowerCase() === 'approved' && 'text-[#027A48] bg-[#ECFDF3] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
-                                            ${request.status.toLowerCase() === 'active' && 'text-[#027A48] bg-[#ECFDF3] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
-                                            ${request.status.toLowerCase() === 'denied' && 'text-[#B42318] bg-[#FEF3F2] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]'}
-                                            text-[#667085]
+                                            ${request.status.toLowerCase() === 'approved' && 'text-[#027A48] bg-[#ECFDF3]'}
+                                            ${request.status.toLowerCase() === 'active' && 'text-[#027A48] bg-[#ECFDF3]'}
+                                            ${request.status.toLowerCase() === 'denied' && 'text-[#B42318] bg-[#FEF3F2]'}
+                                            text-[#667085] flex items-center justify-center px-[8px] w-fit font-[500] h-[22px] rounded-[16px]
                                         `}>
-                                            {request.status.toLowerCase() === "approved" && "Approve"}
+                                            {request.status.toLowerCase() === "approved" && "Approved"}
                                             {request.status.toLowerCase() === "active" && "Active"}
                                             {request.status.toLowerCase() === "denied" && "Denied"}
                                         </h1>
