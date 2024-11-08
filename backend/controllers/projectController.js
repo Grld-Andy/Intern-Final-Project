@@ -462,9 +462,12 @@ const deleteProject = async (req, res) => {
 const createDemoRequest = async (req, res) => {
     const { projectId, fullName, emailAddress, requestDate, requestTime, comments } = req.body;
     try {
-        const checkUser = await pool.query('SELECT * FROM DemoRequest WHERE emailAddress = $1 AND projectId = $2', [emailAddress, projectId]);
+        const checkUser = await pool.query(
+            'SELECT * FROM DemoRequest WHERE emailAddress = $1 AND projectId = $2 AND status != $3', 
+            [emailAddress, projectId, 'denied']
+        );
         if (checkUser.rows.length > 0) {
-            return res.status(409).json({ error: 'You have already requested a demo for this project' });
+            return res.status(409).json({ error: 'You already have an active demo request for this project' });
         }
         const result = await pool.query(
             'INSERT INTO DemoRequest (projectId, fullName, emailAddress, requestDate, requestTime, comments) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',

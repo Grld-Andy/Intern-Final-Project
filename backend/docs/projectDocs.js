@@ -470,7 +470,7 @@
  *       201:
  *         description: Demo request created successfully
  *       409:
- *         description: User has made a demo request for this project before
+ *         description: User has an active request for this project
  *       500:
  *         description: Internal server error
  *   get:
