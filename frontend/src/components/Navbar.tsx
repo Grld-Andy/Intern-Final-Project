@@ -10,6 +10,7 @@ import { UserContext } from "../contexts/UserContext";
 import { ActiveDemoRequestsContext } from '../contexts/ActiveDemoRequestsContext'; // Import ActiveDemoRequestsContext
 import { supabase } from '../supabase';
 import createNameAvatar from '../utils/createNameAvatar';
+import axios from 'axios';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +40,9 @@ export default function Navbar() {
 
     // Log out user
     const logOut = async () => {
+        console.log('sign out')
         await supabase.auth.signOut();
+        console.log('done')
         userDispatch({ type: "LOGOUT", payload: null });
         localStorage.removeItem("user");
         setAuthstate(false);
@@ -57,6 +60,15 @@ export default function Navbar() {
             );
         }
 
+        if(user && activeDemoRequests == 0){
+            axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/active/count`)
+            .then((res) => {
+                activeDemoRequestsDispatch({ type: 'SET', payload: res.data.activeDemoRequestsCount });
+            })
+            .catch((error) => {
+                console.error('Failed to fetch active demo requests:', error);
+            });
+        }
         const checkUser = () => {
             if (user != null) {
                 setAuthstate(true);
@@ -67,7 +79,7 @@ export default function Navbar() {
         checkUser();
         setIsOpen(false);
         setLogout(false);
-    }, [user, userDispatch, activeDemoRequestsDispatch, location.pathname]);
+    }, [user, userDispatch, activeDemoRequestsDispatch, location.pathname, activeDemoRequests]);
 
     return (
         <>

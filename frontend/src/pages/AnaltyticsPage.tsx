@@ -18,7 +18,8 @@ export default function AnalyticsPage() {
         // Handle authentication state change
         supabase.auth.onAuthStateChange(
             async (_event, session) => {
-                if (session) {
+                console.log(session)
+                if (session && session.user) {
                     userDispatch({ type: "LOGIN", payload: session.user });
                     localStorage.setItem("user", JSON.stringify(session.user));
                 } else {

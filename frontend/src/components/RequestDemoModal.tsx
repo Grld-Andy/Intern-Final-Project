@@ -38,11 +38,11 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
                 handleShowModal(false)
             }, 5000)
         }).catch((err) => {
-            if(err.status(409)){
+            if(err.status == 409){
                 setFormStatus("conflict")
+                return
             }
             setFormStatus("error")
-            console.error(err)
         })
     }
 

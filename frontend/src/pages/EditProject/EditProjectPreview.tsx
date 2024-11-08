@@ -13,6 +13,7 @@ import {ProjectFormContext} from "../../contexts/ProjectFormContext"
 import getProjectCreationString from "../../utils/getProjectCreationString"
 import getFormattedLastModifiedDate from "../../utils/getFormattedLastModifiedDate"
 import { useNavigate, useParams } from "react-router-dom"
+import parseLinkedDocs from "../../utils/parseLinkedDocs"
 
 const EditProjectPreview: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -176,35 +177,24 @@ const EditProjectPreview: React.FC = () => {
                   <LinkOutlinedIcon style={{ width: 24, height: 24 }}/>
                   <h1 className="font-semibold text-[#344054] text-[16px] leading-[24px]">Linked Docs</h1>
                 </div>
-                {/* {
-                  project?.linkeddocs &&
-                  project.linkeddocs.map((doc, index) => (
-                    <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
+                {
+                    projectForm?.linkeddocs &&
+                    parseLinkedDocs(projectForm?.linkeddocs).map((doc) => (
+                      <div className="cursor-pointer w-[318px] min-h-[40px] py-[5px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
                       <div className="flex items-center w-full">
-                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">Eventplanner_documentation_here.pdf</h1>
+                        <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054]">
+                          <div>
+                            {
+                              doc?.text &&
+                              <div dangerouslySetInnerHTML={{__html: doc?.text}}></div>
+                            }
+                          </div>
+                        </h1>
                         <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
                       </div>
                     </div>
-                  ))
-                } */}
-                {
-                  projectForm?.linkeddocs ?
-                  <div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
-                    <div className="flex items-center w-full">
-                      <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054] text-ellipsis overflow-hidden line-clamp-1">
-                        <div dangerouslySetInnerHTML={{__html: projectForm?.linkeddocs}} />
-                      </h1>
-                      <ArrowOutwardOutlinedIcon style={{ width: 24, height: 24 }} />
-                    </div>
-                  </div>
-                  :<div className="w-[318px] h-[40px] px-[14px] border border-[#d0d5dd] justify-between rounded-lg flex items-center bg-white gap-2">
-                    <div className="flex items-center w-full">
-                      <h1 className="outline-none border-none w-full h-full text-[14px] font-normal leading-[20px] text-[#344054] text-ellipsis overflow-hidden line-clamp-1">
-                        No Documentation
-                      </h1>
-                    </div>
-                  </div>
-                }
+                    ))
+                  }
               </div>
               <div className="flex gap-3 p-[24px] flex-col">
                 <div className="flex gap-2">
