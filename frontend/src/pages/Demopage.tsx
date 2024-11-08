@@ -293,40 +293,71 @@ export default function Demopage() {
                                 <img src={arrowLeft} alt="Previous" />
                                 Previous
                             </button>
-
                             <span className="inline-flex gap-6">
-                                {   
-                                    pages?.length <= 6 ?
-                                        pages?.map((content, index) => (
-                                            <div key={index} onClick={() => setIndex(index + 1)} className={`${content === currentPage ? "bg-[#F9F5FF]" : ""} p-2 rounded-sm px-4 cursor-pointer`}>
-                                                <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
-                                            </div>
-                                        ))
-                                    :<>
-                                    {
-                                        currentPage > 3
-                                    }
-                                        {
-                                            pages?.slice(0,3).map((content, index) => (
-                                                <div key={index} onClick={() => setIndex(index + 1)} className={`${content === currentPage ? "bg-[#F9F5FF]" : ""} p-2 rounded-sm px-4 cursor-pointer`}>
-                                                    <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
-                                                </div>
-                                            ))
-                                        }
-                                        <div className={`p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]`}>
+                                {pages?.length <= 6 ? (
+                                    pages?.map((content, index) => (
+                                    <div 
+                                        key={index} 
+                                        onClick={() => setIndex(content)} 
+                                        className={`${
+                                        content === currentPage ? "bg-[#F9F5FF]" : ""
+                                        } p-2 rounded-sm px-4 cursor-pointer`}
+                                    >
+                                        <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                    </div>
+                                    ))
+                                ) : (
+                                    <>
+                                    {currentPage >= 3 && currentPage <= pages?.length - 3 ? (
+                                        <>
+                                        <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
                                             <span className="text-[#667085] flex items-center justify-center">...</span>
                                         </div>
-                                        {
-                                            pages?.slice(pages.length - 3).map((content, index) => (
-                                                <div key={index} onClick={() => setIndex(index + 1)} className={`${content === currentPage ? "bg-[#F9F5FF]" : ""} p-2 rounded-sm px-4 cursor-pointer`}>
-                                                    <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
-                                                </div>
-                                            ))
-                                        }
-                                    </>
-                                }
-                            </span>
 
+                                        {pages?.slice(currentPage - 2, currentPage + 1).map((content, index) => (
+                                            <div
+                                            key={index}
+                                            onClick={() => setIndex(content)}
+                                            className={`${
+                                                content === currentPage ? "bg-[#F9F5FF]" : ""
+                                            } p-2 rounded-sm px-4 cursor-pointer`}
+                                            >
+                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                            </div>
+                                        ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                        {pages?.slice(0, 3).map((content, index) => (
+                                            <div
+                                            key={index}
+                                            onClick={() => setIndex(content)}
+                                            className={`${
+                                                content === currentPage ? "bg-[#F9F5FF]" : ""
+                                            } p-2 rounded-sm px-4 cursor-pointer`}
+                                            >
+                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                            </div>
+                                        ))}
+                                        </>
+                                    )}
+                                    <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
+                                        <span className="text-[#667085] flex items-center justify-center">...</span>
+                                    </div>
+                                    {pages?.slice(pages.length - 3).map((content, index) => (
+                                        <div
+                                        key={index}
+                                        onClick={() => setIndex(content)}
+                                        className={`${
+                                            content === currentPage ? "bg-[#F9F5FF]" : ""
+                                        } p-2 rounded-sm px-4 cursor-pointer`}
+                                        >
+                                        <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                        </div>
+                                    ))}
+                                    </>
+                                )}
+                            </span>
                             <button
                                 onClick={() => setIndex(index + 1)}
                                 disabled={index >= pageData.pageNumber}
