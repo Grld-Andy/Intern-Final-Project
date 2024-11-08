@@ -32,14 +32,12 @@ const RequestDemoModal: React.FC<Props> = ({handleShowModal, id}) => {
             projectId: id
         }
         axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests`, data)
-        .then((res) => {
-            console.log(res.data)
+        .then(() => {
             setFormStatus("success")
             setTimeout(() => {
                 handleShowModal(false)
             }, 5000)
         }).catch((err) => {
-            console.log("failed")
             console.error(err)
         })
     }

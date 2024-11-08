@@ -496,7 +496,6 @@ const getDemoRequests = async (req, res) => {
             totalPages: Math.ceil(totalDemoRequests / limit)
         });
     } catch (err) {
-        console.log(err.message);
         res.status(500).json({ error: err.message });
     }
 };
@@ -545,8 +544,6 @@ const updateDemoRequestStatus = async (req, res) => {
 
         res.status(200).json({ demoRequest });
     } catch (err) {
-        console.log(err.message);
-        
         res.status(500).json({ error: err.message });
     }
 };

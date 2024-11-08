@@ -30,11 +30,9 @@ export default function AnalyticsPage() {
 
         // Check if there's an active session on component mount
         const checkUser = async () => {
-            console.log("checking for user")
             try {
                 const {data: { session }, error} = await supabase.auth.getSession();
                 if (error){
-                    console.log(error)
                     throw error
                 }
 

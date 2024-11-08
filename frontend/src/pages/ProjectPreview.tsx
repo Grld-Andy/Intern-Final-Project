@@ -25,7 +25,6 @@ const ProjectPreview: React.FC = () => {
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/${id}`)
     .then((res) => {
-      console.log(res.data)
       setProject(res.data.project)
       parseLinkedDocs(res.data.project?.linkeddocs)
     }).catch((err) => {

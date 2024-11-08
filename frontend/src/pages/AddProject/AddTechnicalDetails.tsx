@@ -33,7 +33,6 @@ const TechnicalDetails: React.FC = () => {
     }
     
     const toggleDevelopmentStack = (clickedStack: string) => {
-        console.log(clickedStack)
         if (isSelected(clickedStack)){
             removeDevelopmentStack(clickedStack)
         }else{

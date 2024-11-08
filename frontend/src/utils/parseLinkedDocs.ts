@@ -2,16 +2,13 @@ import * as cheerio from 'cheerio'
 
 const parseLinkedDocs = (links: string) => {
     const $ = cheerio.load(links)
-    const anchorTag = $("a")
-    const docs: Array<{link?: string, text?: string}> = []
-    console.log('web scraping')
-    anchorTag.each((index, el) => {
-        console.log(index)
-        const link = $(el).attr("href")
-        const text = $(el).text()
-        docs.push({link, text })
+    const listItems = $("ul li")
+    const docs: Array<{ text?: string }> = []
+    listItems.each((_index, el) => {
+        const text = $(el).text().trim()
+        docs.push({ text })
     })
-    console.log("done")
+    console.log(docs)
     return docs
 }
 

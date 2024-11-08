@@ -30,7 +30,6 @@ const PublishProjectModal: React.FC<Props> = ({handleShowModal, id}) => {
             const videoFile = await convertUrlToFile(projectForm.technicaldetailsvideo, 'technical_details_video', 'mp4')
             formData.append('technicalDetailsVideo', videoFile)
             formData = validateProjectForm(projectForm, formData)
-            console.log(projectForm)
 
             if(id){
                 await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects/${id}`, formData, {
