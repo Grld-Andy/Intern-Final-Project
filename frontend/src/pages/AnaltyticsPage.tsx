@@ -16,7 +16,7 @@ export default function AnalyticsPage() {
 
     useEffect(() => {
         // Handle authentication state change
-        const { data: authListener } = supabase.auth.onAuthStateChange(
+        supabase.auth.onAuthStateChange(
             async (_event, session) => {
                 if (session) {
                     userDispatch({ type: "LOGIN", payload: session.user });
@@ -32,11 +32,11 @@ export default function AnalyticsPage() {
         const checkUser = async () => {
             console.log("checking for user")
             try {
-                const {
-                    data: { session },
-                    error,
-                } = await supabase.auth.getSession();
-                if (error) throw error;
+                const {data: { session }, error} = await supabase.auth.getSession();
+                if (error){
+                    console.log(error)
+                    throw error
+                }
 
                 if (session) {
                     // Update context and local storage if session exists
@@ -54,9 +54,9 @@ export default function AnalyticsPage() {
         checkUser();
 
         // Cleanup listener on component unmount
-        return () => {
-            authListener.subscription.unsubscribe();
-        };
+        // return () => {
+        //     authListener.subscription.unsubscribe();
+        // };
     }, [navigate, userDispatch]);
 
     return (

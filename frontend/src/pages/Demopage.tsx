@@ -34,51 +34,21 @@ type ResponseData = {
 };
 
 export default function Demopage() {
-    const [data, setData] = useState<Data | null>(null);
+    const [demos, setDemos] = useState<Data | null>(null);
     const [pageData, setPageData] = useState<PageData>({
         demolength: null,
         pageNumber: 0,
     });
     const [activeDemos, setActiveDemos] = useState<number>(0)
     const [pages, setPages] = useState<Array<number>>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const [index, setIndex] = useState<number>(1);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState({ modal: false, state: "" });
     const [id, setId] = useState<string | number>(0);
 
-    const fetchData = async (id: number) => {
-        try {
-            const response = await fetch(`https://intern-final-project.onrender.com/api/v1/demo-requests?page=${id < 1 ? 1 : id}`);
-            const dataResponse = (await response.json()) as ResponseData;
-
-            if (dataResponse) {
-                setPageData({
-                    ...pageData,
-                    demolength: dataResponse.totalDemoRequests,
-                    pageNumber: dataResponse.totalPages,
-                });
-                setData(dataResponse);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const genPage = () => {
-        if (pageData) {
-            const genArray = [];
-            for (let i = 0; i < pageData.pageNumber; i++) {
-                genArray.push(i + 1);
-            }
-
-            if (genArray.length > 0) {
-                return setPages([...genArray]);
-            }
-        }
-    };
-
     useEffect(() => {
-        axios.get("https://intern-final-project.onrender.com/api/v1/demo-requests/active/count")
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/active/count`)
         .then((res) =>{
             setActiveDemos(res.data.activeDemoRequestsCount)
         }).catch(() => {
@@ -87,19 +57,48 @@ export default function Demopage() {
     }, [])
 
     useEffect(() => {
+        const fetchData = async (id: number) => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests?page=${id < 1 ? 1 : id}`);
+                const dataResponse = (await response.json()) as ResponseData;
+    
+                if (dataResponse) {
+                    setPageData({
+                        demolength: dataResponse.totalDemoRequests,
+                        pageNumber: dataResponse.totalPages,
+                    });
+                    setCurrentPage(id < 1 ? 1 : id)
+                    setDemos(dataResponse);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
         fetchData(index);
-    }, [fetchData, index]);
+    }, [index]);
 
     useEffect(() => {
+        const genPage = () => {
+            if (pageData) {
+                const genArray = [];
+                for (let i = 0; i < pageData.pageNumber; i++) {
+                    genArray.push(i + 1);
+                }
+    
+                if (genArray.length > 0) {
+                    return setPages([...genArray]);
+                }
+            }
+        };
+
         genPage();
-    }, [genPage, pageData.pageNumber]);
+    }, [pageData]);
 
     const changeApprove = async () => {
         setLoading(true);
         const requestBody = { status: "Approved" };
-
         try {
-            const results = await fetch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`, {
+            const results = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/${id}/status`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -107,20 +106,21 @@ export default function Demopage() {
                 body: JSON.stringify(requestBody),
             });
 
-            const da = await results.json();
-            if (data?.demoRequests) {
-                const newm = data.demoRequests.map((content) =>
+            const data = await results.json();
+            if (demos?.demoRequests) {
+                const udpatedDemos = demos.demoRequests.map((content) =>
                     content.id === id ? { ...content, status: "Approved" } : content
                 );
 
                 const changedType: Data = {
-                    demoRequests: newm,
+                    demoRequests: udpatedDemos,
                 };
-                setData(changedType);
+                setDemos(changedType);
             }
 
-            if (da) {
+            if (data) {
                 setLoading(false);
+                setActiveDemos(activeDemos - 1)
             }
         } catch (error) {
             console.log(error);
@@ -129,35 +129,30 @@ export default function Demopage() {
 
 
     const disapprove = async () => {
-        console.log(id);
         setLoading(true);
         const requestBody = { status: "Denied" };
-
         try {
-            const results = await fetch(`https://intern-final-project.onrender.com/api/v1/demo-requests/${id}/status`, {
+            const results = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/demo-requests/${id}/status`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(requestBody),
             });
+            const data = await results.json();
 
-            const da = await results.json();
-
-            if (data?.demoRequests) {
-                const newm = data.demoRequests.map((content) =>
+            if (demos?.demoRequests) {
+                const udpatedDemos = demos.demoRequests.map((content) =>
                     content.id === id ? { ...content, status: "Denied" } : content
                 );
 
                 const changedType: Data = {
-                    demoRequests: newm,
+                    demoRequests: udpatedDemos,
                 };
-                setData(changedType);
+                setDemos(changedType);
+                setActiveDemos(activeDemos - 1)
             }
-
-            console.log(da);
-
-            if (da) {
+            if (data) {
                 setLoading(false);
             }
         } catch (error) {
@@ -172,29 +167,24 @@ export default function Demopage() {
 
     return (
         <div className="bg-[#F9FAFB] border mt-[132px] lg:w-[95%] min-w-[1200px] mx-auto lg:border overflow-x lg:shadow-m w-full mb-10 2xl:mx-auto">
-            {data ? (
+            {demos ? (
                 <div className="relative">
                     <div className="w-full">
                         {status.modal && (
                             status.state === "Approve" ? (
-                                <div className="shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                    <span>
-                                        <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Approve demo</h1>
-                                    </span>
-
-                                    <div>
-                                        <p>
+                                <div className="shadow-lg z-40 fixed bg-white md:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                    <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Approve demo</h1>
+                                    <div className="flex flex-col gap-[16px]">
+                                        <p className="text-[#667085] font-[400] text-[14px] leading-[20px]">
                                             Are you sure you want to approve this demo? Once approved, the requestor will
                                             receive an email containing test credentials.
                                         </p>
-
-                                        <span className="flex flex-row gap-[8px] mt-[5px]">
-                                            <button onClick={() => setStatus({ ...status, modal: false })} className="rounded-[8px] border py-[10px] px-[16px] text-[#344054] font-[600] text-[18px] leading-[28px]">Cancel</button>
-
+                                        <span className="flex flex-row gap-[8px] mt-[5px] h-[44px]">
+                                            <button onClick={() => setStatus({ ...status, modal: false })} className="w-full rounded-[8px] border px-[16px] text-[#344054] font-[600] text-[18px] leading-[28px]">Cancel</button>
                                             <button
                                                 onClick={changeApprove}
                                                 disabled={loading}
-                                                className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#1570EF] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] px-[16px]`}
+                                                className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#1570EF] w-full font-[600] leading-[20px] text-white rounded-[8px] px-[16px]`}
                                             >
                                                 Approve
                                                 {loading && (
@@ -208,22 +198,19 @@ export default function Demopage() {
                                 </div>
                             ) : (
                                 <div className="shadow-lg z-40 fixed bg-white lg:w-[479px] rounded-[8px] p-[24px] space-y-[24px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                    <span>
-                                        <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Deny demo</h1>
-                                    </span>
-                                    <div>
-                                        <p>
+                                    <h1 className="text-[#344054] font-[600] text-[18px] leading-[28px]">Deny demo</h1>
+                                    <div className="flex flex-col gap-[16px]">
+                                        <p className="text-[#667085] font-[400] text-[14px] leading-[20px]">
                                             Are you sure you want to deny this demo? Once denied, the requestor will receive an
                                             email notifying them of the decision.
                                         </p>
 
-                                        <span className="flex flex-row gap-[8px] mt-[5px]">
-                                            <button onClick={() => setStatus({ ...status, modal: false })} className="rounded-[8px] border py-[10px] px-[16px] text-[#344054] font-[600] text-[18px] leading-[28px]">Cancel</button>
-
+                                        <span className="flex flex-row gap-[8px] mt-[5px] h-[44px]">
+                                            <button onClick={() => setStatus({ ...status, modal: false })} className="rounded-[8px] w-full border px-[16px] text-[#344054] font-[600] text-[18px] leading-[28px]">Cancel</button>
                                             <button
                                                 disabled={loading}
                                                 onClick={disapprove}
-                                                className={`${loading && 'flex flex-row gap-[4px] items-center'} bg-[#B42318] font-[600] leading-[20px] text-white rounded-[8px] py-[10px] px-[16px]`}
+                                                className={`${loading && 'flex flex-row gap-[4px] items-center'} w-full bg-[#B42318] font-[600] leading-[20px] text-white rounded-[8px] px-[16px]`}
                                             >
                                                 Deny
                                                 {loading && (
@@ -260,8 +247,8 @@ export default function Demopage() {
                             </tr>
                         </div>
                         <div>
-                            {data.demoRequests.map((request, index) => (
-                                <tr key={request.id} className={`${index % 2 === 0 ? 'bg-[#F9F5FF]' : 'bg-white'} p-2 px-4 grid grid-cols-6 justify-between items-center h-[72px]`}>
+                            {demos.demoRequests.map((request, index) => (
+                                <tr key={request.id} className={`${index % 2 === 0 ? 'bg-[#F9F5FF]' : 'bg-white'} ${request.status.toLowerCase() === 'denied' ? "opacity-50 select-none pointer-events-none" : ""} p-2 px-4 grid grid-cols-6 justify-between items-center h-[72px]`}>
                                     <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.fullname}</td>
                                     <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{request.emailaddress}</td>
                                     <td className="text-[#667085] px-[24px] text-center font-[400] text-[14px] leading-[20px] text-ellipsis overflow-hidden">{getDemoRequestCreationString(request.requestdate)}</td>
@@ -306,19 +293,75 @@ export default function Demopage() {
                                 <img src={arrowLeft} alt="Previous" />
                                 Previous
                             </button>
-
                             <span className="inline-flex gap-6">
-                                {pages?.map((content, index) => (
-                                    <div key={index} onClick={() => setIndex(index + 1)} className="bg-[#F9F5FF] p-2 rounded-sm px-4 cursor-pointer">
+                                {pages?.length <= 6 ? (
+                                    pages?.map((content, index) => (
+                                    <div 
+                                        key={index} 
+                                        onClick={() => setIndex(content)} 
+                                        className={`${
+                                        content === currentPage ? "bg-[#F9F5FF]" : ""
+                                        } p-2 rounded-sm px-4 cursor-pointer`}
+                                    >
                                         <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
                                     </div>
-                                ))}
-                            </span>
+                                    ))
+                                ) : (
+                                    <>
+                                    {currentPage >= 3 && currentPage <= pages?.length - 3 ? (
+                                        <>
+                                        <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
+                                            <span className="text-[#667085] flex items-center justify-center">...</span>
+                                        </div>
 
+                                        {pages?.slice(currentPage - 2, currentPage + 1).map((content, index) => (
+                                            <div
+                                            key={index}
+                                            onClick={() => setIndex(content)}
+                                            className={`${
+                                                content === currentPage ? "bg-[#F9F5FF]" : ""
+                                            } p-2 rounded-sm px-4 cursor-pointer`}
+                                            >
+                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                            </div>
+                                        ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                        {pages?.slice(0, 3).map((content, index) => (
+                                            <div
+                                            key={index}
+                                            onClick={() => setIndex(content)}
+                                            className={`${
+                                                content === currentPage ? "bg-[#F9F5FF]" : ""
+                                            } p-2 rounded-sm px-4 cursor-pointer`}
+                                            >
+                                            <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                            </div>
+                                        ))}
+                                        </>
+                                    )}
+                                    <div className="p-2 rounded-sm px-4 cursor-default w-[40px] h-[40px]">
+                                        <span className="text-[#667085] flex items-center justify-center">...</span>
+                                    </div>
+                                    {pages?.slice(pages.length - 3).map((content, index) => (
+                                        <div
+                                        key={index}
+                                        onClick={() => setIndex(content)}
+                                        className={`${
+                                            content === currentPage ? "bg-[#F9F5FF]" : ""
+                                        } p-2 rounded-sm px-4 cursor-pointer`}
+                                        >
+                                        <h1 className="text-[#7F56D9] font-[500] text-[14px] leading-[20px]">{content}</h1>
+                                        </div>
+                                    ))}
+                                    </>
+                                )}
+                            </span>
                             <button
                                 onClick={() => setIndex(index + 1)}
                                 disabled={index >= pageData.pageNumber}
-                                className="border gap-[8px] items-center inline-flex rounded-[8px] border py-[8px] px-[14px]"
+                                className="gap-[8px] items-center inline-flex rounded-[8px] border py-[8px] px-[14px]"
                             >
                                 Next
                                 <img src={arrowRight} alt="Next" />
@@ -327,7 +370,7 @@ export default function Demopage() {
 
                         {/* Modal background */}
                         {status.modal && (
-                            <div onClick={() => setStatus({ ...status, modal: false })} className="bg-[#F9FAFB] backdrop-blur-[16%] bg-opacity-[70%] fixed inset-0 top-0 z-30">
+                            <div onClick={() => setStatus({ ...status, modal: false })} className="bg-[#344054B2] backdrop-blur-sm fixed inset-0 top-0 z-30">
                             </div>
                         )}
                     </div>

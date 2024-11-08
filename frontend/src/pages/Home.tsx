@@ -14,31 +14,28 @@ import footerImage from '../assets/Content (1).png'
 import Footer from "../components/Footer"
 import { useEffect, useState } from "react"
 import Project from "../models/Project"
-import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import ProjectCell from "../components/ProjectCell"
+import ProjectsSkeletonGrid from "../components/ProjectsPage/ProjectsSkeletonGrid"
 
 export default function Home() {
-  const[data,setData]=useState<Project[]>([])
-  const navigate =useNavigate()
-    useEffect(()=>{
-const fetchProducts=async()=>{
-    try {
-       const response= await fetch("https://intern-final-project.onrender.com/api/v1/projects?page=1&limit=6")
-  const dataa=await response.json()
-if(dataa){
-    console.log(dataa.projects)
-    setData(dataa.projects)
-}
-  
-    } catch (error) {
-        console.log(error)
-    }
-}
+    const[projects,setProjects]=useState<Project[]>([])
+    const [status, setStatus] = useState<string>("loading")
 
-fetchProducts()
-    },[])
+    useEffect(() => {
+        setStatus("loading")
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/projects`)
+        .then((res) => {
+            if(res.data){
+                setProjects(res.data.projects)
+                setStatus("done")
+            }
+        }).catch((err) => {
+            console.error(err)
+            setStatus("failed")
+        })
+    }, [])
 
-
-    console.log(data)
     return (
         <section className="bg-[#F9FAFB]">
             <Navbar />
@@ -120,44 +117,25 @@ fetchProducts()
                 <p className="text-center font-[600] text-[48px] leading-[60px] text-[#1D2939]">
                     Our Recent Projects
                 </p>
-           
-
-
-
-              <div className='grid xl:grid-cols-3 sm:grid-cols-2 gap-[32px]'>
-
-            
-
-{
-    data.map((content, index) => (
-        <div onClick={()=>navigate(`/projects/${content.id}`)} key={index} className='rounded-[8px] cursor-pointer shadow bg-white relative'>
-          <div className="w-full h-[350px]">
-            <img 
-              src={content.coverphotourl} 
-              alt='content' 
-              className="w-full h-full object-cover rounded-t-[8px]" 
-            />
-          </div>
-          <span className='p-[16px] bg-white border-[#D0D5DD] flex flex-col gap-[8px]'>
-            <h1 className='font-[600] hover:underline text-[18px] leading-[28px] text-[#344054]'>
-              {content.title}
-            </h1>
-      
-            <h2 className='font-[400] hover:underline text-[14px] leading-[20px] text-[#344054]'>
-              {content.description && content.description.slice(0,100)}
-            </h2>
-          </span>
-        </div>
-      ))
-      
-}         
-       </div>
-
-
-
-
-
-
+                {/* projects grid */}
+                {
+                    status === "loading"?
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8 h-[2290px] lg:h-[742px] md:h-[1129px] md:mx-0 mx-20">
+                        {
+                            Array.from({length: 6}).map((_, index) => (
+                                <ProjectsSkeletonGrid key={index}/>
+                            ))
+                        }
+                    </div>:
+                    status === "done" && projects.length > 0?
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-8 min-h-[660px] md:mx-0 mx-20">
+                        {
+                            projects.map((project, index) => (
+                                <ProjectCell project={project} key={index}/>
+                            ))
+                        }
+                    </div>:<h1 className="text-[#344054] font-semibold text-xl">Coming soon...</h1>
+                }
                 <div className="flex justify-center">
                     <a href="/projects">
                         <button className="bg-[#1570EF] border-[#1570EF] rounded-lg text-white py-[10px] px-[18px]">
