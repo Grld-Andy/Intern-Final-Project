@@ -62,7 +62,7 @@ CREATE TABLE DemoRequest (
     requestDate DATE NOT NULL,
     requestTime TIME NOT NULL,
     comments TEXT,
-    status VARCHAR(10) NOT NULL DEFAULT 'active',
+    status VARCHAR(10) NOT NULL DEFAULT 'active' LOWERCASE,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
