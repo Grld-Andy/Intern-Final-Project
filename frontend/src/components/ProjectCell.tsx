@@ -21,7 +21,7 @@ const ProjectCell: React.FC<Props> = ({project}) => {
                         <p className="text-sm font-medium leading-5">New</p>
                     </button>
                 }
-                <img src={project.coverphotourl} alt="project" className="w-full h-full object-cover" />
+                <img src={project.coverphotourl} alt="project" className="w-full h-full object-cover border border-b-[0px]" />
             </div>
             <div className="p-4 flex flex-col border border-[#d0d5dd] gap-2">
                 <div className="flex justify-between items-center">

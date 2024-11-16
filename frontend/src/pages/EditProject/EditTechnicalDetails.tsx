@@ -12,7 +12,7 @@ import validateProjectTechnicalDetailsForm from "../../utils/validateProjectTech
 
 const EditTechnicalDetails: React.FC = () => {
     const [video, setVideo] = useState<string>("")
-    const [developmentStack, setDevelopmentStack] = useState<string>("")
+    // const [developmentStack, setDevelopmentStack] = useState<string>("")
     const [developmentStackList, setDevelopmentStackList] = useState<Array<string|undefined>>([])
     const [contributor, setContributor] = useState<string>("")
     const [contributorsList, setContributorsList] = useState<Array<string>>([])
@@ -52,12 +52,12 @@ const EditTechnicalDetails: React.FC = () => {
         }
     }
     
-    const addDevelopmentStack = () => {
-        if(developmentStack){
-            setDevelopmentStackList([...developmentStackList, developmentStack])
-            setDevelopmentStack("")
-        }
-    }
+    // const addDevelopmentStack = () => {
+    //     if(developmentStack){
+    //         setDevelopmentStackList([...developmentStackList, developmentStack])
+    //         setDevelopmentStack("")
+    //     }
+    // }
     
     const addToContriubtorsList = () => {
         if(contributor){
@@ -131,10 +131,10 @@ const EditTechnicalDetails: React.FC = () => {
                 <div className='flex gap-[6px] flex-col'>
                     <h1 className='text-[#344054] font-medium text-[14px] leading-[20px]'>Development stack</h1>
                     <div className='bg-white border overflow-hidden border-[#d0d5dd] rounded-lg shadow'>
-                        <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
+                        {/* <div className='w-full flex border-b-[1px] border-[#d0d5dd]'>
                             <input onKeyUp={(e) => e.key === "Enter" && addDevelopmentStack()} type="text" placeholder="Enter development stack, eg MERN" value={developmentStack} onChange={(e) => setDevelopmentStack(e.target.value)} className='outline-none w-full h-[44px] rounded-lg px-[14px] py-[10px] text-[#667085] leading-[24px] font-normal text-[14px]'/>
                             <button onClick={addDevelopmentStack} type='button' className='py-[10px] px-[14px] bg-[#f2f4f7] text-[#101828] text-[16px] leading-[24px] font-semibold'>Add</button>
-                        </div>
+                        </div> */}
                         {
                             <>
                                 <div className='w-full flex flex-wrap py-[10px] px-[14px] gap-[10px]'>
@@ -169,7 +169,7 @@ const EditTechnicalDetails: React.FC = () => {
                             video &&
                             <div className='absolute z-[1] w-full h-full bg-[#0004]'></div>
                         }
-                        <label className='absolute z-[2] flex gap-[16px] bg-white rounded-lg text-[#344054] py-[8px] px-[14px] cursor-pointer'>
+                        <label className={`${video ? "hidden" : "" } z-[2] flex gap-[16px] bg-white rounded-lg text-[#344054] py-[8px] px-[14px] cursor-pointer`}>
                             <ControlPointOutlinedIcon style={{width:"20px", height:"20px"}}/>
                             <input className='hidden' type="file" name="video" id="video" accept="video/*" onChange={handleFileChange}/>
                             <h1 className='text-[14px] leading-[20px] font-semibold'>Add file</h1>

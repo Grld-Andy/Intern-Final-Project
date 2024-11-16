@@ -153,7 +153,7 @@ const EditProjectOverview: React.FC = () => {
                             image &&
                             <div className='absolute z-[1] w-full h-full bg-[#0004]'></div>
                         }
-                        <label className='z-[2] flex gap-[16px] bg-white rounded-lg text-[#344054] py-[8px] px-[14px] cursor-pointer'>
+                        <label className={`${image ? "hidden" : "" } z-[2] flex gap-[16px] bg-white rounded-lg text-[#344054] py-[8px] px-[14px] cursor-pointer`}>
                             <ControlPointOutlinedIcon style={{width:"20px", height:"20px"}}/>
                             <input className='hidden' type="file" name="image" id="image" accept="image/*" onChange={handleFileChange} />
                             <h1 className='text-[14px] leading-[20px] font-semibold'>Add file</h1>
